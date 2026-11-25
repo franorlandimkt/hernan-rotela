@@ -2,7 +2,7 @@
 /** Preguntas frecuentes con <details>/<summary> (abren al primer toque). El mismo texto alimenta el JSON-LD FAQPage. */
 import SectionHead from "../ui/SectionHead.astro";
 import CtaBlock from "../ui/CtaBlock.astro";
-import { faq, header } from "../../content/landing";
+import { faq } from "../../content/landing";
 ---
 
 <section class="section s-hueso faq" id="preguntas" aria-labelledby="faq-title">
@@ -23,7 +23,7 @@ import { faq, header } from "../../content/landing";
     </div>
   </div>
   <div class="container">
-    <CtaBlock label={header.cta} cta="faq" />
+    <CtaBlock label={faq.cta} cta="faq" />
   </div>
 </section>
 

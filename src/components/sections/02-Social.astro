@@ -1,0 +1,174 @@
+---
+/**
+ * Franja de redes (pegada al hero): total de la comunidad con la cara de Hernán y una celda por red con sus
+ * seguidores. Cada celda es link al perfil si la red tiene URL en site.ts (se abre en otra pestaña,
+ * data-social para el tracking); sin URL se ve el número igual, sin link.
+ * Foto: src/assets/img/hernan-avatar.(jpg|png|webp); sin foto, el perfil de la marca.
+ * Datos: site.ts → social, communityTotal · Textos: landing.ts → social.
+ */
+import Icon from "../illustrations/Icon.astro";
+import Img from "../ui/Img.astro";
+import { social as t } from "../../content/landing";
+import { site } from "../../data/site";
+import { hasImg } from "../../lib/images";
+
+const nets = t.networks.map((k) => ({ key: k, ...site.social[k] })).filter((n) => n.followers);
+const avatar = hasImg("hernan-avatar");
+---
+
+<section class="soc s-grafito" aria-label={`${t.total} ${t.lead}`}>
+  <div class="container soc__in">
+    <p class="soc__total reveal">
+      <span class="soc__avatar">
+        {avatar ? <Img name="hernan-avatar" alt={t.avatarAlt} widths={[64, 128]} sizes="56px" /> : <img src={site.logo.profile} alt="" width="56" height="56" loading="lazy" decoding="async" />}
+      </span>
+      <span class="soc__txt">
+        <strong class="num soc__num">{t.total}</strong>
+        <span>{t.lead}</span>
+      </span>
+    </p>
+    <ul class="soc__bar reveal" style="--delay:.08s">
+      {
+        nets.map((n) => {
+          const Tag = n.url ? "a" : "div";
+          const attrs = n.url ? { href: n.url, target: "_blank", rel: "noopener", "data-social": n.key, "aria-label": `${n.followers} ${t.followers} en ${n.name}. ${t.profile} (se abre en otra pestaña)` } : {};
+          return (
+            <li>
+              <Tag class="soc__net" {...attrs}>
+                <span class="soc__ico" aria-hidden="true">
+                  <Icon name={n.key} size={20} />
+                </span>
+                <span class="soc__info">
+                  <strong class="soc__count">{n.followers}</strong>
+                  <span class="soc__name etiqueta">{n.name}</span>
+                </span>
+                {n.url && <Icon name="arrow-right" size={16} class="soc__go" />}
+              </Tag>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .soc {
+    background: var(--superficie);
+    color: var(--tinta);
+    border-top: 1px solid var(--linea);
+    padding-block: var(--space-4);
+  }
+  .soc__in {
+    display: grid;
+    gap: var(--space-4);
+    align-items: center;
+  }
+  .soc__total {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .soc__avatar {
+    flex: none;
+    width: 3.5rem;
+    height: 3.5rem;
+    border: 1.5px solid var(--c-ladrillo);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--c-hueso);
+  }
+  .soc__avatar :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .soc__txt {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: var(--fs-small);
+    line-height: 1.4;
+    color: var(--tinta-2);
+    max-width: 24rem;
+  }
+  .soc__num {
+    color: var(--tinta);
+  }
+  .soc__bar {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    border: 1px solid var(--linea);
+    border-radius: var(--radius-md);
+  }
+  .soc__bar li + li {
+    border-left: 1px solid var(--linea);
+  }
+  .soc__net {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    height: 100%;
+    padding: 0.75rem;
+    color: var(--tinta);
+    text-decoration: none;
+    transition: background-color 0.18s;
+  }
+  a.soc__net:hover {
+    background: var(--fondo);
+  }
+  .soc__ico {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid var(--tinta);
+    border-radius: var(--radius-sm);
+  }
+  .soc__info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .soc__count {
+    font-family: var(--f-display);
+    font-stretch: var(--stretch-display);
+    font-weight: 800;
+    font-size: 1.25rem;
+    line-height: 1.1;
+  }
+  .soc__name {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+  }
+  .soc__net :global(.soc__go) {
+    display: none;
+    margin-left: auto;
+    color: var(--ladrillo-texto);
+  }
+  @media (min-width: 560px) {
+    .soc__net {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1rem;
+    }
+    .soc__net :global(.soc__go) {
+      display: block;
+    }
+    .soc__count {
+      font-size: 1.375rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .soc__in {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: var(--space-6);
+    }
+  }
+</style>

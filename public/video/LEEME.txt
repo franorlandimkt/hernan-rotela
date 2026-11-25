@@ -1,12 +1,15 @@
 Videos de Hernán (todavía no existen: [COMPLETAR]).
 
-1) hernan.mp4  → video flotante de la home (VSL). Vertical 9:16, H.264 + AAC, faststart.
-   Póster: hernan-poster.jpg (primer cuadro). Ruta en src/data/site.ts → video.
+1) hernan.mp4  → video del hero de la home (VSL). HORIZONTAL 16:9 (1280x720), H.264 + AAC, faststart.
+   Póster: hernan-poster.jpg (un cuadro donde se le vea la cara). Ruta en src/data/site.ts → video.
 2) confirmacion.mp4 → página /llamada-agendada (después de agendar). Vertical 9:16.
    Póster: confirmacion-poster.jpg. Ruta, ancho y alto en src/data/site.ts → bookedVideo.
 
 Mientras no estén, la web muestra un póster [PLACEHOLDER] (public/video/*-poster.svg) y no intenta reproducir.
 
 Comprimir (ffmpeg):
-  ffmpeg -i original.mp4 -vf "scale=720:-2,setsar=1" -c:v libx264 -crf 24 -preset slow -c:a aac -b:a 128k -movflags +faststart hernan.mp4
-  ffmpeg -ss 00:00:01 -i hernan.mp4 -frames:v 1 -q:v 3 hernan-poster.jpg
+  Hero (horizontal):
+    ffmpeg -i original.mp4 -vf "scale=1280:-2,setsar=1" -c:v libx264 -crf 24 -preset slow -c:a aac -b:a 128k -movflags +faststart hernan.mp4
+    ffmpeg -ss 00:00:01 -i hernan.mp4 -frames:v 1 -q:v 3 hernan-poster.jpg
+  Confirmación (vertical):
+    ffmpeg -i original.mp4 -vf "scale=720:-2,setsar=1" -c:v libx264 -crf 24 -preset slow -c:a aac -b:a 128k -movflags +faststart confirmacion.mp4

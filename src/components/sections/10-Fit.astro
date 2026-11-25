@@ -1,21 +1,22 @@
 ---
-/** Para quién es: dos columnas (es para vos / no es para vos), directo, con opinión. Filtra antes del formulario. */
+/** Para quién es: dos columnas (te va a servir / no soy tu opción). Filtra antes del formulario, sin pose:
+ *  el título da el motivo (atiende cada proyecto él). */
 import SectionHead from "../ui/SectionHead.astro";
 import CtaBlock from "../ui/CtaBlock.astro";
 import Icon from "../illustrations/Icon.astro";
 import { fit as t } from "../../content/landing";
 ---
 
-<section class="section s-hueso fit" aria-labelledby="para-quien-title">
+<section class="section s-superficie fit" aria-labelledby="para-quien-title">
   <div class="container">
     <SectionHead label={t.label} title={t.h2} id="para-quien-title" />
     <div class="fit__grid">
       <div class="fit__col fit__col--yes reveal">
         <h3 class="t-h3">{t.yesTitle}</h3>
-        <ul class="checks">
+        <ul class="fit__list">
           {t.yes.map((y) => (
             <li>
-              <Icon name="check" size={18} />
+              <span class="fit__ico" aria-hidden="true"><Icon name="check" size={16} /></span>
               <span>{y}</span>
             </li>
           ))}
@@ -23,10 +24,10 @@ import { fit as t } from "../../content/landing";
       </div>
       <div class="fit__col fit__col--no reveal" style="--delay:.08s">
         <h3 class="t-h3">{t.noTitle}</h3>
-        <ul class="checks">
+        <ul class="fit__list">
           {t.no.map((n) => (
             <li>
-              <Icon name="x" size={18} />
+              <span class="fit__ico" aria-hidden="true"><Icon name="x" size={16} /></span>
               <span>{n}</span>
             </li>
           ))}
@@ -46,25 +47,52 @@ import { fit as t } from "../../content/landing";
     padding: var(--space-4);
     border-radius: var(--radius-md);
   }
-  .fit__col .checks {
+  .fit__list {
+    list-style: none;
+    display: grid;
     margin-top: var(--space-3);
   }
+  .fit__list li {
+    display: grid;
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+    padding-block: 0.75rem;
+    border-top: 1px solid var(--linea);
+  }
+  .fit__ico {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--radius-sm);
+  }
   .fit__col--yes {
-    background: var(--superficie);
-    border: 1px solid var(--tinta);
+    background: var(--fondo);
+    border: 1.5px solid var(--tinta);
+    box-shadow: 8px 8px 0 var(--ladrillo-tinte);
+  }
+  .fit__col--yes .fit__ico {
+    background: var(--c-ladrillo);
+    color: var(--c-white);
   }
   .fit__col--no {
     border: 1px dashed var(--tinta-2);
   }
-  .fit__col--no .checks .ico {
+  .fit__col--no .fit__ico {
+    border: 1px solid var(--tinta-2);
     color: var(--tinta-2);
   }
-  .fit__col--no li span {
+  .fit__col--no li > span:last-child {
     color: var(--tinta-2);
   }
   @media (min-width: 768px) {
     .fit__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-4);
+    }
+    .fit__col {
+      padding: var(--space-5);
     }
   }
 </style>

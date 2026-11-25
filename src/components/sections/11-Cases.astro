@@ -1,0 +1,250 @@
+---
+/**
+ * "¿Tu caso es otro?" (grafito): dos tarjetas.
+ *  - #sin-lote: para quien va a comprar el lote en 6–12 meses. Qué mirar antes de comprarlo + TikTok (el
+ *    botón sale solo si hay URL en site.ts). Igual puede hacer el formulario: queda como "Sin terreno"
+ *    (LeadSinTerreno) y ve el precio.
+ *  - #a-distancia: planos a distancia (segunda línea del negocio), con el esquema del radio: adentro de los
+ *    150 km de El Jagüel, plano municipal y dirección de obra; más lejos, anteproyecto y ejecutivo.
+ */
+import SectionHead from "../ui/SectionHead.astro";
+import Icon from "../illustrations/Icon.astro";
+import { cases, beforeLot as b, remote as r } from "../../content/landing";
+import { site } from "../../data/site";
+---
+
+<section class="section s-grafito cases" aria-labelledby="casos-title">
+  <div class="container">
+    <SectionHead label={cases.label} title={cases.h2} id="casos-title" />
+    <div class="cases__grid">
+      <article class="cases__card reveal" id="sin-lote" aria-labelledby="sin-lote-title">
+        <p class="pill"><span class="pill__dot pill__dot--off"></span>{b.label}</p>
+        <h3 class="t-h2" id="sin-lote-title">{b.h2.replace(/\*/g, "")}</h3>
+        <p class="cases__sub">{b.sub}</p>
+        <ol class="cases__list">
+          {
+            b.checks.map((c, i) => (
+              <li>
+                <span class="dato cases__n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                <span>{c}</span>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="cases__text t-small">{b.text}</p>
+        <div class="cases__ctas">
+          {
+            site.social.tiktok.url && (
+              <a class="btn btn--light" href={site.social.tiktok.url} target="_blank" rel="noopener" data-social="tiktok">
+                <Icon name="tiktok" size={20} />
+                {b.ctaSocial}
+              </a>
+            )
+          }
+          <a class="btn btn--ghost" href="#cotiza" data-cta="sin-lote">{b.cta}</a>
+        </div>
+      </article>
+
+      <article class="cases__card reveal" style="--delay:.08s" id="a-distancia" aria-labelledby="distancia-title">
+        <p class="pill"><span class="pill__dot"></span>{r.label}</p>
+        <h3 class="t-h2" id="distancia-title">{r.h2}</h3>
+        <p class="cases__sub">{r.text}</p>
+        <figure class="cases__map">
+          <svg viewBox="0 0 220 150" role="img" aria-label={r.map.alt}>
+            <title>{r.map.alt}</title>
+            <rect class="out" x="1" y="1" width="218" height="148" />
+            <circle class="in" cx="86" cy="75" r="56" />
+            <line class="cota-l" x1="86" y1="75" x2="142" y2="75" />
+            <line class="cota-l" x1="138" y1="79" x2="146" y2="71" />
+            <rect class="base" x="82" y="71" width="8" height="8" />
+            <text x="86" y="64" text-anchor="middle">{r.map.base}</text>
+            <text class="km" x="116" y="90" text-anchor="middle">{r.map.radius}</text>
+            <path class="arrow" d="M166 75h34M194 69l6 6-6 6" />
+          </svg>
+          <figcaption>
+            <p><span class="cases__key cases__key--in" aria-hidden="true"></span>{r.map.inside}</p>
+            <p><span class="cases__key cases__key--out" aria-hidden="true"></span>{r.map.outside}</p>
+          </figcaption>
+        </figure>
+        <p class="cases__fact">
+          <Icon name="globe" size={20} />
+          <span>{r.proof}</span>
+        </p>
+        <div class="cases__ctas">
+          <a class="btn" href="#cotiza" data-cta="distancia">
+            {r.cta}
+            <Icon name="arrow-right" size={20} class="arrow" />
+          </a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cases__grid {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .cases__card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-4);
+    background: var(--superficie);
+    border: 1px solid var(--linea);
+    border-radius: var(--radius-md);
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+  .cases__card .t-h2 {
+    margin-top: var(--space-3);
+    font-stretch: var(--stretch-display);
+  }
+  .cases__sub {
+    margin-top: var(--space-2);
+    color: var(--tinta-2);
+  }
+  .cases__list {
+    list-style: none;
+    display: grid;
+    align-self: stretch;
+    margin-top: var(--space-3);
+    border-top: 1px solid var(--tinta-2);
+  }
+  .cases__list li {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: var(--space-2);
+    padding-block: 0.75rem;
+    border-bottom: 1px solid var(--linea);
+  }
+  .cases__n {
+    color: var(--ladrillo-texto);
+  }
+  .cases__text {
+    margin-top: var(--space-3);
+    color: var(--tinta-2);
+  }
+  .cases__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: auto;
+    padding-top: var(--space-4);
+  }
+  /* Esquema del radio */
+  .cases__map {
+    display: grid;
+    gap: var(--space-3);
+    align-items: center;
+    align-self: stretch;
+    margin: var(--space-4) 0 0;
+  }
+  .cases__map svg {
+    width: 100%;
+    max-width: 17rem;
+    height: auto;
+  }
+  .cases__map .out {
+    fill: none;
+    stroke: var(--tinta-2);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+  }
+  .cases__map .in {
+    fill: var(--ladrillo-tinte);
+    stroke: var(--c-hueso);
+    stroke-width: 1.5;
+  }
+  .cases__map .cota-l,
+  .cases__map .arrow {
+    fill: none;
+    stroke: var(--c-ladrillo);
+    stroke-width: 1.5;
+  }
+  .cases__map .arrow {
+    stroke: var(--tinta-2);
+  }
+  .cases__map .base {
+    fill: var(--c-hueso);
+  }
+  .cases__map text {
+    font-family: var(--f-mono);
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    fill: var(--c-hueso);
+  }
+  .cases__map .km {
+    font-weight: 500;
+    font-size: 10px;
+  }
+  .cases__map figcaption {
+    display: grid;
+    gap: 0.5rem;
+    font-size: var(--fs-small);
+    line-height: 1.35;
+  }
+  .cases__map figcaption p {
+    display: grid;
+    grid-template-columns: 0.875rem minmax(0, 1fr);
+    gap: 0.625rem;
+    align-items: start;
+  }
+  .cases__key {
+    width: 0.875rem;
+    height: 0.875rem;
+    margin-top: 0.2rem;
+  }
+  .cases__key--in {
+    background: var(--ladrillo-tinte);
+    border: 1.5px solid var(--c-hueso);
+    border-radius: 50%;
+  }
+  .cases__key--out {
+    border: 1px dashed var(--tinta-2);
+  }
+  .cases__fact {
+    display: grid;
+    grid-template-columns: 1.25rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+    margin-top: var(--space-4);
+    font-weight: 600;
+  }
+  .cases__fact :global(.ico) {
+    margin-top: 0.15rem;
+    color: var(--ladrillo-texto);
+  }
+  @media (max-width: 479px) {
+    .cases__ctas {
+      align-self: stretch;
+    }
+    .cases__ctas .btn {
+      width: 100%;
+    }
+  }
+  @media (min-width: 560px) {
+    .cases__map {
+      grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
+      gap: var(--space-4);
+    }
+  }
+  @media (min-width: 768px) {
+    .cases__card {
+      padding: var(--space-5);
+    }
+  }
+  @media (min-width: 1024px) {
+    .cases__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .cases__map {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (min-width: 1280px) {
+    .cases__map {
+      grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    }
+  }
+</style>

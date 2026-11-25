@@ -250,12 +250,15 @@ export const site = {
   themeColor: "#161616",
 
   /**
-   * Video vertical de Hernán (VSL), flotante en la home. src vacío = se muestra el póster [PLACEHOLDER] y no
-   * se intenta reproducir. Arranca quieto; con sonido al primer toque.
+   * Video de Hernán (VSL) del hero: HORIZONTAL 16:9, centrado debajo del título. src vacío = se muestra el
+   * póster [PLACEHOLDER] y no se intenta reproducir. Arranca con sonido cuando la persona toca el play; si
+   * sigue bajando mientras suena, queda chico en una esquina (Vsl.astro).
    */
   video: {
-    src: "", // [COMPLETAR] "/video/hernan.mp4"
-    poster: "/video/hernan-poster.svg", // [PLACEHOLDER]
+    src: "", // [COMPLETAR] "/video/hernan.mp4" (horizontal, 1280x720)
+    poster: "/video/hernan-poster.svg", // [PLACEHOLDER] reemplazar por "/video/hernan-poster.jpg"
+    width: 1280,
+    height: 720,
   },
   /**
    * Video de /llamada-agendada (después de agendar). La barra de avance no es lineal: llega a barTo cuando

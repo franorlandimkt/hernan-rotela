@@ -21,6 +21,7 @@
   --linea: #d9d3ca; /* divisores de 1px, grilla. No para texto */
   --ladrillo-texto: #b02e1a; /* ladrillo para texto chico: 5.6:1 sobre hueso */
   --sobre-ladrillo: #ffffff; /* texto sobre botón ladrillo: 4.7:1 */
+  --ladrillo-tinte: #f5d9cf; /* fondo de resaltado (marcador, pastillas): siempre con texto en tinta encima */
   --focus: var(--tinta);
 
   /* ---- Tipografía ---- */
@@ -31,6 +32,8 @@
 
   /* Escala del manual (mobile → desktop interpolado entre 375 y 1440 px) */
   --fs-display: clamp(2.5rem, 1.67rem + 3.53vw, 4rem); /* 40 → 64 */
+  --fs-hero: clamp(1.875rem, 1.17rem + 3vw, 3.5rem); /* 30 → 56: H1 del hero, centrado (entra con el video y el botón) */
+  --fs-num: clamp(1.5rem, 1.06rem + 1.88vw, 2.5rem); /* 24 → 40: cifras grandes (m², años, seguidores) */
   --lh-display: 1.03;
   --fs-h1: clamp(2rem, 1.736rem + 1.127vw, 2.75rem); /* 32 → 44: títulos de sección (h2 en el HTML) */
   --lh-h1: 1.1;
@@ -86,6 +89,7 @@
   --tinta-2: #b9b4ac;
   --linea: #3a3836;
   --ladrillo-texto: #f07a5e;
+  --ladrillo-tinte: #4a231a;
   --focus: var(--c-hueso);
 }
 

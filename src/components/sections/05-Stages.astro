@@ -1,0 +1,382 @@
+---
+/**
+ * El servicio: recorrido (de la videollamada al cartel de obra, solo desde tablet), las 3 etapas, "cómo lo
+ * vas viendo" (3 hechos), la dirección de obra opcional y el paso a paso completo en un desplegable
+ * (landing.ts → process.steps: el mismo texto alimenta el JSON-LD HowTo y llms.txt).
+ */
+import SectionHead from "../ui/SectionHead.astro";
+import CtaBlock from "../ui/CtaBlock.astro";
+import Icon from "../illustrations/Icon.astro";
+import { stages as t, process } from "../../content/landing";
+---
+
+<section class="section s-superficie stages" id="etapas" aria-labelledby="etapas-title">
+  <div class="container">
+    <SectionHead label={t.label} title={t.h2} sub={t.sub} id="etapas-title" />
+
+    <ol class="stages__track reveal" aria-label="Recorrido del proyecto">
+      {
+        t.track.map((s) => (
+          <li class:list={["stages__stop", { "is-stage": !!s.n, "is-end": s.end }]}>
+            <span class="stages__node" aria-hidden="true">{s.n ?? ""}</span>
+            <span class="stages__stop-t">{s.title}</span>
+            <span class="stages__stop-d etiqueta">{s.time}</span>
+          </li>
+        ))
+      }
+    </ol>
+
+    <ol class="stages__list">
+      {
+        t.items.map((s, i) => (
+          <li class="stages__card reveal" style={`--delay:${i * 0.08}s`}>
+            <header class="stages__head">
+              <span class="stages__num num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+              <div>
+                <span class="etiqueta">{s.tag}</span>
+                <h3 class="t-h2">{s.title}</h3>
+              </div>
+            </header>
+            <p class="stages__text">{s.text}</p>
+            <ul class="checks stages__checks">
+              {s.list.map((li) => (
+                <li>
+                  <Icon name="check" size={18} />
+                  <span>{li}</span>
+                </li>
+              ))}
+            </ul>
+            <p class="stages__time dato">
+              <Icon name="clock" size={16} />
+              <span>{s.time}</span>
+            </p>
+            {s.note && <p class="stages__note t-small">{s.note}</p>}
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="stages__extra reveal">
+      <span class="pill"><span class="pill__dot pill__dot--off"></span>{t.extra.tag}</span>
+      <div>
+        <h3 class="t-h3">{t.extra.title}</h3>
+        <p>{t.extra.text}</p>
+      </div>
+    </div>
+
+    <div class="stages__how" id="como-trabajo">
+      <h3 class="etiqueta stages__how-t">{t.howTitle}</h3>
+      <ul class="stages__how-list">
+        {
+          t.how.map((h, i) => (
+            <li class="reveal" style={`--delay:${i * 0.06}s`}>
+              <span class="ico-box" aria-hidden="true">
+                <Icon name={h.icon} size={22} />
+              </span>
+              <div>
+                <h4 class="t-h3">{h.title}</h4>
+                <p>{h.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+      <details class="stages__steps">
+        <summary>
+          <span>{t.stepsTitle}</span>
+          <span class="stages__plus" aria-hidden="true"></span>
+        </summary>
+        <ol>
+          {
+            process.steps.map((s, i) => (
+              <li>
+                <span class="dato stages__sn" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <strong>{s.title}</strong>
+                  <span class="etiqueta stages__st">{s.time}</span>
+                  <p>{s.text}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+        <div class="stages__needs">
+          <strong>{process.needsTitle}</strong>
+          <ul class="checks">
+            {process.needs.map((n) => (
+              <li>
+                <Icon name="file" size={18} />
+                <span>{n}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <CtaBlock label={t.cta} cta="etapas" />
+  </div>
+</section>
+
+<style>
+  /* ---- Recorrido (desde tablet): nodos unidos por una línea; las etapas van numeradas y en grafito ---- */
+  .stages__track {
+    display: none;
+  }
+  @media (min-width: 900px) {
+    .stages__track {
+      list-style: none;
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 1fr);
+      margin-bottom: var(--space-5);
+      padding: var(--space-4) var(--space-3);
+      background: var(--fondo);
+      border: 1px solid var(--linea);
+      border-radius: var(--radius-md);
+    }
+    .stages__stop {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      text-align: center;
+      padding-inline: 0.375rem;
+    }
+    /* línea hasta el nodo siguiente */
+    .stages__stop:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 0.9375rem;
+      left: calc(50% + 1.25rem);
+      right: calc(-50% + 1.25rem);
+      height: 1.5px;
+      background: var(--tinta);
+    }
+    .stages__node {
+      display: grid;
+      place-items: center;
+      width: 2rem;
+      height: 2rem;
+      margin-bottom: 0.5rem;
+      border: 1.5px solid var(--tinta);
+      border-radius: var(--radius-sm);
+      background: var(--superficie);
+      font-family: var(--f-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .stages__stop.is-stage .stages__node {
+      background: var(--c-grafito);
+      color: var(--c-hueso);
+    }
+    .stages__stop.is-end .stages__node {
+      background: var(--c-ladrillo);
+      border-color: var(--c-ladrillo);
+    }
+    .stages__stop-t {
+      font-weight: 600;
+      font-size: var(--fs-small);
+      line-height: 1.25;
+    }
+    .stages__stop-d {
+      font-size: 0.6875rem;
+      letter-spacing: 0.06em;
+      line-height: 1.3;
+    }
+  }
+
+  .stages__list {
+    list-style: none;
+    display: grid;
+    gap: var(--space-4);
+  }
+  .stages__card {
+    display: flex;
+    flex-direction: column;
+    background: var(--fondo);
+    border: 1px solid var(--tinta);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+  .stages__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding-bottom: var(--space-3);
+    margin-bottom: var(--space-3);
+    border-bottom: 1px solid var(--tinta);
+  }
+  .stages__num {
+    color: var(--c-ladrillo);
+  }
+  .stages__head .t-h2 {
+    margin-top: 0.125rem;
+  }
+  .stages__text {
+    color: var(--tinta-2);
+  }
+  .stages__checks {
+    margin-top: var(--space-4);
+  }
+  .stages__time {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    margin-top: auto;
+    padding-top: var(--space-4);
+  }
+  .stages__time :global(.ico) {
+    margin-top: 0.25rem;
+    color: var(--ladrillo-texto);
+  }
+  .stages__note {
+    margin-top: var(--space-2);
+    color: var(--tinta-2);
+  }
+  .stages__extra {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+    margin-top: var(--space-4);
+    padding: var(--space-4);
+    border: 1px dashed var(--tinta);
+    border-radius: var(--radius-md);
+  }
+  .stages__extra p {
+    margin-top: 0.375rem;
+    color: var(--tinta-2);
+    max-width: 44rem;
+  }
+
+  /* ---- Cómo lo vas viendo ---- */
+  .stages__how {
+    margin-top: var(--space-6);
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+  .stages__how-t {
+    color: var(--tinta);
+    padding-bottom: var(--space-3);
+    border-bottom: 1.5px solid var(--tinta);
+  }
+  .stages__how-list {
+    list-style: none;
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+  .stages__how-list li {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: start;
+  }
+  .stages__how-list .ico-box {
+    background: var(--fondo);
+  }
+  .stages__how-list h4 {
+    font-size: var(--fs-h3);
+  }
+  .stages__how-list p {
+    margin-top: 0.375rem;
+    color: var(--tinta-2);
+  }
+  .stages__steps {
+    margin-top: var(--space-5);
+    border: 1px solid var(--linea);
+    border-radius: var(--radius-md);
+    background: var(--fondo);
+  }
+  .stages__steps summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: 3.5rem;
+    padding: var(--space-3) var(--space-4);
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+  .stages__steps summary::-webkit-details-marker {
+    display: none;
+  }
+  .stages__plus {
+    position: relative;
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .stages__plus::before,
+  .stages__plus::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 14px;
+    height: 1.5px;
+    background: var(--tinta);
+    transform: translate(-50%, -50%);
+    transition: transform 0.2s var(--ease);
+  }
+  .stages__plus::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+  .stages__steps[open] .stages__plus::after {
+    transform: translate(-50%, -50%) rotate(0deg);
+    background: var(--c-ladrillo);
+  }
+  .stages__steps ol {
+    list-style: none;
+    display: grid;
+    padding: 0 var(--space-4);
+    border-top: 1px solid var(--linea);
+  }
+  .stages__steps ol li {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: var(--space-2);
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--linea);
+  }
+  .stages__sn {
+    color: var(--ladrillo-texto);
+    font-weight: 500;
+  }
+  .stages__st {
+    display: block;
+    margin-top: 0.125rem;
+    font-size: 0.6875rem;
+  }
+  .stages__steps ol p {
+    margin-top: 0.375rem;
+    color: var(--tinta-2);
+    max-width: 44rem;
+  }
+  .stages__needs {
+    padding: var(--space-4);
+  }
+  .stages__needs .checks {
+    margin-top: var(--space-3);
+  }
+  @media (min-width: 768px) {
+    .stages__extra {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+      gap: var(--space-4);
+    }
+    .stages__how-list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .stages__steps ol {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-5);
+    }
+  }
+  @media (min-width: 1024px) {
+    .stages__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

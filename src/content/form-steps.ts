@@ -267,13 +267,13 @@ export const QUOTE_LOADING_MS = 2500;
  * Botón nuevo → agregar su clave acá; si no, llega como "Sin botón".
  */
 export const CTA_ORIGINS: Record<string, string> = {
-  header: "Botón del menú (Cotizá tu proyecto)",
+  header: "Botón del menú (Agendar videollamada)",
   hero: "Portada (hero)",
   "hero-distancia": "Portada: planos a distancia",
+  videollamada: "Qué te llevás de la videollamada",
   problema: "Después de El problema",
   "quien-soy": "Quién soy",
   etapas: "Las etapas del proyecto",
-  "como-trabajo": "Cómo trabajo",
   costos: "Qué pagás y cómo",
   proyectos: "Proyectos",
   render: "Render ampliado (Quiero algo así)",

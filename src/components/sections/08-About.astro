@@ -1,0 +1,200 @@
+---
+/**
+ * Quién soy (va después de la prueba, no arriba): la foto de Hernán (src/assets/img/hernan.*; sin foto, la
+ * placa con su frase), la historia en 4 hitos (línea de tiempo, no un bloque de texto), el diferencial nº 1,
+ * los contadores (valor final en el HTML; el JS solo anima) y el equipo.
+ */
+import SectionHead from "../ui/SectionHead.astro";
+import CtaBlock from "../ui/CtaBlock.astro";
+import Img from "../ui/Img.astro";
+import { about as t } from "../../content/landing";
+import { site, fmt } from "../../data/site";
+import { hasImg, DEV } from "../../lib/images";
+
+const photo = hasImg(t.photo);
+---
+
+<section class="section s-superficie about" id="quien-soy" aria-labelledby="quien-soy-title">
+  <div class="container about__in">
+    <aside class="about__side">
+      <figure class:list={["about__fig ticks reveal", { "about__fig--nophoto": !photo }]}>
+        {
+          photo ? (
+            <Img name={t.photo} alt={t.photoAlt} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 34vw, 100vw" class="about__photo" aspect="4/5" />
+          ) : (
+            <div class="about__plate">
+              <img src={site.logo.isoInverse} alt="" width="80" height="64" loading="lazy" decoding="async" />
+              <p class="t-h2">“{t.quote}”</p>
+              {DEV && <p class="slot-dev about__dev">Falta la foto: src/assets/img/{t.photo}.jpg</p>}
+            </div>
+          )
+        }
+        <figcaption class="etiqueta about__tag">{t.photoTag}</figcaption>
+      </figure>
+      {photo && <p class="about__quote t-h3 reveal">“{t.quote}”</p>}
+    </aside>
+
+    <div class="about__story">
+      <SectionHead label={t.label} title={t.h2} sub={t.edge} id="quien-soy-title" />
+      <ol class="about__line">
+        {
+          t.timeline.map((m, i) => (
+            <li class="reveal" style={`--delay:${i * 0.06}s`}>
+              <span class="etiqueta about__when">{m.when}</span>
+              <h3 class="t-h3">{m.title}</h3>
+              <p>{m.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <dl class="about__counters">
+        {
+          t.counters.map((c) => (
+            <div class="reveal">
+              <dt class="etiqueta">{c.label}</dt>
+              <dd class="num" data-count={c.value} data-prefix={c.prefix ?? ""} data-suffix={c.suffix}>
+                {`${c.prefix ?? ""}${fmt(c.value)}${c.suffix}`}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+      <p class="about__team t-small">{t.team}</p>
+      <CtaBlock label={t.cta} cta="quien-soy" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__in {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .about__fig {
+    position: relative;
+    margin: 0 10px;
+    --tick-color: var(--tinta);
+  }
+  .about__fig :global(.about__photo) {
+    width: 100%;
+    border-radius: var(--radius-md);
+  }
+  .about__plate {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-5);
+    min-height: 15rem;
+    padding: var(--space-4);
+    background: var(--c-grafito);
+    color: var(--c-hueso);
+    border-radius: var(--radius-md);
+  }
+  .about__plate img {
+    width: 4rem;
+    height: auto;
+  }
+  .about__plate .t-h2 {
+    font-stretch: var(--stretch-display);
+    max-width: 12ch;
+  }
+  .about__dev {
+    color: var(--c-hueso);
+  }
+  .about__tag {
+    margin-top: 0.875rem;
+    color: var(--tinta);
+  }
+  .about__quote {
+    margin-top: var(--space-4);
+    padding-left: var(--space-3);
+    border-left: 2px solid var(--c-ladrillo);
+  }
+  /* Línea de tiempo: riel vertical con un nodo por hito; el último, en ladrillo */
+  .about__line {
+    list-style: none;
+    display: grid;
+    gap: var(--space-4);
+    margin-left: 0.3125rem;
+    padding-left: var(--space-4);
+    border-left: 1.5px solid var(--tinta);
+  }
+  .about__line li {
+    position: relative;
+  }
+  .about__line li::before {
+    content: "";
+    position: absolute;
+    left: calc(var(--space-4) * -1 - 0.375rem - 0.75px);
+    top: 0.3125rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    background: var(--superficie);
+    border: 1.5px solid var(--tinta);
+  }
+  .about__line li:last-child::before {
+    background: var(--c-ladrillo);
+    border-color: var(--c-ladrillo);
+  }
+  .about__when {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--ladrillo-texto);
+  }
+  .about__line p {
+    margin-top: 0.375rem;
+    color: var(--tinta-2);
+    max-width: 38rem;
+  }
+  .about__counters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: var(--space-5) 0 0;
+    border-top: 1.5px solid var(--tinta);
+    border-bottom: 1px solid var(--linea);
+  }
+  .about__counters > div {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 0.375rem;
+    padding: var(--space-3) var(--space-2) var(--space-3) 0;
+  }
+  .about__counters > div + div {
+    padding-left: var(--space-3);
+    border-left: 1px solid var(--linea);
+  }
+  .about__counters dd {
+    margin: 0;
+    font-size: clamp(1.0625rem, 0.6rem + 2vw, 2rem);
+    white-space: nowrap;
+  }
+  .about__counters dt {
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+  }
+  .about__team {
+    margin-top: var(--space-3);
+    color: var(--tinta-2);
+    max-width: 40rem;
+  }
+  @media (min-width: 768px) {
+    .about__counters dt {
+      font-size: var(--fs-etiqueta);
+    }
+  }
+  @media (min-width: 1024px) {
+    .about__in {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+      gap: var(--space-6);
+      align-items: start;
+    }
+    .about__side {
+      position: sticky;
+      top: calc(var(--header-h) + var(--space-5));
+    }
+    .about__plate {
+      min-height: 26rem;
+    }
+  }
+</style>

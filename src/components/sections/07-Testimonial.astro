@@ -1,0 +1,196 @@
+---
+/**
+ * Testimonio (grafito): solo reales y suyos. Hoy, Giselle (audio de WhatsApp). Los que tienen publish: false
+ * ([PLACEHOLDER]) no se muestran. Sin schema Review hasta tener reseñas públicas verificables.
+ * Fotos (src/assets/img/, aparecen solas): <key>.jpg = la persona (sin foto va la inicial) ·
+ * testimonio-<key>.jpg = captura del chat o del audio (se abre en grande).
+ * Si hay archivo de audio (testimonial.items[].audio, en public/audio/), se muestra el reproductor.
+ * La frase marcada (items[].mark) va con el marcador.
+ */
+import SectionHead from "../ui/SectionHead.astro";
+import CtaBlock from "../ui/CtaBlock.astro";
+import Img from "../ui/Img.astro";
+import Icon from "../illustrations/Icon.astro";
+import { testimonial as t } from "../../content/landing";
+import { hasImg, DEV } from "../../lib/images";
+
+const items = t.items
+  .filter((i) => i.publish)
+  .map((i) => {
+    const at = i.mark ? i.text.indexOf(i.mark) : -1;
+    return {
+      ...i,
+      parts: at < 0 ? [i.text, "", ""] : [i.text.slice(0, at), i.mark, i.text.slice(at + i.mark.length)],
+      photo: hasImg(i.key),
+      capture: hasImg(`testimonio-${i.key}`),
+    };
+  });
+// barras del "audio" (decorativas): alturas fijas, como la onda de un audio de WhatsApp
+const wave = [5, 9, 14, 8, 16, 11, 6, 13, 18, 10, 7, 15, 12, 6, 9, 17, 11, 5, 8, 14, 10, 6, 12, 7];
+---
+
+{
+  items.length > 0 && (
+    <section class="section s-grafito testimonial" aria-labelledby="testimonio-title">
+      <div class="container">
+        <SectionHead label={t.label} title={t.h2} id="testimonio-title" />
+        {items.map((it) => (
+          <figure class:list={["testimonial__item reveal", { "has-capture": it.capture }]}>
+            <div class="testimonial__main">
+              <span class="testimonial__mark" aria-hidden="true">“</span>
+              <blockquote class="testimonial__quote">
+                <p>
+                  {it.parts[0]}
+                  {it.parts[1] && <span class="hl">{it.parts[1]}</span>}
+                  {it.parts[2]}
+                </p>
+              </blockquote>
+              <figcaption class="testimonial__by">
+                <span class="testimonial__avatar">
+                  {it.photo ? <Img name={it.key} alt={t.photoAlt.replace("{nombre}", it.name)} widths={[96, 192]} sizes="56px" aspect="1/1" /> : <span aria-hidden="true">{it.name.charAt(0)}</span>}
+                </span>
+                <span class="testimonial__who">
+                  <strong class="t-h3">{it.name}</strong>
+                  <span class="dato">{it.detail}</span>
+                </span>
+                <span class="testimonial__src">
+                  <Icon name="audio" size={18} />
+                  <span class="testimonial__wave" aria-hidden="true">
+                    {wave.map((h) => <i style={`height:${h}px`} />)}
+                  </span>
+                  <span class="etiqueta">{it.source}</span>
+                </span>
+              </figcaption>
+              {it.audio && <audio class="testimonial__audio" controls preload="none" src={it.audio} aria-label={`${t.audioLabel}: ${it.name}`} />}
+              {DEV && !it.photo && <p class="slot-dev testimonial__dev">Falta la foto: src/assets/img/{it.key}.jpg · captura: src/assets/img/testimonio-{it.key}.jpg</p>}
+            </div>
+            {it.capture && (
+              <div class="testimonial__capture">
+                <Img name={`testimonio-${it.key}`} alt={t.captureAlt.replace("{nombre}", it.name)} lightbox="testimonios" widths={[400, 800]} sizes="(min-width: 1024px) 28vw, 80vw" />
+              </div>
+            )}
+          </figure>
+        ))}
+        <CtaBlock label={t.cta} cta="testimonio" />
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .testimonial__item {
+    margin: 0;
+    display: grid;
+    gap: var(--space-5);
+  }
+  .testimonial__item + .testimonial__item {
+    margin-top: var(--space-6);
+  }
+  .testimonial__main {
+    position: relative;
+    max-width: 56rem;
+  }
+  .testimonial__mark {
+    display: block;
+    height: 0.5em;
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-size: clamp(4rem, 3rem + 4vw, 6.5rem);
+    line-height: 1;
+    color: var(--c-ladrillo);
+  }
+  .testimonial__quote {
+    margin: var(--space-3) 0 0;
+  }
+  .testimonial__quote p {
+    font-size: clamp(1.1875rem, 1.05rem + 0.6vw, 1.5rem);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+  .testimonial__by {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-4);
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--linea);
+  }
+  .testimonial__avatar {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 3.5rem;
+    height: 3.5rem;
+    border: 1.5px solid var(--tinta);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+  .testimonial__avatar :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .testimonial__who {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    margin-right: auto;
+  }
+  .testimonial__who .dato {
+    color: var(--tinta-2);
+  }
+  .testimonial__src {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--linea);
+    border-radius: var(--radius-md);
+    background: var(--superficie);
+  }
+  .testimonial__src :global(.ico) {
+    color: var(--ladrillo-texto);
+  }
+  .testimonial__wave {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    height: 18px;
+  }
+  .testimonial__wave i {
+    width: 2px;
+    background: var(--tinta-2);
+  }
+  .testimonial__audio {
+    margin-top: var(--space-3);
+    width: 100%;
+    max-width: 24rem;
+  }
+  .testimonial__dev {
+    margin-top: var(--space-3);
+  }
+  .testimonial__capture {
+    max-width: 20rem;
+  }
+  .testimonial__capture :global(img) {
+    width: 100%;
+    border: 1px solid var(--tinta-2);
+    border-radius: var(--radius-md);
+  }
+  @media (max-width: 479px) {
+    .testimonial__wave i:nth-child(n + 13) {
+      display: none;
+    }
+  }
+  @media (min-width: 1024px) {
+    .testimonial__item.has-capture {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+      gap: var(--space-6);
+      align-items: start;
+    }
+  }
+</style>

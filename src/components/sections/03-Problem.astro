@@ -1,0 +1,101 @@
+---
+/**
+ * El problema (grafito): lo que nadie te dice antes de construir. 4 tarjetas numeradas (ícono + título + una
+ * línea), el cierre con la cota y el CTA. Va después de la videollamada: es el porqué de hablar antes de empezar.
+ */
+import SectionHead from "../ui/SectionHead.astro";
+import CtaBlock from "../ui/CtaBlock.astro";
+import Marked from "../ui/Marked.astro";
+import Icon from "../illustrations/Icon.astro";
+import { problem as t } from "../../content/landing";
+---
+
+<section class="section s-grafito s-grid problem" aria-labelledby="problema-title">
+  <div class="container">
+    <SectionHead label={t.label} title={t.h2} id="problema-title" />
+    <ul class="problem__grid">
+      {
+        t.points.map((p, i) => (
+          <li class="problem__card reveal" style={`--delay:${i * 0.06}s`}>
+            <div class="problem__top">
+              <span class="problem__ico" aria-hidden="true">
+                <Icon name={p.icon} size={26} />
+              </span>
+              <span class="problem__n etiqueta" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+            </div>
+            <h3 class="t-h3">{p.title}</h3>
+            <p>{p.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="problem__closing reveal">
+      <span class="cota reveal-cota" aria-hidden="true"></span>
+      <p class="t-h2"><Marked text={t.closing} /></p>
+    </div>
+    <CtaBlock label={t.cta} cta="problema" />
+  </div>
+</section>
+
+<style>
+  .problem__grid {
+    list-style: none;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .problem__card {
+    padding: var(--space-4);
+    background: var(--superficie);
+    border: 1px solid var(--linea);
+    border-top: 2px solid var(--c-ladrillo);
+    border-radius: var(--radius-md);
+  }
+  .problem__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+  }
+  .problem__ico {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--tinta-2);
+    border-radius: var(--radius-sm);
+    color: var(--tinta);
+  }
+  .problem__n {
+    color: var(--tinta-2);
+  }
+  .problem__card p {
+    margin-top: var(--space-2);
+    color: var(--tinta-2);
+  }
+  .problem__closing {
+    margin-top: var(--space-5);
+    max-width: 46rem;
+  }
+  .problem__closing .cota {
+    --cota-w: 7rem;
+    margin-bottom: var(--space-3);
+  }
+  .problem__closing .t-h2 {
+    font-weight: 500;
+    color: var(--tinta-2);
+  }
+  .problem__closing :global(strong) {
+    color: var(--tinta);
+    font-weight: 700;
+  }
+  @media (min-width: 640px) {
+    .problem__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1200px) {
+    .problem__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

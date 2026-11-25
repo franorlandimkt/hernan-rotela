@@ -1,5 +1,6 @@
 ---
-/** Header fijo: logo horizontal + botón "Cotizá tu proyecto" (abre el formulario, data-cta="header").
+/** Header fijo (grafito): logo horizontal inverso + botón "Agendar videollamada" (abre el formulario,
+ *  data-cta="header"). El botón va en hueso: el ladrillo queda para el botón de cada pantalla.
  *  En otras páginas (blog, privacidad) el botón lleva a la home con ?cta=header#cotiza. */
 import Logo from "../ui/Logo.astro";
 import { header as t } from "../../content/landing";
@@ -9,12 +10,12 @@ interface Props {
 const { home = true } = Astro.props;
 ---
 
-<header class="hdr">
+<header class="hdr theme-dark">
   <div class="container hdr-in">
     <a class="hdr-logo" href="/" aria-label={t.home}>
-      <Logo width={168} />
+      <Logo tone="light" width={168} />
     </a>
-    <a class="btn btn--dark hdr-cta" href={home ? "#cotiza" : "/?cta=header#cotiza"} data-cta="header">
+    <a class="btn btn--light hdr-cta" href={home ? "#cotiza" : "/?cta=header#cotiza"} data-cta="header">
       <span class="hdr-cta-long">{t.cta}</span><span class="hdr-cta-short" aria-hidden="true">{t.ctaShort}</span>
     </a>
   </div>
@@ -25,7 +26,7 @@ const { home = true } = Astro.props;
     position: sticky;
     top: 0;
     z-index: 30;
-    background: color-mix(in srgb, var(--c-hueso) 94%, transparent);
+    background: color-mix(in srgb, var(--c-grafito) 94%, transparent);
     backdrop-filter: saturate(1.2) blur(6px);
     -webkit-backdrop-filter: saturate(1.2) blur(6px);
     border-bottom: 1px solid var(--linea);
@@ -53,7 +54,7 @@ const { home = true } = Astro.props;
   .hdr-cta-short {
     display: none;
   }
-  @media (max-width: 359px) {
+  @media (max-width: 379px) {
     .hdr-cta-long {
       display: none;
     }

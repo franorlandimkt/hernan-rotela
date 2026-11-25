@@ -11,6 +11,12 @@
  *  Títulos: lo que va entre *asteriscos* va en ladrillo (solo títulos grandes, ≥24 px). **dobles** = negrita.
  *  Los números salen de src/data/site.ts (no escribirlos a mano acá).
  *  Marcas: [CONFIRMAR] = validar con Hernán · [PLACEHOLDER] = pendiente, no se publica.
+ *
+ *  La web vende UNA cosa: la videollamada con Hernán. El formulario (2 minutos, precio en pantalla) es el
+ *  paso para agendarla. Cada sección contesta una duda y vuelve a ese botón.
+ *
+ *  FOTOS: no se cargan acá. Se suben a src/assets/img/ con el nombre que dice src/assets/img/LEEME.md y
+ *  aparecen solas (foto de Hernán, de la llamada, de quien da el testimonio, capturas, renders y planos).
  * ============================================================================
  */
 import { site, fmt } from "../data/site";
@@ -25,86 +31,115 @@ export const meta = {
 };
 
 export const header = {
-  cta: "Cotizá tu proyecto",
-  ctaShort: "Cotizá",
+  cta: "Agendar videollamada",
+  ctaShort: "Agendar",
   home: "Inicio",
 };
 
 export const hero = {
   label: `${site.person} · ${site.credential}`,
-  /** Único H1 de la página. *…* = ladrillo. */
-  h1: "Tu casa en barrio cerrado, proyectada por alguien que *sabe construirla*.",
-  sub: `Diseño, firmo y presento el plano de tu casa en el barrio y en el municipio. Y si tu lote está a menos de ${site.radiusKm} km de ${site.base.locality}, también dirijo la obra.`,
-  /** Datos en mono, separados por " · " */
-  proof: [`+${site.stats.yearsOnSite} años en obra`, `+${fmt(site.stats.m2Approved)} m² aprobados`, `${site.social.tiktok.followers} en TikTok`],
-  ctaPrimary: "Ver el precio de mi proyecto",
-  ctaNote: "2 minutos · ves el precio en pantalla",
-  ctaSecondary: "Cómo trabajo",
+  /** Único H1 de la página. *…* = ladrillo. Corto: en el celular tiene que entrar con el video y el botón. */
+  h1: "Ya tenés el lote. Te falta *el proyecto que te deja construir*.",
+  sub: "Diseño tu casa, firmo el plano y lo presento en el barrio y en el municipio, hasta el cartel de obra.",
+  /** Video (VSL, horizontal). Archivo y póster en site.ts → video. */
+  video: {
+    label: `Video de ${site.person}: cómo es el proyecto de tu casa`,
+    cue: "Mirá el video antes de agendar",
+    play: "Reproducir el video con sonido",
+    pending: "Video de Hernán [PLACEHOLDER]",
+    close: "Cerrar video",
+    back: "Volver al video",
+  },
+  ctaPrimary: "Agendar mi videollamada",
+  /** Debajo del botón: baja el riesgo. El tercero solo va si la videollamada es sin costo (site.ts → call.free). */
+  ctaNotes: ["2 minutos", "Ves el precio de tus planos en pantalla", ...(site.call.free ? ["Videollamada sin costo"] : [])],
+  /** Datos de respaldo (el valor va grande, en Archivo ancha; la etiqueta, en mono). */
+  stats: [
+    { value: `+${site.stats.yearsOnSite}`, label: "años en obra" },
+    { value: `+${fmt(site.stats.m2Approved)} m²`, label: "aprobados en municipios" },
+    { value: `${site.stats.approvedPlans}`, label: "planos municipales aprobados" },
+  ],
   /** Segunda línea del negocio: planos a distancia (link a la sección). */
   remote: "¿Tu lote está en otra provincia o fuera del país?",
   remoteLink: "También hago el proyecto a distancia",
-  /** Rótulo de carátula de la ilustración (la "ficha" de tu casa). */
-  sheet: [
-    ["Obra", "Tu casa"],
-    ["Ubicación", "Barrio cerrado · GBA"],
-    ["Profesional", `${site.person}, ${site.professionShort}`],
-    ["Etapas", "Anteproyecto · Ejecutivo · Municipal"],
-    ["Escala", "1:100"],
-    ["Estado", "Por empezar"],
-  ] as [string, string][],
-  sheetLabel: "Rótulo de plano de ejemplo",
-  drawingTitle: "Dibujo de línea de la fachada de una casa de dos volúmenes, con sus cotas",
+};
+
+/** Franja de redes (debajo del hero): seguidores por red. Las redes con URL en site.ts son links al perfil. */
+export const social = {
+  total: site.communityTotal,
+  lead: "personas siguen mis videos sobre cómo se proyecta y se construye una casa",
+  followers: "seguidores",
+  profile: "Ver el perfil",
+  /** Orden de las redes en la franja (claves de site.ts → social). */
+  networks: ["tiktok", "facebook", "instagram", "youtube"] as const,
+  avatarAlt: `${site.person}, ${site.profession}`,
+};
+
+/** La videollamada: lo que se lleva la persona. Es la oferta de la web. */
+export const call = {
+  label: "El primer paso",
+  h2: `En ${callTime} de videollamada *te llevás esto*.`,
+  sub: "Hablás conmigo, no con un vendedor ni con un robot. Miramos tu lote y la casa que querés, y pongo todo sobre la mesa.",
+  items: [
+    { icon: "card", title: "El precio exacto de tu proyecto", text: "En el formulario ves el precio de referencia para tus m². En la videollamada, con tu lote y tu casa, te doy el número." },
+    { icon: "gate", title: "Qué necesitás para poder construir", text: "Qué pide tu barrio, qué pide tu municipio y en qué orden se presenta cada cosa." },
+    { icon: "receipt", title: "Todo lo que vas a pagar aparte", text: "Colegio, timbrado y derechos de construcción: cuáles te tocan y cómo se calculan en tu municipio." },
+    { icon: "screen", title: "Un proyecto parecido al tuyo, por dentro", text: "Te muestro el AutoCAD, los PDF y planos aprobados reales, para que veas qué vas a recibir." },
+  ],
+  /** Ficha de la videollamada (rótulo). La fila de costo solo va si es sin costo (site.ts → call.free). */
+  card: {
+    tag: "Videollamada con Hernán",
+    host: `${site.person}`,
+    hostRole: site.profession,
+    you: "Vos",
+    screen: "Tu proyecto en pantalla",
+    rows: [
+      ["Duración", callTime],
+      ...(site.call.free ? [["Costo", "Sin costo"]] : []),
+      ["Con quién", "Con Hernán, en persona"],
+      ["Dónde", "Desde tu casa, por videollamada"],
+    ] as [string, string][],
+    partner: "Si deciden en pareja o en familia, conéctense juntos.",
+  },
+  /** Foto de Hernán para la ficha de la llamada: src/assets/img/hernan-llamada.(jpg|png|webp). Sin foto, el perfil de la marca. */
+  photo: "hernan-llamada",
+  photoAlt: `${site.person} en videollamada, con planos colgados atrás`,
+  cta: "Agendar mi videollamada",
+  ctaNote: "Primero respondés unas preguntas: 2 minutos, y ves el precio de tus planos.",
 };
 
 export const problem = {
   label: "Lo que nadie te dice",
   h2: "Lo caro no es el proyecto. Es *construir sin uno bueno*.",
   points: [
-    { icon: "receipt", title: "Aparece algo más para pagar.", text: "Firmaste y después te enteraste del colegio, el timbrado y los derechos del municipio. Eso se sabe antes de empezar." },
+    { icon: "receipt", title: "Aparece algo más para pagar.", text: "Firmaste y después te enteraste del colegio, el timbrado y los derechos del municipio." },
     { icon: "gate", title: "El barrio no te deja arrancar.", text: "En un barrio cerrado, sin plano aprobado no te dejan poner un ladrillo." },
     { icon: "ruler", title: "Lo construido no coincide con el plano.", text: "Unos metros de más sin avisar aparecen en la inspección municipal. Y se pagan." },
-    { icon: "crack", title: "Firmó cualquiera y construyó cualquiera.", text: "Rajaduras, filtraciones y humedad: pasa cuando el que firma no sabe cómo se construye y en la obra no hay nadie que responda." },
+    { icon: "crack", title: "Firmó cualquiera y construyó cualquiera.", text: "Rajaduras, filtraciones y humedad: pasa cuando el que firma no sabe cómo se construye." },
   ],
-  closing: "Todo eso se evita antes de empezar: con un proyecto completo y un profesional que firma y responde por él.",
-  cta: "Cotizá tu proyecto",
-};
-
-export const about = {
-  label: "Quién soy",
-  h2: "Le pasaba ladrillos a mi papá. Hoy *firmo el plano*.",
-  /** Historia en primera persona (brief). Párrafos cortos. */
-  story: [
-    "Llegamos de Paraguay a Buenos Aires cuando yo tenía 6 años. Vivíamos en una carpa en el lote mientras mi papá, albañil toda la vida, levantaba la casita. Una noche pateé la vela que iluminaba la carpa y la prendí fuego: tuvimos que pedir otra prestada.",
-    "Ahí empezó la curiosidad. Nadie me pidió ayuda: empecé solo, pasándole ladrillos y material. Faltaba a la escuela para ir a la obra con él y, cuando vio que ya era útil, me empezó a pagar.",
-    "Terminé el secundario y arranqué ingeniería: volvía de la obra de noche, estudiaba hasta la madrugada y al otro día, obra otra vez. Veía llegar al patrón con los planos y pensaba: yo quiero ocupar ese puesto.",
-    `Pasé por una oficina técnica, volví a la obra y aprendí electricidad, durlock, a ser capataz: la mayoría de los oficios. Me matriculé como ${site.profession} y en ${site.stats.projectsSince} dejé la obra para dedicarme solo a proyectar y construir los proyectos de mis clientes.`,
-  ],
-  quote: site.motto,
-  /** Diferencial nº 1 en una línea (va destacada). */
-  edge: "Diseño cada casa sabiendo cómo se construye, porque cada rubro lo hice con mis manos.",
-  counters: [
-    { value: site.stats.yearsOnSite, prefix: "+", suffix: "", label: "años en obra" },
-    { value: site.stats.yearsProjects, prefix: "+", suffix: "", label: "años haciendo proyectos" },
-    { value: site.stats.m2Approved, prefix: "+", suffix: " m²", label: "de casas aprobadas en municipios" },
-  ] as { value: number; prefix?: string; suffix: string; label: string }[],
-  /** Equipo. [CONFIRMAR] composición del equipo con Hernán (el brief da dos versiones). */
-  team: "Trabajo con un equipo de dibujantes y profesionales externos (agrimensores, calculistas). Las consultas las atiendo yo.",
-  /** [PLACEHOLDER] foto de Hernán con los planos de fondo (luz natural, como en sus videos). Sin foto no se muestra. */
-  photo: "", // nombre del archivo en src/assets/img/ sin extensión, ej. "hernan-planos"
-  photoAlt: "Hernán Rotela Báez en su oficina, con planos colgados atrás",
-  cta: "Quiero hablar con Hernán",
+  closing: "Todo eso se sabe y se evita **antes de empezar**: con un proyecto completo y un profesional que firma y responde por él.",
+  cta: "Quiero empezar bien",
 };
 
 export const stages = {
   label: "El servicio",
   h2: "Tu proyecto, en *tres etapas*.",
-  sub: "Podés contratar solo la primera, las dos primeras o el proyecto completo hasta el cartel de obra. Viviendas unifamiliares y multifamiliares.",
+  sub: "Contratás solo la primera, las dos primeras o el proyecto completo hasta el cartel de obra. Viviendas unifamiliares y multifamiliares.",
+  /** Recorrido (línea de tiempo, de la videollamada al cartel de obra). n = número de etapa. */
+  track: [
+    { title: "Videollamada", time: callTime },
+    { n: "01", title: "Anteproyecto", time: t.anteproyecto },
+    { title: "Aprobación del barrio", time: "En barrio cerrado" },
+    { n: "02", title: "Proyecto ejecutivo", time: t.ejecutivo },
+    { n: "03", title: "Municipio", time: t.municipio },
+    { title: "Cartel de obra", time: "Empieza la obra", end: true },
+  ] as { n?: string; title: string; time: string; end?: boolean }[],
   items: [
     {
       tag: "Etapa 01",
       title: "Anteproyecto",
       time: t.anteproyecto,
-      text: "Arrancamos por tu plan de necesidades (lo que precisan, tus referencias de Pinterest, fotos o un croquis) y lo llevo a la planta de tu casa.",
+      text: "Arrancamos por lo que necesitan (tus referencias de Pinterest, fotos o un croquis) y lo llevo a la planta de tu casa.",
       list: ["Planta de arquitectura", "Aberturas y materialidad", "Entrega en PDF y DWG", `${site.corrections} instancias de correcciones completas`],
       note: "En barrio cerrado, con el anteproyecto se pide la aprobación del barrio.",
     },
@@ -129,9 +164,19 @@ export const stages = {
     title: "Dirección de obra y construcción",
     text: `Dentro de los ${site.radiusKm} km, sigo la obra para que se construya lo que se aprobó. Construyo solo en barrios cerrados o proyectos importantes.`,
   },
+  /** Cómo se trabaja, en tres hechos (lo que lo diferencia en el día a día). */
+  howTitle: "Cómo lo vas viendo",
+  how: [
+    { icon: "screen", title: "Cada entrega, explicada en video", text: "Te mando el PDF y un video grabando la pantalla, donde te explico cada parte del plano." },
+    { icon: "map", title: "Tu lote, verificado antes de dibujar", text: "Lo dibujo en AutoCAD desde la plancheta o la escritura y verifico la nomenclatura y la partida." },
+    { icon: "whatsapp", title: "Te contesto yo", text: "Las consultas las atiendo yo, por WhatsApp. Me devolvés audios o marcas en el PDF y ajustamos." },
+  ],
+  /** Título del desplegable con el paso a paso completo (process.steps). */
+  stepsTitle: "Ver el paso a paso completo",
   cta: "Ver el precio de mi proyecto",
 };
 
+/** Paso a paso (desplegable dentro de "El servicio"; también alimenta el JSON-LD HowTo y llms.txt). */
 export const process = {
   label: "Cómo trabajo",
   h2: "Te explico cada parte del plano, *en video*.",
@@ -150,25 +195,6 @@ export const process = {
     "El partido y la dirección del lote, y si es barrio cerrado.",
     "Cuántos m² o qué ambientes te imaginás.",
   ],
-  cta: "Agendar mi videollamada",
-};
-
-export const costs = {
-  label: "Lo que pagás",
-  h2: "Lo que pagás aparte, *te lo explico antes de firmar*.",
-  sub: "Mis honorarios se pagan por etapa. Con el proyecto completo (con plano municipal) se suman gastos que no son míos: los cobran el colegio y el municipio.",
-  extraTitle: "Gastos aparte, solo con plano municipal",
-  extraNote: "El monto y el orden de pago cambian según cada municipio. Te explico cuáles son y cómo se calculan en el tuyo antes de arrancar. Con 1 o 2 etapas pagás solo mis honorarios.",
-  plansTitle: "Cómo se pagan mis honorarios",
-  plans: [
-    { title: "Proyecto completo", key: "completo" },
-    { title: "Anteproyecto + ejecutivo", key: "anteproyectoEjecutivo" },
-    { title: "Solo anteproyecto", key: "anteproyecto" },
-  ] as { title: string; key: keyof typeof site.paymentPlans }[],
-  paymentsTitle: "Medios de pago",
-  contractTitle: "Contrato",
-  contract: ["Proyecto completo: contrato del colegio + contrato privado con el detalle.", "1 o 2 etapas: contrato privado."],
-  cta: "Ver el precio de mi proyecto",
 };
 
 export const projects = {
@@ -176,9 +202,10 @@ export const projects = {
   h2: "Lo que muestro es *mío*.",
   sub: "Proyectos donde soy el profesional, con el estado real de cada uno. Nada de fotos de casas de otros.",
   /**
-   * Fichas (rótulo de carátula). images: renders o planos propios de ese proyecto en src/assets/img/ (sin
-   * extensión). Sin imágenes, la ficha va sola. Tocar una imagen la abre en grande y "Quiero algo así"
-   * abre el formulario con el origen "render".
+   * Fichas. Las imágenes NO se cargan acá: se suben a src/assets/img/ como proyecto-<key>-1.jpg,
+   * proyecto-<key>-2.jpg… (renders o planos propios de ese proyecto) y aparecen solas. Sin imágenes, la
+   * ficha va sola. Tocar una imagen la abre en grande y "Quiero algo así" abre el formulario.
+   * state: "obra" = aprobado / en construcción (punto ladrillo) · "tramite" = en aprobación (punto hueco).
    * [CONFIRMAR] autorización para nombrar cada barrio. [PLACEHOLDER] renders pendientes (Drive).
    */
   items: [
@@ -187,9 +214,9 @@ export const projects = {
       title: "Casa en dos plantas",
       place: "Escobar",
       m2: "255,67 m²",
-      status: "Proyecto completo, de cero hasta el cartel de obra",
-      note: "Mi primer proyecto completo. El que más orgulloso me tiene.",
-      images: [] as { name: string; alt: string }[],
+      status: "Proyecto completo, hasta el cartel de obra",
+      state: "obra",
+      note: "Mi primer proyecto completo, de cero hasta el cartel de obra. El que más orgulloso me tiene.",
     },
     {
       key: "santa-clara",
@@ -197,7 +224,7 @@ export const projects = {
       place: "Barrio Santa Clara", // [CONFIRMAR] localidad
       m2: "350 m²",
       status: "En aprobación en el barrio",
-      images: [] as { name: string; alt: string }[],
+      state: "tramite",
     },
     {
       key: "san-sebastian",
@@ -205,7 +232,7 @@ export const projects = {
       place: "San Sebastián, Pilar",
       m2: "245 m²",
       status: "En aprobación en el barrio",
-      images: [] as { name: string; alt: string }[],
+      state: "tramite",
     },
     {
       key: "sourdeaux",
@@ -213,15 +240,16 @@ export const projects = {
       place: "Ingeniero Sourdeaux",
       m2: "176 m²",
       status: "Aprobada, en construcción",
-      images: [] as { name: string; alt: string }[],
+      state: "obra",
     },
-  ] as { key: string; title: string; place: string; m2: string; status: string; note?: string; images: { name: string; alt: string }[] }[],
-  sheetKeys: { obra: "Obra", place: "Ubicación", m2: "Superficie", status: "Estado" },
-  /** Planos municipales aprobados (carátulas). [PLACEHOLDER] pendientes de subir al Drive: sin imágenes no se muestra. */
+  ] as { key: string; title: string; place: string; m2: string; status: string; state: "obra" | "tramite"; note?: string }[],
+  /** Texto alternativo de las imágenes de cada ficha ({titulo}, {lugar}, {n}). */
+  imageAlt: "{titulo} en {lugar}: imagen {n} del proyecto de Hernán Rotela Báez",
+  /** Planos municipales aprobados (carátulas): src/assets/img/aprobado-1.jpg, aprobado-2.jpg… Sin imágenes no se muestra. */
   approved: {
     title: `${site.stats.approvedPlans} planos municipales aprobados`,
     text: "Carátulas reales de planos aprobados en municipios.",
-    images: [] as { name: string; alt: string }[],
+    imageAlt: "Carátula de un plano municipal aprobado, firmado por Hernán Rotela Báez ({n})",
   },
   /** Caso de Sergio, contado sin nombre. [CONFIRMAR] autorización para nombrarlo. */
   story: {
@@ -234,43 +262,107 @@ export const projects = {
 
 export const testimonial = {
   label: "Lo que dicen",
-  h2: "Lo que me mandó Giselle cuando *terminamos su proyecto*.",
-  /** Testimonio real (audio de WhatsApp). [CONFIRMAR] autorización para publicarlo con su nombre. */
+  h2: "Giselle: *255,67 m² en Escobar*, de cero al cartel de obra.",
+  /**
+   * Testimonios reales. [CONFIRMAR] autorización de Giselle para publicarlo con su nombre.
+   * Fotos (se suben a src/assets/img/ y aparecen solas):
+   *  - <key>.jpg            → foto de la persona (cuadrada). Sin foto, va la inicial.
+   *  - testimonio-<key>.jpg → captura del chat o del audio de WhatsApp (se abre en grande).
+   * mark: la parte del texto que va resaltada (tiene que estar escrita igual dentro de text).
+   */
   items: [
     {
+      key: "giselle",
       name: "Giselle",
       detail: "Casa de 255,67 m² en Escobar",
       source: "Audio de WhatsApp",
       text: "Ahí los estuve mirando, Hernán, enseguida. El proyecto me encanta cómo quedó, la verdad súper contenta con el resultado. Te quería agradecer la atención, súper bien, me tuviste paciencia, respondiste todas mis dudas, súper contenta con el trabajo y quería agradecerte ya que llegamos hasta el final del proyecto.",
+      mark: "me tuviste paciencia, respondiste todas mis dudas",
       /** Audio original (public/audio/…): si existe, se muestra el reproductor. [COMPLETAR] */
       audio: "",
       publish: true,
     },
     // [PLACEHOLDER] más testimonios reales: con publish: false no se muestran.
-    { name: "[PLACEHOLDER]", detail: "", source: "", text: "Testimonio real pendiente.", audio: "", publish: false },
+    { key: "pendiente", name: "[PLACEHOLDER]", detail: "", source: "", text: "Testimonio real pendiente.", mark: "", audio: "", publish: false },
   ],
   audioLabel: "Escuchar el audio",
+  captureAlt: "Captura del mensaje de {nombre} a Hernán por WhatsApp",
+  photoAlt: "{nombre}, clienta de Hernán Rotela Báez",
   cta: "Quiero empezar mi proyecto",
+};
+
+export const about = {
+  label: "Quién soy",
+  h2: "Le pasaba ladrillos a mi papá. Hoy *firmo el plano*.",
+  /** Bajada: el diferencial nº 1 en una línea. */
+  edge: "Diseño cada casa sabiendo cómo se construye, porque cada rubro lo hice con mis manos.",
+  /** Historia en hitos (brief, primera persona). Corto: una o dos oraciones por hito. */
+  timeline: [
+    { when: "A los 6 años", title: "Una carpa en el lote", text: "Llegamos de Paraguay a Buenos Aires. Vivíamos en una carpa mientras mi papá, albañil toda la vida, levantaba la casita. Una noche pateé la vela que la iluminaba y la prendí fuego." },
+    { when: "De chico", title: "Ladrillos antes que recreos", text: "Nadie me pidió ayuda: empecé pasándole material. Faltaba a la escuela para ir a la obra y, cuando vio que ya era útil, me empezó a pagar." },
+    { when: "De grande", title: "Obra de día, estudio de noche", text: "Volvía de la obra y estudiaba hasta la madrugada. Pasé por una oficina técnica y aprendí electricidad, durlock, a ser capataz: la mayoría de los oficios." },
+    { when: `Desde ${site.stats.projectsSince}`, title: "Solo proyectos", text: `Me matriculé como ${site.profession} y dejé la obra para dedicarme a proyectar y construir los proyectos de mis clientes.` },
+  ],
+  quote: site.motto,
+  counters: [
+    { value: site.stats.yearsOnSite, prefix: "+", suffix: "", label: "años en obra" },
+    { value: site.stats.yearsProjects, prefix: "+", suffix: "", label: "años haciendo proyectos" },
+    { value: site.stats.m2Approved, prefix: "+", suffix: " m²", label: "de casas aprobadas" },
+  ] as { value: number; prefix?: string; suffix: string; label: string }[],
+  /** Equipo. [CONFIRMAR] composición del equipo con Hernán (el brief da dos versiones). */
+  team: "Trabajo con un equipo de dibujantes y profesionales externos (agrimensores, calculistas). Las consultas las atiendo yo.",
+  /** Foto de Hernán con los planos de fondo: src/assets/img/hernan.(jpg|png|webp). Sin foto va la frase sola. [PLACEHOLDER] */
+  photo: "hernan",
+  photoAlt: "Hernán Rotela Báez en su oficina, con planos colgados atrás",
+  photoTag: `${site.person} · ${site.professionShort}`,
+  cta: "Quiero hablar con Hernán",
+};
+
+export const costs = {
+  label: "Lo que pagás",
+  h2: "Pongo todo sobre la mesa: *lo que cobro yo y lo que pagás aparte*.",
+  sub: "Mis honorarios se pagan por etapa. Con el proyecto completo (con plano municipal) se suman gastos que no son míos: los cobran el colegio y el municipio.",
+  feesTag: "Mis honorarios",
+  plansTitle: "Se pagan por etapa, contra entrega",
+  plans: [
+    { title: "Proyecto completo", key: "completo" },
+    { title: "Anteproyecto + ejecutivo", key: "anteproyectoEjecutivo" },
+    { title: "Solo anteproyecto", key: "anteproyecto" },
+  ] as { title: string; key: keyof typeof site.paymentPlans }[],
+  feesNote: "El precio de tus planos lo ves en pantalla al completar el formulario.",
+  extraTag: "Aparte",
+  extraTitle: "Solo con plano municipal",
+  extraNote: "El monto y el orden de pago cambian según cada municipio. Te explico cuáles son y cómo se calculan en el tuyo antes de arrancar. Con 1 o 2 etapas pagás solo mis honorarios.",
+  paymentsTitle: "Medios de pago",
+  contractTitle: "Contrato",
+  contract: ["Proyecto completo: contrato del colegio + contrato privado con el detalle.", "1 o 2 etapas: contrato privado."],
+  cta: "Ver el precio de mi proyecto",
 };
 
 export const fit = {
   label: "Para quién es",
-  h2: "Te lo digo de frente: *no trabajo con todos*.",
-  yesTitle: "Es para vos si…",
+  h2: "Atiendo cada proyecto yo. *Por eso elijo cuáles tomo.*",
+  yesTitle: "Te va a servir si…",
   yes: [
     "Ya tenés el lote (o lo estás por comprar), mejor si es en un barrio cerrado.",
     "Lo charlaron en familia y tienen referencias de lo que quieren.",
     "Querés el proyecto completo, con alguien que firme y responda por él.",
     "Sabés que un proyecto bien hecho vale lo que cuesta.",
   ],
-  noTitle: "No es para vos si…",
+  noTitle: "No soy tu opción si…",
   no: [
     "Buscás solo un plano para dárselo al albañil.",
     "Querés pagar el proyecto en 6 o 12 cuotas.",
     "Querés exprimir cada m² para vender.",
     "Necesitás regularizar o medir algo ya construido.",
   ],
-  cta: "Es para mí: cotizar",
+  cta: "Es para mí: agendar",
+};
+
+/** "¿Tu caso es otro?": dos tarjetas (todavía sin lote / lote lejos). */
+export const cases = {
+  label: "Otros casos",
+  h2: "¿Tu caso es otro? *También tiene respuesta.*",
 };
 
 export const beforeLot = {
@@ -294,6 +386,14 @@ export const remote = {
   text: "Te hago el anteproyecto y el proyecto ejecutivo a distancia: trabajamos por videollamada y WhatsApp, y te entrego el PDF y el DWG para que lo construya y lo presente un profesional de tu zona.",
   proof: "Ya tuve clientes que me contrataron y me pagaron desde el exterior.",
   note: `El plano municipal y la dirección de obra los hago hasta ${site.radiusKm} km de ${site.base.locality}.`,
+  /** Rótulos del esquema del radio. */
+  map: {
+    inside: "Plano municipal y dirección de obra",
+    outside: "Anteproyecto y ejecutivo, a distancia",
+    radius: `${site.radiusKm} km`,
+    base: site.base.locality,
+    alt: `Esquema: dentro de los ${site.radiusKm} km de ${site.base.locality}, plano municipal y dirección de obra; más lejos, anteproyecto y proyecto ejecutivo a distancia`,
+  },
   cta: "Cotizar a distancia",
 };
 
@@ -302,6 +402,7 @@ const plan = (k: keyof typeof site.paymentPlans) => site.paymentPlans[k].map((p)
 export const faq = {
   label: "Preguntas frecuentes",
   h2: "Lo que me preguntan *antes de contratar*",
+  cta: "Agendar mi videollamada",
   items: [
     {
       q: "¿Qué necesito para poder construir?",
@@ -368,7 +469,7 @@ export const form = {
    * segundo en ladrillo.
    */
   intro: {
-    lead: "Respondé unas preguntas rápidas.",
+    lead: "Antes de agendar, respondé unas preguntas rápidas.",
     text: "Te toma *2 minutos* y ves *el precio de tus planos en pantalla*.",
     start: "Empezar",
     tag: "USD ?",
@@ -531,17 +632,6 @@ export const booked = {
   waMessage: "Hola Hernán, ya agendé mi videollamada y vi tu video.",
   waMessageNamed: "Hola Hernán, soy {nombre}, ya agendé mi videollamada y vi tu video.",
   back: "Volver al inicio",
-};
-
-/** Video flotante de Hernán (VideoDock). */
-export const videoDock = {
-  label: `Video de ${site.person}: por qué tu casa necesita un proyecto`,
-  sound: "Activar sonido",
-  mute: "Silenciar",
-  expand: "Ver el video en grande",
-  shrink: "Achicar video",
-  close: "Cerrar video",
-  pending: "Video de Hernán [PLACEHOLDER]",
 };
 
 /** Lightbox (imágenes en grande). */

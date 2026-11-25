@@ -1,15 +1,15 @@
 ---
 /**
- * El cierre (ladrillo a sangre, la única franja roja de la página): vuelve a vender la videollamada después
- * de las preguntas, con lo que se lleva la persona en tres líneas y el botón (en hueso: sobre rojo, el botón
- * rojo no se vería). Textos: landing.ts → closing.
+ * El cierre (grafito con el degradé ladrillo más fuerte de la página, bajando desde arriba): vuelve a vender
+ * la videollamada después de las preguntas, con lo que se lleva la persona en tres líneas y el botón.
+ * Textos: landing.ts → closing.
  */
 import Marked from "../ui/Marked.astro";
 import Icon from "../illustrations/Icon.astro";
 import { closing as t } from "../../content/landing";
 ---
 
-<section class="section s-ladrillo closing" aria-labelledby="cierre-title">
+<section class="section s-grafito s-grid closing" aria-labelledby="cierre-title">
   <div class="container closing__in">
     <div>
       <p class="etiqueta closing__label">{t.label}</p>
@@ -24,7 +24,7 @@ import { closing as t } from "../../content/landing";
           </li>
         ))}
       </ul>
-      <a class="btn btn--lg btn--light closing__btn" href="#cotiza" data-cta="cierre">
+      <a class="btn btn--lg closing__btn" href="#cotiza" data-cta="cierre">
         {t.cta}
         <Icon name="arrow-right" size={20} class="arrow" />
       </a>
@@ -35,7 +35,20 @@ import { closing as t } from "../../content/landing";
 
 <style>
   .closing {
+    position: relative;
+    isolation: isolate;
     overflow: hidden;
+  }
+  .closing::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(95% 80% at 50% -20%, rgb(214 58 31 / 0.62), transparent 70%);
+    pointer-events: none;
+  }
+  .closing__title :global(.mark) {
+    color: var(--c-ladrillo);
   }
   .closing__in {
     display: grid;
@@ -43,7 +56,16 @@ import { closing as t } from "../../content/landing";
     align-items: end;
   }
   .closing__label {
-    color: var(--c-white);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    color: var(--tinta);
+  }
+  .closing__label::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--c-ladrillo);
   }
   .closing__title {
     margin-top: var(--space-3);
@@ -58,7 +80,7 @@ import { closing as t } from "../../content/landing";
   .closing__list {
     list-style: none;
     display: grid;
-    border-top: 1.5px solid var(--c-white);
+    border-top: 1.5px solid var(--tinta);
   }
   .closing__list li {
     display: grid;
@@ -66,7 +88,7 @@ import { closing as t } from "../../content/landing";
     gap: 0.75rem;
     align-items: start;
     padding-block: 0.875rem;
-    border-bottom: 1px solid var(--linea);
+    border-bottom: 1px solid rgb(242 237 230 / 0.28);
     font-size: var(--fs-body-lg);
     font-weight: 600;
     line-height: 1.35;
@@ -78,14 +100,10 @@ import { closing as t } from "../../content/landing";
     margin-top: var(--space-4);
     min-height: 3.75rem;
     font-size: 1.125rem;
-    box-shadow: 6px 6px 0 var(--c-grafito);
-  }
-  .closing__btn:active {
-    box-shadow: 3px 3px 0 var(--c-grafito);
   }
   .closing__note {
     margin-top: var(--space-4);
-    color: var(--c-white);
+    color: var(--tinta);
     font-size: 0.75rem;
   }
   @media (max-width: 479px) {

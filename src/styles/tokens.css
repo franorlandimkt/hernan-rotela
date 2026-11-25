@@ -11,10 +11,9 @@
   --c-ladrillo: #d63a1f; /* botón principal, cota, un dato por pantalla. En texto solo ≥24px (4.0:1 sobre hueso). */
   --c-ladrillo-hover: #b02e1a;
   --c-hormigon: #8c8a85; /* bloques y gráficos, NUNCA texto (3.0:1 sobre hueso) */
-  /* Colores de apoyo (v1.2, salen del oficio). No reemplazan al ladrillo: lo acompañan en bloques grandes. */
-  --c-plano: #1b3358; /* azul de plano: fondo de sección (hueso encima da 10,8:1) */
-  --c-plano-2: #24426e; /* superficie sobre el azul de plano */
-  --c-ocre: #f2b33d; /* amarillo de obra: cinta, marcador, cuadros de ícono. Siempre con texto grafito encima (9:1); nunca texto sobre hueso */
+  /* Amarillo de obra: un golpe, no un color de base. Solo en la cinta, el marcador de texto y las cifras del
+     hero. Como fondo lleva texto grafito (9:1); como texto, solo sobre grafito (9:1), nunca sobre hueso. */
+  --c-amarillo: #f2b33d;
   --c-white: #ffffff;
 
   /* ---- Tema claro (por defecto) ---- */
@@ -83,7 +82,7 @@
   --header-h: 3.5rem;
 }
 
-/* Tema claro dentro de una sección oscura (tarjetas en hueso sobre azul o grafito) */
+/* Tema claro dentro de una sección oscura (tarjetas en hueso sobre grafito) */
 .theme-light {
   --fondo: var(--c-hueso);
   --superficie: #faf8f4;
@@ -95,28 +94,6 @@
   --focus: var(--tinta);
   color: var(--tinta);
 }
-/* Azul de plano: sección de color (El servicio). El acento sobre azul es el ocre, no el ladrillo. */
-.s-plano {
-  --fondo: var(--c-plano);
-  --superficie: var(--c-plano-2);
-  --tinta: #f2ede6;
-  --tinta-2: #c5cfe2;
-  --linea: #3a5687;
-  --ladrillo-texto: var(--c-ocre);
-  --ladrillo-tinte: #2f4f80;
-  --focus: var(--c-hueso);
-}
-/* Ladrillo a sangre: una sola franja por página (el cierre) */
-.s-ladrillo {
-  --fondo: var(--c-ladrillo);
-  --superficie: var(--c-ladrillo-hover);
-  --tinta: #ffffff;
-  --tinta-2: #ffffff;
-  --linea: rgb(255 255 255 / 0.4);
-  --ladrillo-texto: #ffffff;
-  --focus: #ffffff;
-}
-
 /* Tema oscuro de sección (grafito): se aplica con .s-grafito, no con el modo del sistema.
    La web es clara; el grafito se usa para cortar secciones y en el pie. */
 .s-grafito,

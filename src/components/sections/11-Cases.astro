@@ -13,7 +13,7 @@ import { cases, beforeLot as b, remote as r } from "../../content/landing";
 import { site } from "../../data/site";
 ---
 
-<section class="section s-grafito cases" aria-labelledby="casos-title">
+<section class="section s-grafito s-glow cases" style="--glow-at:50% 0%;--glow-size:70% 55%;--glow-a:.26" aria-labelledby="casos-title">
   <div class="container">
     <SectionHead label={cases.label} title={cases.h2} id="casos-title" />
     <div class="cases__grid">
@@ -91,7 +91,7 @@ import { site } from "../../data/site";
     flex-direction: column;
     align-items: flex-start;
     padding: var(--space-4);
-    background: var(--superficie);
+    background: rgb(35 34 33 / 0.82);
     border: 1px solid var(--linea);
     border-radius: var(--radius-md);
     scroll-margin-top: calc(var(--header-h) + 1rem);
@@ -119,7 +119,7 @@ import { site } from "../../data/site";
     border-bottom: 1px solid var(--linea);
   }
   .cases__n {
-    color: var(--c-ocre);
+    color: var(--ladrillo-texto);
   }
   .cases__text {
     margin-top: var(--space-3);
@@ -152,14 +152,14 @@ import { site } from "../../data/site";
     stroke-dasharray: 4 4;
   }
   .cases__map .in {
-    fill: var(--c-plano);
-    stroke: var(--c-ocre);
+    fill: var(--ladrillo-tinte);
+    stroke: var(--c-ladrillo);
     stroke-width: 1.5;
   }
   .cases__map .cota-l,
   .cases__map .arrow {
     fill: none;
-    stroke: var(--c-ocre);
+    stroke: var(--c-hueso);
     stroke-width: 1.5;
   }
   .cases__map .arrow {
@@ -196,8 +196,8 @@ import { site } from "../../data/site";
     margin-top: 0.2rem;
   }
   .cases__key--in {
-    background: var(--c-plano);
-    border: 1.5px solid var(--c-ocre);
+    background: var(--ladrillo-tinte);
+    border: 1.5px solid var(--c-ladrillo);
     border-radius: 50%;
   }
   .cases__key--out {

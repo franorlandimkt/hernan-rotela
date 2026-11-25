@@ -169,14 +169,11 @@ const alt = (tpl: string, v: Record<string, string | number>) => tpl.replace(/\{
     justify-items: start;
     margin-top: var(--space-5);
     padding: var(--space-4);
-    background: var(--c-plano);
+    background:
+      radial-gradient(60% 120% at 100% 0%, rgb(214 58 31 / 0.4), transparent 72%),
+      var(--c-grafito);
     color: var(--c-hueso);
     border-radius: var(--radius-md);
-    box-shadow: 8px 8px 0 var(--c-ocre);
-    margin-right: 8px;
-  }
-  .projects__story .pill__dot {
-    background: var(--c-ocre);
   }
   .projects__story .pill {
     align-self: start;
@@ -188,7 +185,7 @@ const alt = (tpl: string, v: Record<string, string | number>) => tpl.replace(/\{
   }
   .projects__story p {
     margin-top: var(--space-2);
-    color: #c5cfe2;
+    color: #c9c4bc;
     max-width: 46rem;
   }
   @media (min-width: 640px) {

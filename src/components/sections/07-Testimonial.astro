@@ -1,6 +1,6 @@
 ---
 /**
- * Testimonio (cartel ocre sobre hueso): solo reales y suyos. Hoy, Giselle (audio de WhatsApp). Los que tienen publish: false
+ * Testimonio (grafito con el resplandor ladrillo): solo reales y suyos. Hoy, Giselle (audio de WhatsApp). Los que tienen publish: false
  * ([PLACEHOLDER]) no se muestran. Sin schema Review hasta tener reseñas públicas verificables.
  * Fotos (src/assets/img/, aparecen solas): <key>.jpg = la persona (sin foto va la inicial) ·
  * testimonio-<key>.jpg = captura del chat o del audio (se abre en grande).
@@ -31,7 +31,7 @@ const wave = [5, 9, 14, 8, 16, 11, 6, 13, 18, 10, 7, 15, 12, 6, 9, 17, 11, 5, 8,
 
 {
   items.length > 0 && (
-    <section class="section s-hueso s-grid testimonial" aria-labelledby="testimonio-title">
+    <section class="section s-grafito s-grid s-glow testimonial" style="--glow-at:100% 100%;--glow-size:60% 80%;--glow-a:.34" aria-labelledby="testimonio-title">
       <div class="container">
         <SectionHead label={t.label} title={t.h2} id="testimonio-title" />
         {items.map((it) => (
@@ -89,17 +89,6 @@ const wave = [5, 9, 14, 8, 16, 11, 6, 13, 18, 10, 7, 15, 12, 6, 9, 17, 11, 5, 8,
   .testimonial__main {
     position: relative;
     max-width: 58rem;
-    padding: var(--space-4);
-    background: var(--c-ocre);
-    color: var(--c-grafito);
-    border: 1.5px solid var(--c-grafito);
-    border-radius: var(--radius-md);
-    box-shadow: 8px 8px 0 var(--c-grafito);
-    margin-right: 8px;
-  }
-  .testimonial__main :global(.hl) {
-    background: var(--c-grafito);
-    color: var(--c-hueso);
   }
   .testimonial__mark {
     display: block;
@@ -108,7 +97,7 @@ const wave = [5, 9, 14, 8, 16, 11, 6, 13, 18, 10, 7, 15, 12, 6, 9, 17, 11, 5, 8,
     font-weight: 800;
     font-size: clamp(4rem, 3rem + 4vw, 6.5rem);
     line-height: 1;
-    color: var(--c-grafito);
+    color: var(--c-ladrillo);
   }
   .testimonial__quote {
     margin: var(--space-3) 0 0;
@@ -125,7 +114,7 @@ const wave = [5, 9, 14, 8, 16, 11, 6, 13, 18, 10, 7, 15, 12, 6, 9, 17, 11, 5, 8,
     gap: var(--space-3) var(--space-4);
     margin-top: var(--space-4);
     padding-top: var(--space-4);
-    border-top: 1.5px solid var(--c-grafito);
+    border-top: 1px solid var(--linea);
   }
   .testimonial__avatar {
     display: grid;
@@ -133,10 +122,9 @@ const wave = [5, 9, 14, 8, 16, 11, 6, 13, 18, 10, 7, 15, 12, 6, 9, 17, 11, 5, 8,
     flex: none;
     width: 3.5rem;
     height: 3.5rem;
-    border: 1.5px solid var(--c-grafito);
+    border: 1.5px solid var(--tinta);
     border-radius: var(--radius-md);
     overflow: hidden;
-    background: var(--c-hueso);
     font-family: var(--f-display);
     font-weight: 800;
     font-size: 1.5rem;
@@ -153,22 +141,19 @@ const wave = [5, 9, 14, 8, 16, 11, 6, 13, 18, 10, 7, 15, 12, 6, 9, 17, 11, 5, 8,
     margin-right: auto;
   }
   .testimonial__who .dato {
-    color: var(--c-grafito);
+    color: var(--tinta-2);
   }
   .testimonial__src {
     display: inline-flex;
     align-items: center;
     gap: 0.625rem;
     padding: 0.5rem 0.75rem;
-    border: 1.5px solid var(--c-grafito);
+    border: 1px solid var(--linea);
     border-radius: var(--radius-md);
-    background: var(--c-hueso);
+    background: var(--superficie);
   }
   .testimonial__src :global(.ico) {
-    color: var(--c-ladrillo);
-  }
-  .testimonial__src .etiqueta {
-    color: var(--c-grafito);
+    color: var(--ladrillo-texto);
   }
   .testimonial__wave {
     display: inline-flex;
@@ -178,7 +163,7 @@ const wave = [5, 9, 14, 8, 16, 11, 6, 13, 18, 10, 7, 15, 12, 6, 9, 17, 11, 5, 8,
   }
   .testimonial__wave i {
     width: 2px;
-    background: var(--c-grafito);
+    background: var(--tinta-2);
   }
   .testimonial__audio {
     margin-top: var(--space-3);
@@ -199,11 +184,6 @@ const wave = [5, 9, 14, 8, 16, 11, 6, 13, 18, 10, 7, 15, 12, 6, 9, 17, 11, 5, 8,
   @media (max-width: 479px) {
     .testimonial__wave i:nth-child(n + 13) {
       display: none;
-    }
-  }
-  @media (min-width: 768px) {
-    .testimonial__main {
-      padding: var(--space-5);
     }
   }
   @media (min-width: 1024px) {

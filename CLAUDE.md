@@ -48,8 +48,9 @@ Misma arquitectura y nombres de archivo que la web de Víctor Oropesa (`franorla
 
 ## Reglas de diseño (manual HABITAR)
 - Base **hueso · grafito · ladrillo**. El ladrillo marca: el botón de cada pantalla, la cota, un dato; a sangre va en una sola franja (el cierre).
-- **Colores de apoyo** (v1.2, salen del oficio; tokens en `tokens.css`): **azul de plano** (`--c-plano`, fondo de sección: El servicio, la pantalla de la videollamada) y **ocre / amarillo de obra** (`--c-ocre`: la cinta, el cartel del testimonio, cuadros de ícono, cifras sobre oscuro). El ocre siempre lleva texto grafito encima y nunca es texto sobre hueso. No sumar más colores.
-- Tarjetas destacadas con sombra dura (8 px, sin desenfoque), como una lámina sobre otra. Una por sección.
+- **Las secciones oscuras son negro con el rojo en degradé** (`.s-glow`: grafito + resplandor ladrillo, como el hero). Nunca rojo a sangre ni otro color de fondo. Franco lo eligió así: es la identidad de la web.
+- **Amarillo de obra** (`--c-amarillo`): un golpe, no un color de base. Solo la cinta, las cifras del hero y el marcador de texto (`.hl`). Sin azul ni otros colores de apoyo.
+- Tarjetas destacadas con sombra dura (8 px, sin desenfoque), como una lámina sobre otra.
 - Ladrillo puro (`--c-ladrillo`) en texto solo a 24 px o más; texto chico → `--ladrillo-texto`. `--c-hormigon` nunca es texto.
 - Títulos en Archivo ancha (`font-stretch: 112 %`, 700–800); lo técnico (etiquetas, m², medidas, precios) en IBM Plex Mono.
 - Ángulos rectos: radios de 2–4 px (8 px solo el pop-up del formulario y el video cuando queda chico en la esquina). Íconos de trazo 1,5 px, esquinas rectas (`Icon.astro`).

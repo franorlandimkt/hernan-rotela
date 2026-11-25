@@ -64,7 +64,7 @@ export const hero = {
   remoteLink: "También hago el proyecto a distancia",
 };
 
-/** La cinta de obra (franja ocre que corre debajo del hero): lo que hace Hernán, en pocas palabras. */
+/** La cinta de obra (franja amarilla que corre debajo del hero): lo que hace Hernán, en pocas palabras. */
 export const tape = ["Anteproyecto", "Proyecto ejecutivo", "Plano municipal", "Tramitación", "Cartel de obra", "Dirección de obra", "Casas en barrio cerrado"];
 
 /** Franja de redes (debajo del hero): seguidores por red. Las redes con URL en site.ts son links al perfil. */
@@ -400,7 +400,7 @@ export const remote = {
   cta: "Cotizar a distancia",
 };
 
-/** El cierre (franja en ladrillo, después de las preguntas): vuelve a vender la videollamada. */
+/** El cierre (grafito con el degradé ladrillo, después de las preguntas): vuelve a vender la videollamada. */
 export const closing = {
   label: "El próximo paso",
   h2: "Antes de poner un ladrillo, *hablemos de tu casa*.",

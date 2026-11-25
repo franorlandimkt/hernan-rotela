@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-25 — v1.3 (negro con rojo en degradé en toda la página; el amarillo, solo como golpe)
+- Por qué: de la v1.2 a Franco le gustó el hero (fondo negro con el ladrillo en degradé) y no el azul de plano con el ocre. Se saca el azul y se lleva el lenguaje del hero al resto.
+- **Fuera el azul de plano** (`--c-plano`, `.s-plano`) y el ladrillo a sangre (`.s-ladrillo`).
+- **`.s-glow`**: grafito + resplandor ladrillo, con posición e intensidad por sección (`--glow-at`, `--glow-size`, `--glow-a`). Lo usan El problema, Testimonio, Otros casos y El cierre; el mismo degradé va en las ventanas de las etapas, la pantalla de la videollamada, la tarjeta de honorarios, el caso de Proyectos y la placa de Quién soy.
+- **El servicio** vuelve a fondo claro: las tarjetas conservan el dibujo de cada etapa, ahora sobre grafito con el degradé.
+- **Testimonio** vuelve a grafito (con el degradé); **El cierre** pasa de rojo a sangre a grafito con el degradé más fuerte de la página y el botón en ladrillo.
+- **Amarillo de obra** (`--c-amarillo` `#F2B33D`), solo en tres lugares: la cinta debajo del hero, las cifras del hero y el marcador de la frase del testimonio (`.hl`). Sin azul.
+- No cambia: copy, estructura, formulario, funciones, tracking. Tests: 59/59. Probado de 360 a 1920 px.
+
 ## 2026-11-25 — v1.2 (color y piezas: la página dejaba de verse en dos tonos)
 - Por qué: la v1.1 ordenó la página pero seguía viéndose monocromática: grafito y hueso, con el ladrillo solo en líneas finas y botones. Faltaba color en bloques y algo que hablara del oficio.
 - **Dos colores de apoyo**, sacados de la obra y del plano: **azul de plano** (`--c-plano` `#1B3358`) y **ocre / amarillo de obra** (`--c-ocre` `#F2B33D`). Temas nuevos `.s-plano`, `.s-ladrillo` y `.theme-light` (tarjetas claras dentro de una sección oscura). Contraste verificado: hueso sobre azul 10,8:1; grafito sobre ocre 9:1; ocre sobre azul 6,9:1. Es una ampliación del manual de marca: el manual todavía no los tiene.

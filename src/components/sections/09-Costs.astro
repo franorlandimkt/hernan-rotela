@@ -88,16 +88,11 @@ import { site } from "../../data/site";
     border-radius: var(--radius-md);
   }
   .costs__fees {
-    background: var(--c-grafito);
+    background:
+      radial-gradient(70% 60% at 100% 0%, rgb(214 58 31 / 0.36), transparent 72%),
+      var(--c-grafito);
     color: var(--c-hueso);
     border: 1px solid var(--c-grafito);
-    box-shadow: 8px 8px 0 var(--c-ocre);
-  }
-  .costs__fees .costs__pct {
-    color: var(--c-ocre);
-  }
-  .costs__fees li:first-child .costs__pct {
-    color: var(--c-hueso);
   }
   .costs__fees .pill {
     border-color: var(--c-hueso);
@@ -131,8 +126,8 @@ import { site } from "../../data/site";
     gap: 0.25rem;
     min-width: 0;
     padding: 0.5rem 0.5rem 0.5625rem;
-    background: #2b2a28;
-    border-top: 3px solid var(--c-ocre);
+    background: rgb(242 237 230 / 0.07);
+    border-top: 3px solid #8c8a85;
   }
   .costs__bar li:first-child {
     border-top-color: var(--c-ladrillo);
@@ -221,7 +216,7 @@ import { site } from "../../data/site";
       align-items: baseline;
       gap: 0.75rem;
       border-top: 0;
-      border-left: 3px solid var(--c-ocre);
+      border-left: 3px solid #8c8a85;
       padding: 0.5rem 0.625rem;
     }
     .costs__bar li:first-child {

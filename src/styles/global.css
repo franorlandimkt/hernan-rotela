@@ -140,20 +140,20 @@ button {
   background-color: var(--fondo);
   color: var(--tinta);
 }
-.s-plano,
-.s-ladrillo {
-  background-color: var(--fondo);
-  color: var(--tinta);
+/* Resplandor ladrillo sobre grafito (el del hero): el fondo de las secciones oscuras. Negro con el rojo en
+   degradé, nunca rojo a sangre. Posición e intensidad por sección: --glow-at, --glow-size, --glow-a. */
+.s-glow {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
 }
-.s-plano .mark {
-  color: var(--c-ocre);
-}
-.s-plano .sec-head .etiqueta::before,
-.s-ladrillo .sec-head .etiqueta::before {
-  background: var(--c-ocre);
-}
-.s-ladrillo .mark {
-  color: var(--c-grafito);
+.s-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(var(--glow-size, 55% 70%) at var(--glow-at, 100% 0%), rgb(214 58 31 / var(--glow-a, 0.3)), transparent 72%);
+  pointer-events: none;
 }
 /* Grilla de plano: líneas en --linea cada 24 px, tenue. Si se nota antes que el texto, está fuerte. */
 .s-grid {
@@ -515,21 +515,13 @@ button {
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }
-/* Marcador de texto (una frase de un testimonio): fondo ladrillo tenue, texto en tinta */
+/* Marcador de texto (una frase de un testimonio): amarillo de obra con texto grafito, en claro y en oscuro */
 .hl {
-  background: var(--ladrillo-tinte);
-  color: var(--tinta);
+  background: var(--c-amarillo);
+  color: var(--c-grafito);
   padding: 0.05em 0.2em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-}
-.s-grafito .hl {
-  background: var(--c-ladrillo);
-  color: var(--c-white);
-}
-.hl--ocre {
-  background: var(--c-ocre);
-  color: var(--c-grafito);
 }
 /* Sombra dura (la tarjeta "levantada", como una lámina sobre otra) */
 .lift {
@@ -640,14 +632,11 @@ button {
 .ico .acc {
   stroke: var(--c-ladrillo);
 }
-/* Cuadro de ícono lleno: ocre con trazo grafito (el detalle del ícono también en grafito) */
-.ico-box--ocre {
-  background: var(--c-ocre);
-  border-color: var(--c-ocre);
-  color: var(--c-grafito);
-}
-.ico-box--ocre .ico .acc {
-  stroke: var(--c-grafito);
+/* Cuadro de ícono lleno: grafito con trazo hueso (el detalle del ícono queda en ladrillo) */
+.ico-box--dark {
+  background: var(--c-grafito);
+  border-color: var(--c-grafito);
+  color: var(--c-hueso);
 }
 .ico-box--ladrillo {
   background: var(--c-ladrillo);

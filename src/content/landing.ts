@@ -87,7 +87,7 @@ export const about = {
     { value: site.stats.yearsProjects, prefix: "+", suffix: "", label: "años haciendo proyectos" },
     { value: site.stats.m2Approved, prefix: "+", suffix: " m²", label: "de casas aprobadas en municipios" },
   ] as { value: number; prefix?: string; suffix: string; label: string }[],
-  /** Equipo. [CONFIRMAR] el brief dice "dos arquitectos" y en otra respuesta "dos dibujantes". */
+  /** Equipo. [CONFIRMAR] composición del equipo con Hernán (el brief da dos versiones). */
   team: "Trabajo con un equipo de dibujantes y profesionales externos (agrimensores, calculistas). Las consultas las atiendo yo.",
   /** [PLACEHOLDER] foto de Hernán con los planos de fondo (luz natural, como en sus videos). Sin foto no se muestra. */
   photo: "", // nombre del archivo en src/assets/img/ sin extensión, ej. "hernan-planos"
@@ -381,6 +381,9 @@ export const form = {
   quote: {
     loading: "Calculando el precio de tus planos…",
     label: "Precio de tus planos",
+    /** Antes del monto en los rangos de los bordes: "hasta USD 6.000" (menos de 150 m²) · "desde USD 11.500" (más de 300 m²). */
+    upTo: "hasta",
+    from: "desde",
     meta: "Para {m2} · {etapas}. Tarifa estándar.",
     extras: "No incluye los gastos del colegio ni los derechos de construcción del municipio: dependen de cada municipio.",
     noLandTitle: "Cuando tengas el lote, agendá tu videollamada con Hernán.",
@@ -499,6 +502,8 @@ export const form = {
       waMessage: "Hola Hernán, quería consultarte por un caso de algo ya construido.",
     },
     networksTitle: "Mientras tanto, en redes:",
+    /** Por si tocó la opción sin querer: vuelve a la primera pregunta. */
+    back: "Me equivoqué de opción",
     networks: ["tiktok", "instagram", "facebook", "youtube"] as const,
   },
   /** Sugerencia de email (gmail.con → gmail.com). No bloquea el envío. */
@@ -562,4 +567,24 @@ export const footer = {
   privacy: "Política de privacidad",
   rights: "Todos los derechos reservados.",
   base: `${site.base.locality}, ${site.base.partido} · ${site.base.region}`,
+};
+
+/** Blog (índice y artículos). Los borradores (draft: true) no se publican. */
+export const blog = {
+  title: `Guías para construir tu casa | ${site.brandFull}`,
+  description: "Qué necesitás para construir, cuánto tarda el proyecto, qué pagás aparte y qué mirar antes de comprar el lote. Por Hernán Rotela Báez, Maestro Mayor de Obras.",
+  label: "Blog",
+  h1: "Guías para construir tu casa",
+  empty: "Muy pronto publico las primeras guías.",
+  draft: "Borrador · no se publica",
+  by: `${site.person}, ${site.professionShort}`,
+  cta: "Cotizá tu proyecto",
+};
+
+/** Página de política de privacidad (Ley 25.326). Los datos del responsable van en site.ts / [COMPLETAR]. */
+export const privacy = {
+  title: `Política de privacidad | ${site.brandFull}`,
+  description: `Cómo se tratan los datos personales que dejás en la web de ${site.brandFull} (Ley 25.326 de Protección de los Datos Personales).`,
+  h1: "Política de privacidad",
+  back: "Volver al inicio",
 };

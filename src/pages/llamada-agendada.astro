@@ -1,0 +1,395 @@
+---
+/**
+ * Llamada agendada (/llamada-agendada): adonde lleva el formulario después de agendar la videollamada.
+ *  - Arriba: franja grafito "Alerta · Falta un paso" con la cota en ladrillo, "Tu videollamada está casi
+ *    agendada" y "Solo falta un paso: mirá este video". Si la URL trae ?cuando=<ISO>&tz=<zona>, debajo del
+ *    botón va el día y la hora de la cita en su hora local.
+ *  - Video de Hernán (site.bookedVideo): quieto con el póster y un play grande (no baja nada hasta el play);
+ *    al tocarlo arranca con sonido; tocarlo de nuevo lo pausa. Barra de avance no lineal: llega rápido a la
+ *    mitad (barTo, al pasar barAt del video) y el resto avanza lento. Sin video cargado (src vacío): solo el
+ *    póster [PLACEHOLDER], sin play.
+ *  - Abajo: "Hablar con Hernán" a WhatsApp con el nombre que dejó en el formulario (guardado en la pestaña al
+ *    agendar, nunca en la URL). Sin WhatsApp cargado en site.ts: botón para volver al inicio.
+ * Eventos (nunca en modo prueba): Pixel ClickWhatsApp (una vez por sesión). El Schedule ya salió en el
+ * formulario: acá no se repite. noindex y fuera del sitemap. Textos: landing.ts → booked.
+ */
+import Base from "../layouts/Base.astro";
+import Icon from "../components/illustrations/Icon.astro";
+import { booked as t } from "../content/landing";
+import { site, waLink } from "../data/site";
+
+const v = site.bookedVideo;
+const wa = waLink(t.waMessage);
+---
+
+<Base title={t.metaTitle} description={t.metaDescription} path="/llamada-agendada" noindex>
+  <main id="contenido" class="bk">
+    <!-- Franja de alerta: grafito, con la cota en ladrillo abajo -->
+    <div class="bk__alert theme-dark">
+      <p class="bk__alert-txt">
+        <span class="bk__alert-ico"><Icon name="alert" size={18} /></span>
+        <strong>{t.alert}</strong>
+        <span aria-hidden="true">·</span>
+        {t.alertDetail}
+      </p>
+      <span class="cota bk__cota" aria-hidden="true"></span>
+    </div>
+
+    <div class="bk__wrap">
+      <header class="bk__head">
+        <h1 class="bk__title"><span class="bk__nw">{t.title}</span> <span class="bk__hl">{t.titleMark}</span></h1>
+        <p class="bk__lead">{t.lead}</p>
+        <p class="bk__look">{t.leadMark}</p>
+        <span class="bk__arrow" aria-hidden="true"><Icon name="arrow-down" size={30} /></span>
+      </header>
+
+      <div class="bk__video" data-bk data-at={v.barAt} data-to={v.barTo} style={`aspect-ratio: ${v.width} / ${v.height}; --bk-ratio: ${v.width / v.height}`}>
+        {
+          v.src ? (
+            <>
+              <video class="bk__media" src={v.src} poster={v.poster} width={v.width} height={v.height} playsinline preload="none" controls aria-label={t.videoLabel} data-video />
+              <button type="button" class="bk__play" data-play aria-label={t.play} hidden>
+                <span class="bk__play-ico">
+                  <Icon name="play-solid" size={32} />
+                </span>
+              </button>
+              <div class="bk__bar" aria-hidden="true" hidden data-bar-wrap>
+                <span class="bk__bar-fill" data-bar />
+              </div>
+            </>
+          ) : (
+            <img class="bk__media" src={v.poster} width={v.width} height={v.height} alt={t.videoPending} />
+          )
+        }
+      </div>
+
+      {
+        wa ? (
+          <a class="btn btn--lg btn--block bk__cta" href={wa} target="_blank" rel="noopener" data-wa data-wa-named={t.waMessageNamed}>
+            <Icon name="whatsapp" size={22} />
+            {t.button}
+          </a>
+        ) : (
+          <a class="btn btn--lg btn--block bk__cta" href="/">
+            {t.back}
+          </a>
+        )
+      }
+      <p class="bk__when" data-when data-template={t.when} hidden></p>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .bk {
+    min-height: 100svh;
+    padding-block: 0 var(--space-5);
+    background: var(--fondo);
+  }
+  .bk__wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: var(--space-3);
+    width: 100%;
+    max-width: 34rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    text-align: center;
+  }
+  .bk__head {
+    display: grid;
+    justify-items: center;
+    gap: 0.35rem;
+  }
+  /* Franja grafito a todo el ancho y la cota en ladrillo como borde de abajo */
+  .bk__alert {
+    margin-bottom: var(--space-4);
+    padding: 0.75rem var(--gutter) 0.5rem;
+    background: var(--fondo);
+    color: var(--tinta);
+  }
+  .bk__alert-txt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--f-mono);
+    font-size: var(--fs-etiqueta);
+    font-weight: 500;
+    letter-spacing: var(--ls-etiqueta);
+    text-transform: uppercase;
+  }
+  .bk__alert strong {
+    font-weight: 500;
+    color: var(--ladrillo-texto);
+  }
+  .bk__alert-ico {
+    display: inline-flex;
+    color: var(--ladrillo-texto);
+    animation: bk-pulse 1.4s var(--ease) infinite;
+  }
+  @keyframes bk-pulse {
+    50% {
+      transform: scale(1.2);
+    }
+  }
+  .bk__cota {
+    max-width: 22rem;
+    margin: 0.5rem auto 0;
+  }
+  .bk__title {
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-stretch: var(--stretch-display);
+    font-size: var(--fs-h1);
+    line-height: var(--lh-h1);
+    text-wrap: balance;
+  }
+  /* "Tu videollamada está" no se corta en el medio desde 400 px; en celulares chicos puede ir en dos renglones */
+  @media (min-width: 400px) {
+    .bk__nw {
+      white-space: nowrap;
+    }
+  }
+  /* "casi agendada" en ladrillo (título grande: ≥24 px) */
+  .bk__hl {
+    color: var(--c-ladrillo);
+  }
+  .bk__lead {
+    margin-top: var(--space-2);
+    font-size: var(--fs-body-lg);
+    font-weight: 600;
+  }
+  .bk__look {
+    font-family: var(--f-display);
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    color: var(--ladrillo-texto);
+  }
+  .bk__arrow {
+    display: inline-flex;
+    color: var(--c-ladrillo);
+    animation: bk-bounce 1.2s var(--ease) infinite;
+  }
+  .bk__arrow :global(.ico) {
+    stroke-width: 2px;
+  }
+  @keyframes bk-bounce {
+    50% {
+      transform: translateY(6px);
+    }
+  }
+  .bk__when {
+    font-family: var(--f-mono);
+    font-size: var(--fs-dato);
+    color: var(--tinta-2);
+  }
+
+  /* Video: su alto es lo que deja la pantalla después del título y el botón (--bk-rest), así el botón entra
+     sin scrollear; nunca más chico que 15rem de ancho */
+  .bk__video {
+    --bk-rest: 25rem;
+    position: relative;
+    width: min(100%, max(15rem, calc((100svh - var(--bk-rest)) * var(--bk-ratio, 0.5625))));
+    border: 1px solid var(--tinta);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--c-grafito);
+  }
+  .bk__media {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .bk__play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    border: 0;
+    background: color-mix(in srgb, var(--c-grafito) 25%, transparent);
+    color: var(--c-white);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .bk__play[hidden] {
+    display: none;
+  }
+  .bk__play-ico {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 5.25rem;
+    height: 5.25rem;
+    padding-left: 0.25rem; /* centra el triángulo a la vista */
+    border-radius: 50%;
+    background: var(--c-ladrillo);
+    transition: transform 0.2s var(--ease);
+  }
+  .bk__play-ico::after {
+    content: "";
+    position: absolute;
+    inset: -0.6rem;
+    border: 2px solid var(--c-ladrillo);
+    border-radius: 50%;
+    animation: bk-ring 1.8s var(--ease) infinite;
+  }
+  @keyframes bk-ring {
+    from {
+      transform: scale(0.85);
+      opacity: 1;
+    }
+    to {
+      transform: scale(1.35);
+      opacity: 0;
+    }
+  }
+  .bk__play:hover .bk__play-ico {
+    transform: scale(1.06);
+  }
+  .bk__play:focus-visible {
+    outline: none;
+  }
+  .bk__play:focus-visible .bk__play-ico {
+    outline: 2px solid var(--c-hueso);
+    outline-offset: 4px;
+  }
+  .bk__bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 0.4rem;
+    background: color-mix(in srgb, var(--c-hueso) 30%, transparent);
+    pointer-events: none;
+  }
+  .bk__bar[hidden] {
+    display: none;
+  }
+  .bk__bar-fill {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--c-ladrillo);
+    transform: scaleX(var(--p, 0));
+    transform-origin: left;
+  }
+  .bk__cta {
+    max-width: 26rem;
+    min-height: 3.75rem;
+  }
+  /* Al terminar el video, el botón llama la atención */
+  .bk__cta.is-ready {
+    animation: bk-nudge 1.2s var(--ease) 3;
+  }
+  @keyframes bk-nudge {
+    50% {
+      transform: scale(1.03);
+    }
+  }
+  @media (min-width: 768px) {
+    .bk {
+      padding-bottom: var(--space-6);
+    }
+    .bk__wrap {
+      max-width: 46rem;
+    }
+    .bk__video {
+      --bk-rest: 29rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bk__alert-ico,
+    .bk__arrow,
+    .bk__play-ico::after,
+    .bk__cta.is-ready {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { trackOnce } from "../scripts/tracking";
+  import { waLink } from "../data/site";
+
+  const params = new URLSearchParams(location.search);
+
+  // Día y hora de la cita, en la hora local de la persona (solo si vienen bien en la URL)
+  const when = document.querySelector<HTMLElement>("[data-when]");
+  const cuando = new Date(params.get("cuando") || "");
+  if (when && !Number.isNaN(cuando.getTime())) {
+    try {
+      const tz = params.get("tz") || undefined;
+      const f = (o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat("es-AR", { timeZone: tz, ...o });
+      const fecha = f({ weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" }).format(cuando).replace(/[  ]/g, " ");
+      const zona = f({ timeZoneName: "long" }).formatToParts(cuando).find((p) => p.type === "timeZoneName")?.value || "";
+      when.textContent = (when.dataset.template || "").replace("{fecha}", fecha).replace(" ({zona})", zona ? ` (${zona})` : "");
+      when.hidden = false;
+    } catch {
+      /* zona inválida en la URL: no se muestra */
+    }
+  }
+
+  // Video: play grande con sonido, pausa al tocar, barra de avance no lineal
+  const box = document.querySelector<HTMLElement>("[data-bk]");
+  const video = box?.querySelector<HTMLVideoElement>("[data-video]");
+  const play = box?.querySelector<HTMLButtonElement>("[data-play]");
+  const barWrap = box?.querySelector<HTMLElement>("[data-bar-wrap]");
+  const bar = box?.querySelector<HTMLElement>("[data-bar]");
+  const cta = document.querySelector<HTMLAnchorElement>("[data-wa]");
+
+  if (box && video && play && barWrap && bar) {
+    video.controls = false;
+    play.hidden = false;
+    barWrap.hidden = false;
+    const at = Number(box.dataset.at) || 0.2;
+    const to = Number(box.dataset.to) || 0.5;
+    /** Avance real (0–1) → avance que se ve: rápido hasta `to` en el primer `at` del video, después lento. */
+    const shown = (x: number) => (x <= 0 ? 0 : x >= 1 ? 1 : x < at ? to * (1 - (1 - x / at) ** 2) : to + ((1 - to) * (x - at)) / (1 - at));
+    let raf = 0;
+    const draw = () => {
+      const d = video.duration;
+      bar.style.setProperty("--p", String(d > 0 ? shown(video.currentTime / d) : 0));
+      raf = video.paused ? 0 : requestAnimationFrame(draw);
+    };
+    const showPlay = (on: boolean) => (play.hidden = !on);
+    play.addEventListener("click", () => {
+      video.muted = false;
+      video.play().catch(() => showPlay(true));
+    });
+    video.addEventListener("click", () => {
+      if (!video.paused) video.pause();
+    });
+    video.addEventListener("play", () => {
+      showPlay(false);
+      if (!raf) raf = requestAnimationFrame(draw);
+    });
+    video.addEventListener("pause", () => {
+      showPlay(true);
+      draw();
+    });
+    video.addEventListener("ended", () => {
+      bar.style.setProperty("--p", "1");
+      cta?.classList.add("is-ready");
+    });
+  }
+
+  // El mensaje de WhatsApp lleva el nombre que dejó en el formulario (guardado en la pestaña al agendar), así
+  // Hernán lo encuentra en el CRM aunque el número haya quedado mal. Sin nombre: el mensaje de siempre.
+  try {
+    const nombre = (sessionStorage.getItem("hr_nombre") || "").trim();
+    const named = cta?.dataset.waNamed;
+    if (cta && nombre && named) {
+      const href = waLink(named.replace("{nombre}", () => nombre));
+      if (href) cta.href = href;
+    }
+  } catch {
+    /* storage bloqueado: queda el mensaje sin nombre */
+  }
+
+  // ClickWhatsApp: una vez por sesión, nunca en modo prueba (tracking.ts)
+  cta?.addEventListener("click", () => trackOnce("wa", "ClickWhatsApp"));
+</script>

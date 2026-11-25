@@ -55,11 +55,13 @@ npm run pendientes
 
 **Solo material propio de Hernán** (renders, planos, obras donde él es el profesional). Nunca fotos de stock ni de terceros.
 
-1. Exportá la imagen en JPG o PNG (mínimo 1600 px de ancho) a `src/assets/img/` (ej. `proyecto-escobar-1.jpg`).
-2. Agregala en `landing.ts`: renders de un proyecto en `projects.items[].images` (`{ name: "proyecto-escobar-1", alt: "…" }`), carátulas aprobadas en `projects.approved.images`, foto de Hernán en `about.photo`.
-3. `npm run build`: Astro genera AVIF + WebP. Tocar la imagen la abre en grande; "Quiero algo así" abre el formulario.
+1. Exportá la imagen en JPG o PNG (mínimo 1600 px de ancho para renders y planos).
+2. Subila a `src/assets/img/` **con el nombre exacto** que indica `src/assets/img/LEEME.md` (ej. `hernan.jpg`, `hernan-llamada.jpg`, `giselle.jpg`, `testimonio-giselle.jpg`, `proyecto-escobar-1.jpg`, `aprobado-1.jpg`). No hay que tocar código ni copy: la web la detecta por el nombre (`src/lib/images.ts`).
+3. `npm run build`: Astro genera AVIF + WebP. Tocar un render o una captura lo abre en grande; "Quiero algo así" abre el formulario.
 
-Videos: ver `public/video/LEEME.txt` (VSL `hernan.mp4` y `confirmacion.mp4`; rutas en `site.ts → video` y `bookedVideo`). Logo: SVG del manual en `public/brand/`; `npm run placeholders` regenera los PNG y la imagen OG.
+Mientras falta una foto, esa parte se ve sin ella (nunca rota). En `npm run dev` los lugares vacíos se ven marcados con el nombre del archivo a subir.
+
+Videos: ver `public/video/LEEME.txt` (VSL del hero `hernan.mp4`, **horizontal 16:9**, y `confirmacion.mp4`, vertical; rutas en `site.ts → video` y `bookedVideo`). Logo: SVG del manual en `public/brand/`; `npm run placeholders` regenera los PNG y la imagen OG.
 
 ---
 
@@ -142,7 +144,8 @@ src/
   content/form-steps.ts   preguntas, precio, radio, teléfono
   content/blog/           artículos (markdown)
   components/sections/    00-Header … 14-Footer (una sección por archivo; 13-Form = formulario)
-  components/ui/          Logo, Img, Rótulo, CTA, VideoDock, Lightbox, cookies
+  components/ui/          Logo, Img, Rótulo, CTA, Vsl (video del hero), Lightbox, cookies
+  lib/images.ts           detecta fotos y renders de src/assets/img/ por nombre
   components/illustrations/Icon.astro   íconos de trazo
   scripts/                main.ts, tracking.ts, lead.ts, phone.ts
   styles/                 tokens.css, global.css

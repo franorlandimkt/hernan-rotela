@@ -23,7 +23,8 @@ Misma arquitectura y nombres de archivo que la web de Víctor Oropesa (`franorla
 | Tokens / estilos globales | `src/styles/tokens.css` / `global.css` |
 | Secciones (orden en `src/pages/index.astro`) | `src/components/sections/NN-Nombre.astro` |
 | Formulario pop-up + agenda | `src/components/sections/13-Form.astro` |
-| Video flotante (VSL) / lightbox / cookies | `src/components/ui/VideoDock.astro` / `Lightbox.astro` / `CookieBanner.astro` |
+| Video del hero (VSL, horizontal 16:9) / lightbox / cookies | `src/components/ui/Vsl.astro` / `Lightbox.astro` / `CookieBanner.astro` |
+| Fotos, renders y planos (se detectan por nombre de archivo, sin tocar código) | `src/assets/img/` (nombres en `LEEME.md`) + `src/lib/images.ts` |
 | Envío a Sheets + API de conversiones | `netlify/functions/submit-lead.mts` |
 | Envío a Go High Level (campos personalizados + webhook) | `netlify/functions/ghl-lead.mts` |
 | Agenda (horarios libres y cita en GHL) | `netlify/functions/ghl-booking.mts` |
@@ -49,9 +50,12 @@ Misma arquitectura y nombres de archivo que la web de Víctor Oropesa (`franorla
 - Proporción **60 hueso · 30 grafito · 10 ladrillo**. El ladrillo marca: un botón por pantalla, la cota, un dato. Si hay dos cosas en ladrillo compitiendo, una sobra.
 - Ladrillo puro (`--c-ladrillo`) en texto solo a 24 px o más; texto chico → `--ladrillo-texto`. `--c-hormigon` nunca es texto.
 - Títulos en Archivo ancha (`font-stretch: 112 %`, 700–800); lo técnico (etiquetas, m², medidas, precios) en IBM Plex Mono.
-- Ángulos rectos: radios de 2–4 px (8 px solo el pop-up del formulario y el video flotante). Íconos de trazo 1,5 px, esquinas rectas (`Icon.astro`).
+- Ángulos rectos: radios de 2–4 px (8 px solo el pop-up del formulario y el video cuando queda chico en la esquina). Íconos de trazo 1,5 px, esquinas rectas (`Icon.astro`).
 - La cota (`.cota`): máximo una por pantalla. Grilla de plano (`.s-grid`): siempre tenue.
 - Un solo H1 (hero). H2 por sección, H3 adentro. Contraste AA.
+- El hero va en grafito y centrado: título → video horizontal → botón. El botón tiene que verse en la primera pantalla del celular.
+- La web vende una cosa: la videollamada con Hernán. Cada sección termina en un botón al formulario.
+- Pocos bloques de texto: lo que se pueda mostrar como lista, línea de tiempo, barra o ficha, no va en párrafo.
 - Contadores: el valor final va en el HTML; el JS solo anima. Contenido crítico en HTML estático.
 - Nada visual depende del evento `load` (el Pixel en el `<head>` lo demora).
 - No agregar schema Review/AggregateRating hasta tener reseñas públicas verificables.

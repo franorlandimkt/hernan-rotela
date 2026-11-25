@@ -7,10 +7,11 @@
 import SectionHead from "../ui/SectionHead.astro";
 import CtaBlock from "../ui/CtaBlock.astro";
 import Icon from "../illustrations/Icon.astro";
+import StageArt from "../illustrations/StageArt.astro";
 import { stages as t, process } from "../../content/landing";
 ---
 
-<section class="section s-superficie stages" id="etapas" aria-labelledby="etapas-title">
+<section class="section s-plano s-grid stages" id="etapas" aria-labelledby="etapas-title">
   <div class="container">
     <SectionHead label={t.label} title={t.h2} sub={t.sub} id="etapas-title" />
 
@@ -29,7 +30,10 @@ import { stages as t, process } from "../../content/landing";
     <ol class="stages__list">
       {
         t.items.map((s, i) => (
-          <li class="stages__card reveal" style={`--delay:${i * 0.08}s`}>
+          <li class="stages__card theme-light reveal" style={`--delay:${i * 0.08}s`}>
+            <div class="stages__art">
+              <StageArt kind={(i + 1) as 1 | 2 | 3} />
+            </div>
             <header class="stages__head">
               <span class="stages__num num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
               <div>
@@ -70,7 +74,7 @@ import { stages as t, process } from "../../content/landing";
         {
           t.how.map((h, i) => (
             <li class="reveal" style={`--delay:${i * 0.06}s`}>
-              <span class="ico-box" aria-hidden="true">
+              <span class="ico-box ico-box--ocre" aria-hidden="true">
                 <Icon name={h.icon} size={22} />
               </span>
               <div>
@@ -131,7 +135,7 @@ import { stages as t, process } from "../../content/landing";
       grid-auto-columns: minmax(0, 1fr);
       margin-bottom: var(--space-5);
       padding: var(--space-4) var(--space-3);
-      background: var(--fondo);
+      background: var(--superficie);
       border: 1px solid var(--linea);
       border-radius: var(--radius-md);
     }
@@ -162,18 +166,21 @@ import { stages as t, process } from "../../content/landing";
       margin-bottom: 0.5rem;
       border: 1.5px solid var(--tinta);
       border-radius: var(--radius-sm);
-      background: var(--superficie);
+      background: var(--fondo);
       font-family: var(--f-mono);
       font-size: 0.75rem;
       font-weight: 500;
     }
     .stages__stop.is-stage .stages__node {
-      background: var(--c-grafito);
-      color: var(--c-hueso);
+      background: var(--c-hueso);
+      color: var(--c-grafito);
     }
     .stages__stop.is-end .stages__node {
-      background: var(--c-ladrillo);
-      border-color: var(--c-ladrillo);
+      background: var(--c-ocre);
+      border-color: var(--c-ocre);
+    }
+    .stages__stop-d {
+      color: var(--tinta-2);
     }
     .stages__stop-t {
       font-weight: 600;
@@ -190,15 +197,34 @@ import { stages as t, process } from "../../content/landing";
   .stages__list {
     list-style: none;
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-5) var(--space-4);
+    padding-right: 8px;
   }
   .stages__card {
     display: flex;
     flex-direction: column;
     background: var(--fondo);
-    border: 1px solid var(--tinta);
+    border: 1.5px solid var(--c-grafito);
     border-radius: var(--radius-md);
     padding: var(--space-4);
+    box-shadow: 8px 8px 0 var(--c-grafito);
+  }
+  /* El dibujo de la etapa: una ventana al plano, arriba de la tarjeta */
+  .stages__art {
+    margin: calc(var(--space-4) * -1) calc(var(--space-4) * -1) var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background: var(--c-plano-2);
+    border-bottom: 1.5px solid var(--c-grafito);
+    border-radius: 2.5px 2.5px 0 0;
+  }
+  .stages__art :global(svg) {
+    max-width: 12.5rem;
+    margin-inline: auto;
+  }
+  @media (min-width: 768px) {
+    .stages__art :global(svg) {
+      max-width: 17rem;
+    }
   }
   .stages__head {
     display: flex;
@@ -272,9 +298,6 @@ import { stages as t, process } from "../../content/landing";
     gap: var(--space-3);
     align-items: start;
   }
-  .stages__how-list .ico-box {
-    background: var(--fondo);
-  }
   .stages__how-list h4 {
     font-size: var(--fs-h3);
   }
@@ -286,7 +309,7 @@ import { stages as t, process } from "../../content/landing";
     margin-top: var(--space-5);
     border: 1px solid var(--linea);
     border-radius: var(--radius-md);
-    background: var(--fondo);
+    background: var(--superficie);
   }
   .stages__steps summary {
     display: flex;
@@ -325,7 +348,7 @@ import { stages as t, process } from "../../content/landing";
   }
   .stages__steps[open] .stages__plus::after {
     transform: translate(-50%, -50%) rotate(0deg);
-    background: var(--c-ladrillo);
+    background: var(--c-ocre);
   }
   .stages__steps ol {
     list-style: none;

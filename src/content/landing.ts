@@ -64,6 +64,9 @@ export const hero = {
   remoteLink: "También hago el proyecto a distancia",
 };
 
+/** La cinta de obra (franja ocre que corre debajo del hero): lo que hace Hernán, en pocas palabras. */
+export const tape = ["Anteproyecto", "Proyecto ejecutivo", "Plano municipal", "Tramitación", "Cartel de obra", "Dirección de obra", "Casas en barrio cerrado"];
+
 /** Franja de redes (debajo del hero): seguidores por red. Las redes con URL en site.ts son links al perfil. */
 export const social = {
   total: site.communityTotal,
@@ -395,6 +398,15 @@ export const remote = {
     alt: `Esquema: dentro de los ${site.radiusKm} km de ${site.base.locality}, plano municipal y dirección de obra; más lejos, anteproyecto y proyecto ejecutivo a distancia`,
   },
   cta: "Cotizar a distancia",
+};
+
+/** El cierre (franja en ladrillo, después de las preguntas): vuelve a vender la videollamada. */
+export const closing = {
+  label: "El próximo paso",
+  h2: "Antes de poner un ladrillo, *hablemos de tu casa*.",
+  items: ["El precio exacto de tu proyecto", "Qué necesitás para construir en tu lote", "Lo que vas a pagar aparte, antes de firmar"],
+  cta: "Agendar mi videollamada",
+  note: `${site.call.minutes} minutos${site.call.free ? " · sin costo" : ""} · con Hernán`,
 };
 
 const plan = (k: keyof typeof site.paymentPlans) => site.paymentPlans[k].map((p) => `${p.pct} % ${p.when}`).join(", ");

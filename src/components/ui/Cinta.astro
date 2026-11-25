@@ -1,0 +1,59 @@
+---
+/**
+ * La cinta de obra: franja ocre con lo que hace Hernán, en mono, que corre de costado (sin JS).
+ * Es un guiño al oficio y le da movimiento y color a la página; no lleva información que no esté en otro lado
+ * (por eso la segunda tanda va oculta para lectores de pantalla). Con "reducir movimiento" queda quieta.
+ * Textos: landing.ts → tape.
+ */
+import { tape } from "../../content/landing";
+---
+
+<div class="cinta" role="presentation">
+  <ul class="cinta__run">
+    {[0, 1].map((k) => tape.map((w) => <li aria-hidden={k === 1 ? "true" : undefined}>{w}</li>))}
+  </ul>
+</div>
+
+<style>
+  .cinta {
+    overflow: hidden;
+    background: var(--c-ocre);
+    color: var(--c-grafito);
+    border-block: 1.5px solid var(--c-grafito);
+  }
+  .cinta__run {
+    list-style: none;
+    display: flex;
+    width: max-content;
+    font-family: var(--f-mono);
+    font-weight: 500;
+    font-size: var(--fs-etiqueta);
+    letter-spacing: var(--ls-etiqueta);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .cinta__run li {
+    display: flex;
+    align-items: center;
+    padding-block: 0.8125rem;
+    white-space: nowrap;
+  }
+  .cinta__run li::after {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-inline: 1.5rem;
+    background: var(--c-grafito);
+    transform: rotate(45deg);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cinta__run {
+      animation: cinta 38s linear infinite;
+    }
+  }
+  @keyframes cinta {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

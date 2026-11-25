@@ -140,6 +140,21 @@ button {
   background-color: var(--fondo);
   color: var(--tinta);
 }
+.s-plano,
+.s-ladrillo {
+  background-color: var(--fondo);
+  color: var(--tinta);
+}
+.s-plano .mark {
+  color: var(--c-ocre);
+}
+.s-plano .sec-head .etiqueta::before,
+.s-ladrillo .sec-head .etiqueta::before {
+  background: var(--c-ocre);
+}
+.s-ladrillo .mark {
+  color: var(--c-grafito);
+}
 /* Grilla de plano: líneas en --linea cada 24 px, tenue. Si se nota antes que el texto, está fuerte. */
 .s-grid {
   background-image:
@@ -512,6 +527,14 @@ button {
   background: var(--c-ladrillo);
   color: var(--c-white);
 }
+.hl--ocre {
+  background: var(--c-ocre);
+  color: var(--c-grafito);
+}
+/* Sombra dura (la tarjeta "levantada", como una lámina sobre otra) */
+.lift {
+  box-shadow: var(--lift, 8px) var(--lift, 8px) 0 var(--lift-color, var(--c-grafito));
+}
 /* Cuadro del ícono (tarjetas) */
 .ico-box {
   display: inline-grid;
@@ -616,6 +639,23 @@ button {
 }
 .ico .acc {
   stroke: var(--c-ladrillo);
+}
+/* Cuadro de ícono lleno: ocre con trazo grafito (el detalle del ícono también en grafito) */
+.ico-box--ocre {
+  background: var(--c-ocre);
+  border-color: var(--c-ocre);
+  color: var(--c-grafito);
+}
+.ico-box--ocre .ico .acc {
+  stroke: var(--c-grafito);
+}
+.ico-box--ladrillo {
+  background: var(--c-ladrillo);
+  border-color: var(--c-ladrillo);
+  color: var(--c-white);
+}
+.ico-box--ladrillo .ico .acc {
+  stroke: var(--c-white);
 }
 
 /* ---------- Utilidades ---------- */

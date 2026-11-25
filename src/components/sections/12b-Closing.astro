@@ -1,0 +1,102 @@
+---
+/**
+ * El cierre (ladrillo a sangre, la única franja roja de la página): vuelve a vender la videollamada después
+ * de las preguntas, con lo que se lleva la persona en tres líneas y el botón (en hueso: sobre rojo, el botón
+ * rojo no se vería). Textos: landing.ts → closing.
+ */
+import Marked from "../ui/Marked.astro";
+import Icon from "../illustrations/Icon.astro";
+import { closing as t } from "../../content/landing";
+---
+
+<section class="section s-ladrillo closing" aria-labelledby="cierre-title">
+  <div class="container closing__in">
+    <div>
+      <p class="etiqueta closing__label">{t.label}</p>
+      <h2 class="closing__title" id="cierre-title"><Marked text={t.h2} /></h2>
+    </div>
+    <div class="closing__side">
+      <ul class="closing__list">
+        {t.items.map((i) => (
+          <li>
+            <Icon name="check" size={20} />
+            <span>{i}</span>
+          </li>
+        ))}
+      </ul>
+      <a class="btn btn--lg btn--light closing__btn" href="#cotiza" data-cta="cierre">
+        {t.cta}
+        <Icon name="arrow-right" size={20} class="arrow" />
+      </a>
+      <p class="etiqueta closing__note">{t.note}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .closing {
+    overflow: hidden;
+  }
+  .closing__in {
+    display: grid;
+    gap: var(--space-5);
+    align-items: end;
+  }
+  .closing__label {
+    color: var(--c-white);
+  }
+  .closing__title {
+    margin-top: var(--space-3);
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-stretch: var(--stretch-display);
+    font-size: clamp(2.25rem, 1.4rem + 3.6vw, 4.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    max-width: 14ch;
+  }
+  .closing__list {
+    list-style: none;
+    display: grid;
+    border-top: 1.5px solid var(--c-white);
+  }
+  .closing__list li {
+    display: grid;
+    grid-template-columns: 1.25rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+    padding-block: 0.875rem;
+    border-bottom: 1px solid var(--linea);
+    font-size: var(--fs-body-lg);
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .closing__list :global(.ico) {
+    margin-top: 0.15rem;
+  }
+  .closing__btn {
+    margin-top: var(--space-4);
+    min-height: 3.75rem;
+    font-size: 1.125rem;
+    box-shadow: 6px 6px 0 var(--c-grafito);
+  }
+  .closing__btn:active {
+    box-shadow: 3px 3px 0 var(--c-grafito);
+  }
+  .closing__note {
+    margin-top: var(--space-4);
+    color: var(--c-white);
+    font-size: 0.75rem;
+  }
+  @media (max-width: 479px) {
+    .closing__btn {
+      width: 100%;
+    }
+  }
+  @media (min-width: 1024px) {
+    .closing__in {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      gap: var(--space-6);
+    }
+  }
+</style>

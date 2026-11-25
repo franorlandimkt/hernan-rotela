@@ -18,7 +18,7 @@ import { problem as t } from "../../content/landing";
         t.points.map((p, i) => (
           <li class="problem__card reveal" style={`--delay:${i * 0.06}s`}>
             <div class="problem__top">
-              <span class="problem__ico" aria-hidden="true">
+              <span class="problem__ico ico-box--ladrillo" aria-hidden="true">
                 <Icon name={p.icon} size={26} />
               </span>
               <span class="problem__n etiqueta" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
@@ -47,7 +47,6 @@ import { problem as t } from "../../content/landing";
     padding: var(--space-4);
     background: var(--superficie);
     border: 1px solid var(--linea);
-    border-top: 2px solid var(--c-ladrillo);
     border-radius: var(--radius-md);
   }
   .problem__top {
@@ -61,12 +60,17 @@ import { problem as t } from "../../content/landing";
     place-items: center;
     width: 3rem;
     height: 3rem;
-    border: 1px solid var(--tinta-2);
     border-radius: var(--radius-sm);
-    color: var(--tinta);
   }
   .problem__n {
-    color: var(--tinta-2);
+    font-family: var(--f-display);
+    font-stretch: var(--stretch-display);
+    font-weight: 800;
+    font-size: 2rem;
+    letter-spacing: 0;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--tinta-2);
   }
   .problem__card p {
     margin-top: var(--space-2);

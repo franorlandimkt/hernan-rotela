@@ -1,0 +1,83 @@
+---
+/**
+ * Dibujo de cada etapa (línea de plano sobre azul): muestra QUÉ se entrega, no decora.
+ *  1 = planta de arquitectura (ambientes, aberturas y la cota)
+ *  2 = estructura (columnas, vigas y una viga marcada)
+ *  3 = carpeta municipal y cartel de obra
+ * Son esquemas genéricos, no planos de un proyecto de Hernán (esos van como imágenes en Proyectos).
+ */
+interface Props {
+  kind: 1 | 2 | 3;
+}
+const { kind } = Astro.props;
+---
+
+<svg class="sa" viewBox="0 0 240 112" fill="none" aria-hidden="true" focusable="false">
+  {
+    kind === 1 && (
+      <>
+        <rect class="w" x="30" y="12" width="180" height="72" />
+        <path class="l" d="M110 12v30M110 58v26M30 50h44M90 50h20M110 42h44M170 42h40" />
+        <path class="l" d="M74 50a16 16 0 0 1 16 16M154 42a16 16 0 0 0 16-16" />
+        <path class="l thin" d="M44 12v-5h28v5M136 84v5h34v-5" />
+        <path class="a" d="M30 100h180M26 104l8-8M206 104l8-8" />
+      </>
+    )
+  }
+  {
+    kind === 2 && (
+      <>
+        <path class="l thin" d="M42 22h156M42 56h156M42 90h156M42 22v68M94 22v68M146 22v68M198 22v68" />
+        <path class="a" d="M42 56h156" />
+        {[42, 94, 146, 198].map((x) => [22, 56, 90].map((y) => <rect class="col" x={x - 5} y={y - 5} width="10" height="10" />))}
+        <path class="l thin" d="M60 34l16 0M60 40l10 0M112 68l16 0M112 74l10 0M164 34l16 0M164 40l10 0" />
+      </>
+    )
+  }
+  {
+    kind === 3 && (
+      <>
+        <path class="w" d="M34 14h62l14 14v70H34z" />
+        <path class="l" d="M96 14v14h14" />
+        <path class="l thin" d="M46 42h52M46 52h52M46 62h34" />
+        <rect class="l" x="70" y="76" width="32" height="14" />
+        <path class="a" d="M136 30h74v40h-74z" />
+        <path class="a" d="M148 44h50M148 54h34" />
+        <path class="l" d="M150 70v30M196 70v30M128 100h90" />
+      </>
+    )
+  }
+</svg>
+
+<style>
+  .sa {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .sa :global(*) {
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+  }
+  .sa :global(.w) {
+    stroke: #f2ede6;
+    stroke-width: 2.5;
+  }
+  .sa :global(.l) {
+    stroke: #f2ede6;
+    stroke-width: 1.5;
+  }
+  .sa :global(.thin) {
+    stroke: #9db0d1;
+    stroke-width: 1;
+  }
+  .sa :global(.a) {
+    stroke: var(--c-ocre);
+    stroke-width: 2;
+  }
+  .sa :global(.col) {
+    fill: #f2ede6;
+    stroke: none;
+  }
+</style>

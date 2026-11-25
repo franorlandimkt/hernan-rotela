@@ -282,6 +282,7 @@ export const CTA_ORIGINS: Record<string, string> = {
   "sin-lote": "Todavía no tengo el lote",
   distancia: "Planos a distancia",
   faq: "Preguntas frecuentes",
+  cierre: "Cierre (antes del formulario)",
   blog: "Blog",
   privacidad: "Política de privacidad",
 };

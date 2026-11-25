@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-11-25 — v1.2 (color y piezas: la página dejaba de verse en dos tonos)
+- Por qué: la v1.1 ordenó la página pero seguía viéndose monocromática: grafito y hueso, con el ladrillo solo en líneas finas y botones. Faltaba color en bloques y algo que hablara del oficio.
+- **Dos colores de apoyo**, sacados de la obra y del plano: **azul de plano** (`--c-plano` `#1B3358`) y **ocre / amarillo de obra** (`--c-ocre` `#F2B33D`). Temas nuevos `.s-plano`, `.s-ladrillo` y `.theme-light` (tarjetas claras dentro de una sección oscura). Contraste verificado: hueso sobre azul 10,8:1; grafito sobre ocre 9:1; ocre sobre azul 6,9:1. Es una ampliación del manual de marca: el manual todavía no los tiene.
+- **La cinta de obra** (`Cinta.astro`): franja ocre que corre debajo del hero con lo que hace Hernán. Sin JS; quieta con "reducir movimiento".
+- **Hero**: resplandor ladrillo detrás del video y toques de azul en las esquinas; las cifras en ocre.
+- **El servicio** pasa a azul de plano, con un **dibujo por etapa** (`StageArt.astro`): la planta, la estructura con una viga marcada, la carpeta y el cartel de obra. Muestran qué se entrega en cada una; son esquemas, no planos de un proyecto.
+- **La videollamada**: números en cuadros ladrillo, íconos en cuadros ocre, la pantalla de la llamada en azul con sombra ocre.
+- **El problema**: íconos en cuadros ladrillo y numeración grande en contorno.
+- **Testimonio**: pasa de grafito a un cartel ocre sobre hueso, con la frase marcada en grafito.
+- **El cierre** (`12b-Closing.astro`, nuevo): la única franja en ladrillo a sangre, después de las preguntas: "Antes de poner un ladrillo, hablemos de tu casa." + lo que te llevás + botón. Origen `cierre` en `CTA_ORIGINS`.
+- Sombras duras en las tarjetas destacadas (etapas, testimonio, honorarios, "te va a servir si…", el caso, la placa de Quién soy); las fichas de proyecto se levantan al pasar el mouse.
+- No cambia: copy de las secciones, formulario, funciones, tracking, precios. Tests: 59/59. Probado de 360 a 1920 px: sin scroll horizontal, un solo H1, sin errores de consola.
+
 ## 2026-11-25 — v1.1 (rediseño de la home: vender la videollamada)
 - Por qué: la v1.0 se veía apagada y como una copia de la de Víctor: hero flojo con todo corrido a la izquierda (el video flotante vertical reservaba una columna), mucha página en hueso sin acentos, bloques de texto, "Quién soy" demasiado arriba, sin redes ni lugar para fotos, y un "no trabajo con todos" que sonaba a pose. La web tiene que vender una cosa: la videollamada con Hernán.
 - **Hero** nuevo, en grafito y centrado: "Ya tenés el lote. Te falta *el proyecto que te deja construir*." → bajada de una línea → **video horizontal 16:9** (`Vsl.astro`) con marcas de corte y la cota → botón "Agendar mi videollamada" con su línea de respaldo (2 minutos · ves el precio · sin costo) → tres datos. En el celular el botón queda en la primera pantalla; en desktop el video se achica con el alto de la pantalla para que también entre.

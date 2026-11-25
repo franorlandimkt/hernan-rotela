@@ -87,9 +87,16 @@ const alt = (tpl: string, v: Record<string, string | number>) => tpl.replace(/\{
     display: flex;
     flex-direction: column;
     background: var(--superficie);
-    border: 1px solid var(--tinta);
+    border: 1.5px solid var(--tinta);
     border-radius: var(--radius-md);
     overflow: hidden;
+    transition:
+      transform 0.2s var(--ease),
+      box-shadow 0.2s var(--ease);
+  }
+  .projects__item:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 6px 6px 0 var(--c-ladrillo);
   }
   .projects__imgs {
     display: grid;
@@ -162,9 +169,14 @@ const alt = (tpl: string, v: Record<string, string | number>) => tpl.replace(/\{
     justify-items: start;
     margin-top: var(--space-5);
     padding: var(--space-4);
-    background: var(--c-grafito);
+    background: var(--c-plano);
     color: var(--c-hueso);
     border-radius: var(--radius-md);
+    box-shadow: 8px 8px 0 var(--c-ocre);
+    margin-right: 8px;
+  }
+  .projects__story .pill__dot {
+    background: var(--c-ocre);
   }
   .projects__story .pill {
     align-self: start;
@@ -176,7 +188,7 @@ const alt = (tpl: string, v: Record<string, string | number>) => tpl.replace(/\{
   }
   .projects__story p {
     margin-top: var(--space-2);
-    color: #b9b4ac;
+    color: #c5cfe2;
     max-width: 46rem;
   }
   @media (min-width: 640px) {

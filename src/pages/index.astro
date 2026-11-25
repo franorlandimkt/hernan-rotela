@@ -5,7 +5,9 @@
  * La web vende una cosa: la videollamada con Hernán (el formulario es el paso para agendarla).
  * Orden: Hero con el video → Redes → La videollamada (qué te llevás) → El problema → El servicio (3 etapas y
  * cómo se trabaja) → Proyectos → Testimonio → Quién soy → Lo que pagás → Para quién es → Otros casos (sin
- * lote / a distancia) → Preguntas → Formulario.
+ * lote / a distancia) → Preguntas → El cierre → Formulario.
+ * Color: grafito (hero, problema, otros casos), azul de plano (el servicio), ocre (la cinta, el testimonio) y
+ * una sola franja en ladrillo (el cierre). El resto, hueso.
  * Dudas que contesta, en orden: ¿es para mí? → ¿qué me llevo? → ¿cómo funciona? → ¿le creo? → ¿cuánto y qué riesgo?
  */
 import Base from "../layouts/Base.astro";
@@ -22,10 +24,12 @@ import Costs from "../components/sections/09-Costs.astro";
 import Fit from "../components/sections/10-Fit.astro";
 import Cases from "../components/sections/11-Cases.astro";
 import Faq from "../components/sections/12-Faq.astro";
+import Closing from "../components/sections/12b-Closing.astro";
 import Form from "../components/sections/13-Form.astro";
 import Footer from "../components/sections/14-Footer.astro";
 import CookieBanner from "../components/ui/CookieBanner.astro";
 import Lightbox from "../components/ui/Lightbox.astro";
+import Cinta from "../components/ui/Cinta.astro";
 import { homeSchema } from "../data/schema";
 import { meta } from "../content/landing";
 ---
@@ -34,6 +38,7 @@ import { meta } from "../content/landing";
   <Header />
   <main id="contenido">
     <Hero />
+    <Cinta />
     <Social />
     <Call />
     <Problem />
@@ -45,6 +50,7 @@ import { meta } from "../content/landing";
     <Fit />
     <Cases />
     <Faq />
+    <Closing />
     <Form />
   </main>
   <Footer />

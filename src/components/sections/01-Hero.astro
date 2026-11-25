@@ -51,9 +51,24 @@ import { hero as t } from "../../content/landing";
 
 <style>
   .hero {
+    position: relative;
     padding-block: clamp(1.5rem, 0.8rem + 3vw, 3.5rem) clamp(2.5rem, 1.8rem + 3vw, 4.5rem);
     color: var(--tinta);
     overflow: hidden;
+  }
+  /* Resplandor ladrillo detrás del video: le da profundidad al grafito sin "pintar" la pantalla de rojo */
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(60% 46% at 50% 52%, rgb(214 58 31 / 0.3), transparent 70%),
+      radial-gradient(40% 30% at 12% 0%, rgb(27 51 88 / 0.55), transparent 70%),
+      radial-gradient(40% 30% at 92% 100%, rgb(27 51 88 / 0.5), transparent 70%);
+    pointer-events: none;
+  }
+  .hero__in {
+    position: relative;
   }
   .hero__in {
     display: flex;
@@ -125,7 +140,10 @@ import { hero as t } from "../../content/landing";
   .hero__notes li + li::before {
     content: "·";
     margin-inline: 0.625rem;
-    color: var(--ladrillo-texto);
+    color: var(--c-ocre);
+  }
+  .hero__stats .num {
+    color: var(--c-ocre);
   }
   .hero__stats {
     display: grid;

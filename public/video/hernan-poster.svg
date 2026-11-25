@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 640" width="360" height="640">
+  <rect width="360" height="640" fill="#161616"/>
+  <g fill="none" stroke="#3a3836" stroke-width="1">
+    <path d="M0 160h360M0 320h360M0 480h360M90 0v640M180 0v640M270 0v640"/>
+  </g>
+  <g transform="translate(120 230)" fill="none" stroke-width="4">
+    <polyline points="16,80 16,46 76,16 76,80" stroke="#F2EDE6"/>
+    <polyline points="76,40 108,54 108,80" stroke="#F2EDE6"/>
+    <line x1="6" y1="80" x2="116" y2="80" stroke="#F2EDE6"/>
+    <line x1="16" y1="92" x2="108" y2="92" stroke="#D63A1F" stroke-width="2.5"/>
+  </g>
+  <g fill="#F2EDE6" font-family="IBM Plex Mono, monospace" text-anchor="middle">
+    <text x="180" y="380" font-size="18" letter-spacing="2">VIDEO DE HERNÁN</text>
+    <text x="180" y="410" font-size="15" fill="#F07A5E" letter-spacing="1">[PLACEHOLDER]</text>
+  </g>
+</svg>

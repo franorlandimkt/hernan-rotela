@@ -1,0 +1,132 @@
+---
+/**
+ * Política de privacidad según la Ley 25.326 de Protección de los Datos Personales (Argentina) y la
+ * Disposición 10/2008 (leyenda obligatoria sobre el derecho de acceso y el órgano de control, hoy la AAIP).
+ * Los datos del responsable van resaltados como [COMPLETAR] hasta tenerlos. [CONFIRMAR] revisión legal.
+ */
+import Base from "../layouts/Base.astro";
+import Header from "../components/sections/00-Header.astro";
+import Footer from "../components/sections/14-Footer.astro";
+import CookieBanner from "../components/ui/CookieBanner.astro";
+import { site } from "../data/site";
+import { privacy as t } from "../content/landing";
+
+const updated = "25 de noviembre de 2026";
+---
+
+<Base title={t.title} description={t.description} path="/politica-de-privacidad">
+  <Header home={false} />
+  <main id="contenido" class="section s-hueso">
+    <article class="container legal">
+      <h1 class="t-h1">{t.h1}</h1>
+      <p class="dato legal__date">Última actualización: {updated}</p>
+
+      <h2>1. Responsable de los datos</h2>
+      <p>
+        El responsable de la base de datos es <mark>[COMPLETAR: nombre y apellido o razón social]</mark>, <mark>[COMPLETAR: CUIT/CUIL]</mark>, con domicilio en
+        <mark>[COMPLETAR: domicilio legal]</mark>, que presta sus servicios bajo la marca {site.brandFull}. Contacto para temas de datos personales:
+        {site.email ? <a href={`mailto:${site.email}`}>{site.email}</a> : <mark>[COMPLETAR: email]</mark>}.
+      </p>
+
+      <h2>2. Qué datos se recolectan</h2>
+      <ul>
+        <li>Los que completás en el formulario: nombre, WhatsApp, email y tus respuestas (qué querés proyectar, si tenés lote, provincia y partido, m², etapas, cuándo querés arrancar y quién decide).</li>
+        <li>Si agendás una videollamada: el día, la hora y tu zona horaria.</li>
+        <li>Datos técnicos de la visita: página de entrada, sitio desde el que llegaste, parámetros de campaña (utm), identificadores de anuncios de Meta, tipo de dispositivo y una ubicación aproximada por IP.</li>
+        <li>Cookies de medición de anuncios de Meta (Pixel) y de Go High Level, salvo que las rechaces (punto 7).</li>
+      </ul>
+
+      <h2>3. Para qué se usan</h2>
+      <ul>
+        <li>Responder tu consulta, cotizar tu proyecto y agendar la videollamada.</li>
+        <li>Contactarte por WhatsApp o email sobre tu proyecto (lo aceptás al enviar el formulario).</li>
+        <li>Medir qué anuncios funcionan y mostrar anuncios a personas con intereses parecidos.</li>
+      </ul>
+      <p>Los datos se tratan con tu consentimiento, que das al enviar el formulario (art. 5 de la Ley 25.326). No se venden ni se ceden a terceros para otros fines.</p>
+
+      <h2>4. Con quién se comparten</h2>
+      <p>
+        Para prestar el servicio se usan proveedores que guardan o procesan los datos por cuenta del responsable: Netlify (alojamiento de la web), Google (planilla de consultas),
+        HighLevel (gestión de contactos y agenda) y Meta (medición de anuncios). Algunos tienen sus servidores fuera de la Argentina (por ejemplo, en Estados Unidos), por lo que los
+        datos pueden transferirse a otros países con las garantías que esos proveedores ofrecen.
+      </p>
+
+      <h2>5. Cuánto tiempo se guardan</h2>
+      <p>Mientras dure la relación por tu proyecto y luego el tiempo necesario para cumplir obligaciones legales, o hasta que pidas que se borren. <mark>[CONFIRMAR plazo]</mark></p>
+
+      <h2>6. Tus derechos</h2>
+      <p>
+        Podés pedir en cualquier momento el acceso, la rectificación, la actualización o la supresión de tus datos escribiendo a
+        {site.email ? <a href={`mailto:${site.email}`}>{site.email}</a> : <mark>[COMPLETAR: email]</mark>}. El pedido de acceso se responde dentro de los 10 días corridos y el de
+        rectificación, actualización o supresión dentro de los 5 días hábiles (arts. 14 y 16 de la Ley 25.326). También podés pedir que no te contactemos más por WhatsApp o email.
+      </p>
+      <p class="legal__box">
+        El titular de los datos personales tiene la facultad de ejercer el derecho de acceso a los mismos en forma gratuita a intervalos no inferiores a seis meses, salvo que se acredite
+        un interés legítimo al efecto conforme lo establecido en el artículo 14, inciso 3 de la Ley N° 25.326. La AGENCIA DE ACCESO A LA INFORMACIÓN PÚBLICA, en su carácter de Órgano
+        de Control de la Ley N° 25.326, tiene la atribución de atender las denuncias y reclamos que interpongan quienes resulten afectados en sus derechos por incumplimiento de las
+        normas vigentes en materia de protección de datos personales.
+      </p>
+
+      <h2>7. Cookies</h2>
+      <p>
+        La web usa cookies de Meta (Pixel) y de Go High Level para medir anuncios y visitas. Si tocás "Rechazar" en el aviso de cookies, el Pixel deja de enviar información (también en
+        tus próximas visitas desde ese navegador) y tus datos del formulario no se envían a Meta. También podés borrar las cookies desde tu navegador.
+      </p>
+
+      <h2>8. Seguridad y menores</h2>
+      <p>Los datos viajan cifrados (HTTPS) y solo acceden a ellos el responsable y su equipo. La web no está dirigida a menores de 18 años.</p>
+
+      <h2>9. Cambios</h2>
+      <p>Si esta política cambia, se publica acá con la fecha de actualización.</p>
+
+      <p class="legal__note t-small"><mark>[CONFIRMAR] revisión legal del texto e inscripción de la base de datos en el Registro Nacional de Bases de Datos (AAIP).</mark></p>
+      <p><a class="link" href="/">{t.back}</a></p>
+    </article>
+  </main>
+  <Footer />
+  <CookieBanner />
+</Base>
+
+<style>
+  .legal {
+    max-width: 46rem;
+  }
+  .legal__date {
+    margin-top: var(--space-3);
+    color: var(--tinta-2);
+  }
+  .legal h2 {
+    font-size: var(--fs-h3);
+    line-height: var(--lh-h3);
+    margin: var(--space-5) 0 var(--space-2);
+  }
+  .legal p,
+  .legal ul {
+    margin-bottom: var(--space-3);
+    color: var(--tinta-2);
+  }
+  .legal ul {
+    padding-left: 1.25rem;
+  }
+  .legal li + li {
+    margin-top: 0.375rem;
+  }
+  .legal a {
+    color: var(--ladrillo-texto);
+  }
+  .legal mark {
+    background: color-mix(in srgb, var(--c-ladrillo) 14%, transparent);
+    color: var(--tinta);
+    padding-inline: 0.15em;
+  }
+  .legal__box {
+    padding: var(--space-4);
+    border: 1px solid var(--tinta);
+    border-radius: var(--radius-md);
+    background: var(--superficie);
+    font-size: var(--fs-small);
+  }
+  .legal__note {
+    margin-top: var(--space-5);
+  }
+</style>

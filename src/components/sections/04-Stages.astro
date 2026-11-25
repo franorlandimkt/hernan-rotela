@@ -1,0 +1,109 @@
+---
+/** El servicio: 3 etapas (rótulo de carátula por etapa) + dirección de obra opcional. */
+import SectionHead from "../ui/SectionHead.astro";
+import CtaBlock from "../ui/CtaBlock.astro";
+import Icon from "../illustrations/Icon.astro";
+import { stages as t } from "../../content/landing";
+---
+
+<section class="section s-superficie stages" id="etapas" aria-labelledby="etapas-title">
+  <div class="container">
+    <SectionHead label={t.label} title={t.h2} sub={t.sub} id="etapas-title" />
+    <ol class="stages__list">
+      {
+        t.items.map((s, i) => (
+          <li class="stages__card reveal" style={`--delay:${i * 0.08}s`}>
+            <header class="stages__head">
+              <span class="etiqueta">{s.tag}</span>
+              <h3 class="t-h2">{s.title}</h3>
+            </header>
+            <p class="stages__text">{s.text}</p>
+            <ul class="checks stages__checks">
+              {s.list.map((li) => (
+                <li>
+                  <Icon name="check" size={18} />
+                  <span>{li}</span>
+                </li>
+              ))}
+            </ul>
+            <p class="stages__time dato">
+              <Icon name="clock" size={16} />
+              <span>{s.time}</span>
+            </p>
+            {s.note && <p class="stages__note t-small">{s.note}</p>}
+          </li>
+        ))
+      }
+    </ol>
+    <div class="stages__extra reveal">
+      <span class="etiqueta">{t.extra.tag}</span>
+      <h3 class="t-h3">{t.extra.title}</h3>
+      <p>{t.extra.text}</p>
+    </div>
+    <CtaBlock label={t.cta} cta="etapas" />
+  </div>
+</section>
+
+<style>
+  .stages__list {
+    list-style: none;
+    display: grid;
+    gap: var(--space-4);
+    counter-reset: etapa;
+  }
+  .stages__card {
+    display: flex;
+    flex-direction: column;
+    background: var(--fondo);
+    border: 1px solid var(--tinta);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+  .stages__head {
+    padding-bottom: var(--space-3);
+    margin-bottom: var(--space-3);
+    border-bottom: 1px solid var(--tinta);
+  }
+  .stages__head .t-h2 {
+    margin-top: var(--space-2);
+  }
+  .stages__text {
+    color: var(--tinta-2);
+  }
+  .stages__checks {
+    margin-top: var(--space-4);
+  }
+  .stages__time {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    margin-top: auto;
+    padding-top: var(--space-4);
+  }
+  .stages__time .ico {
+    margin-top: 0.25rem;
+    color: var(--ladrillo-texto);
+  }
+  .stages__note {
+    margin-top: var(--space-2);
+    color: var(--tinta-2);
+  }
+  .stages__extra {
+    margin-top: var(--space-4);
+    padding: var(--space-4);
+    border: 1px dashed var(--tinta);
+    border-radius: var(--radius-md);
+    max-width: 48rem;
+  }
+  .stages__extra .t-h3 {
+    margin-block: var(--space-2);
+  }
+  .stages__extra p {
+    color: var(--tinta-2);
+  }
+  @media (min-width: 1024px) {
+    .stages__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -18,7 +18,7 @@ import { cookies } from "../../content/landing";
 <style>
   .ck {
     position: fixed;
-    z-index: 45;
+    z-index: 49; /* encima del video flotante (48): "Rechazar" nunca queda tapado */
     left: 0.5rem;
     right: 0.5rem;
     bottom: calc(0.5rem + env(safe-area-inset-bottom));

@@ -1,0 +1,120 @@
+---
+/**
+ * Quién soy: historia en primera persona, la frase "Siempre estoy construyéndome.", el diferencial nº 1,
+ * contadores (valor final en el HTML; el JS solo anima) y el equipo. Foto de Hernán: solo si existe
+ * (landing.ts → about.photo); sin foto, la columna lleva la cita y los números.
+ */
+import SectionHead from "../ui/SectionHead.astro";
+import CtaBlock from "../ui/CtaBlock.astro";
+import Img from "../ui/Img.astro";
+import { about as t } from "../../content/landing";
+import { fmt } from "../../data/site";
+---
+
+<section class="section s-hueso about" id="quien-soy" aria-labelledby="quien-soy-title">
+  <div class="container about__in">
+    <div class="about__story">
+      <SectionHead label={t.label} title={t.h2} id="quien-soy-title" />
+      <div class="about__text reveal">
+        {t.story.map((p) => <p>{p}</p>)}
+      </div>
+      <p class="about__edge t-h3 reveal">{t.edge}</p>
+    </div>
+
+    <aside class="about__side">
+      {t.photo && <Img name={t.photo} alt={t.photoAlt} widths={[480, 800]} sizes="(min-width: 1024px) 36vw, 100vw" class="about__photo" aspect="4/5" />}
+      <blockquote class="about__quote reveal">
+        <p class="t-h2">“{t.quote}”</p>
+        <span class="cota reveal-cota" aria-hidden="true"></span>
+      </blockquote>
+      <dl class="about__counters">
+        {
+          t.counters.map((c) => (
+            <div class="reveal">
+              <dt class="etiqueta">{c.label}</dt>
+              <dd class="about__num" data-count={c.value} data-prefix={c.prefix ?? ""} data-suffix={c.suffix}>
+                {`${c.prefix ?? ""}${fmt(c.value)}${c.suffix}`}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+      <p class="about__team t-small">{t.team}</p>
+    </aside>
+  </div>
+  <div class="container">
+    <CtaBlock label={t.cta} cta="quien-soy" />
+  </div>
+</section>
+
+<style>
+  .about__in {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .about__text {
+    display: grid;
+    gap: var(--space-3);
+    max-width: var(--measure);
+    color: var(--tinta-2);
+  }
+  .about__edge {
+    margin-top: var(--space-5);
+    max-width: 36rem;
+  }
+  .about__photo {
+    width: 100%;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-4);
+  }
+  .about__quote {
+    margin: 0;
+    padding: var(--space-4);
+    background: var(--c-grafito);
+    color: var(--c-hueso);
+    border-radius: var(--radius-md);
+  }
+  .about__quote .t-h2 {
+    font-stretch: var(--stretch-display);
+  }
+  .about__quote .cota {
+    margin-top: var(--space-3);
+    --cota-w: 9rem;
+  }
+  .about__counters {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-4) 0 0;
+  }
+  .about__counters > div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.25rem;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--linea);
+  }
+  .about__num {
+    margin: 0;
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-stretch: var(--stretch-display);
+    font-size: var(--fs-h1);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .about__team {
+    margin-top: var(--space-4);
+    color: var(--tinta-2);
+  }
+  @media (min-width: 1024px) {
+    .about__in {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+      gap: var(--space-6);
+      align-items: start;
+    }
+    .about__side {
+      position: sticky;
+      top: calc(var(--header-h) + var(--space-4));
+    }
+  }
+</style>

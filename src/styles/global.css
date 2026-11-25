@@ -387,6 +387,16 @@ button {
   --btn-fg: var(--fondo);
   --btn-bd: var(--tinta);
 }
+/* Grafito: para el botón del header (el ladrillo queda para el CTA de cada pantalla: uno solo por pantalla) */
+.btn--dark {
+  --btn-bg: var(--c-grafito);
+  --btn-fg: var(--c-hueso);
+  --btn-bd: var(--c-grafito);
+}
+.btn--dark:hover {
+  --btn-bg: #2e2c2a;
+  --btn-bd: #2e2c2a;
+}
 .btn--block {
   width: 100%;
 }

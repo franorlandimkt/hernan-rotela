@@ -14,7 +14,7 @@ const { home = true } = Astro.props;
     <a class="hdr-logo" href="/" aria-label={t.home}>
       <Logo width={168} />
     </a>
-    <a class="btn hdr-cta" href={home ? "#cotiza" : "/?cta=header#cotiza"} data-cta="header">
+    <a class="btn btn--dark hdr-cta" href={home ? "#cotiza" : "/?cta=header#cotiza"} data-cta="header">
       <span class="hdr-cta-long">{t.cta}</span><span class="hdr-cta-short" aria-hidden="true">{t.ctaShort}</span>
     </a>
   </div>

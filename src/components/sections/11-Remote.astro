@@ -1,0 +1,46 @@
+---
+/** Planos a distancia (segunda línea del negocio): todo el país y el exterior, sin plano municipal. */
+import SectionHead from "../ui/SectionHead.astro";
+import CtaBlock from "../ui/CtaBlock.astro";
+import Icon from "../illustrations/Icon.astro";
+import { remote as t } from "../../content/landing";
+---
+
+<section class="section s-grafito s-grid remote" id="a-distancia" aria-labelledby="distancia-title">
+  <div class="container remote__in">
+    <SectionHead label={t.label} title={t.h2} sub={t.text} id="distancia-title" />
+    <div class="remote__facts reveal">
+      <p class="remote__fact">
+        <Icon name="globe" size={22} />
+        <span>{t.proof}</span>
+      </p>
+      <p class="remote__fact">
+        <Icon name="pin" size={22} />
+        <span>{t.note}</span>
+      </p>
+    </div>
+    <CtaBlock label={t.cta} cta="distancia" />
+  </div>
+</section>
+
+<style>
+  .remote__facts {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 44rem;
+  }
+  .remote__fact {
+    display: grid;
+    grid-template-columns: 1.5rem minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: start;
+    padding: var(--space-3) var(--space-4);
+    background: var(--superficie);
+    border: 1px solid var(--linea);
+    border-radius: var(--radius-md);
+  }
+  .remote__fact .ico {
+    margin-top: 0.125rem;
+    color: var(--ladrillo-texto);
+  }
+</style>

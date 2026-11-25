@@ -1,0 +1,70 @@
+---
+/** Para quién es: dos columnas (es para vos / no es para vos), directo, con opinión. Filtra antes del formulario. */
+import SectionHead from "../ui/SectionHead.astro";
+import CtaBlock from "../ui/CtaBlock.astro";
+import Icon from "../illustrations/Icon.astro";
+import { fit as t } from "../../content/landing";
+---
+
+<section class="section s-hueso fit" aria-labelledby="para-quien-title">
+  <div class="container">
+    <SectionHead label={t.label} title={t.h2} id="para-quien-title" />
+    <div class="fit__grid">
+      <div class="fit__col fit__col--yes reveal">
+        <h3 class="t-h3">{t.yesTitle}</h3>
+        <ul class="checks">
+          {t.yes.map((y) => (
+            <li>
+              <Icon name="check" size={18} />
+              <span>{y}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="fit__col fit__col--no reveal" style="--delay:.08s">
+        <h3 class="t-h3">{t.noTitle}</h3>
+        <ul class="checks">
+          {t.no.map((n) => (
+            <li>
+              <Icon name="x" size={18} />
+              <span>{n}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    <CtaBlock label={t.cta} cta="para-quien" />
+  </div>
+</section>
+
+<style>
+  .fit__grid {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .fit__col {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+  }
+  .fit__col .checks {
+    margin-top: var(--space-3);
+  }
+  .fit__col--yes {
+    background: var(--superficie);
+    border: 1px solid var(--tinta);
+  }
+  .fit__col--no {
+    border: 1px dashed var(--tinta-2);
+  }
+  .fit__col--no .checks .ico {
+    color: var(--tinta-2);
+  }
+  .fit__col--no li span {
+    color: var(--tinta-2);
+  }
+  @media (min-width: 768px) {
+    .fit__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

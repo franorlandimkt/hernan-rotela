@@ -2,18 +2,52 @@
 /**
  * HOME — el orden de las secciones se controla acá. Para ocultar una sección: comentá su línea.
  * Cada sección es independiente (src/components/sections/NN-Nombre.astro).
+ * Orden: Hero → El problema → Quién soy → Las etapas → Cómo trabajo → Lo que pagás → Proyectos →
+ * Testimonio → Para quién es → ¿Todavía no tenés el lote? → Planos a distancia → Preguntas → Formulario.
+ * Hilo: el profesional que viene de la obra y firma, presenta y dirige; lo que pagás aparte, antes de firmar.
  */
 import Base from "../layouts/Base.astro";
 import Header from "../components/sections/00-Header.astro";
+import Hero from "../components/sections/01-Hero.astro";
+import Problem from "../components/sections/02-Problem.astro";
+import About from "../components/sections/03-About.astro";
+import Stages from "../components/sections/04-Stages.astro";
+import Process from "../components/sections/05-Process.astro";
+import Costs from "../components/sections/06-Costs.astro";
+import Projects from "../components/sections/07-Projects.astro";
+import Testimonial from "../components/sections/08-Testimonial.astro";
+import Fit from "../components/sections/09-Fit.astro";
+import BeforeLot from "../components/sections/10-BeforeLot.astro";
+import Remote from "../components/sections/11-Remote.astro";
+import Faq from "../components/sections/12-Faq.astro";
 import Form from "../components/sections/13-Form.astro";
+import Footer from "../components/sections/14-Footer.astro";
 import CookieBanner from "../components/ui/CookieBanner.astro";
+import VideoDock from "../components/ui/VideoDock.astro";
+import Lightbox from "../components/ui/Lightbox.astro";
+import { homeSchema } from "../data/schema";
 import { meta } from "../content/landing";
 ---
 
-<Base title={meta.homeTitle} description={meta.homeDescription} path="/">
+<Base title={meta.homeTitle} description={meta.homeDescription} path="/" schema={homeSchema({ title: meta.homeTitle, description: meta.homeDescription })}>
   <Header />
   <main id="contenido">
+    <Hero />
+    <Problem />
+    <About />
+    <Stages />
+    <Process />
+    <Costs />
+    <Projects />
+    <Testimonial />
+    <Fit />
+    <BeforeLot />
+    <Remote />
+    <Faq />
     <Form />
   </main>
+  <Footer />
+  <VideoDock />
+  <Lightbox />
   <CookieBanner />
 </Base>

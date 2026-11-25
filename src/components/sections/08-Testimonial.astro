@@ -1,0 +1,90 @@
+---
+/**
+ * Testimonio: solo reales y suyos. Hoy, Giselle (audio de WhatsApp). Los que tienen publish: false
+ * ([PLACEHOLDER]) no se muestran. Sin schema Review hasta tener reseñas públicas verificables.
+ * Si hay archivo de audio (testimonial.items[].audio, en public/audio/), se muestra el reproductor.
+ */
+import SectionHead from "../ui/SectionHead.astro";
+import CtaBlock from "../ui/CtaBlock.astro";
+import Icon from "../illustrations/Icon.astro";
+import { testimonial as t } from "../../content/landing";
+
+const items = t.items.filter((i) => i.publish);
+---
+
+{
+  items.length > 0 && (
+    <section class="section s-superficie testimonial" aria-labelledby="testimonio-title">
+      <div class="container">
+        <SectionHead label={t.label} title={t.h2} id="testimonio-title" />
+        {items.map((it) => (
+          <figure class="testimonial__item reveal">
+            <blockquote class="testimonial__quote">
+              <p>“{it.text}”</p>
+            </blockquote>
+            <figcaption class="testimonial__by">
+              <span class="t-h3">{it.name}</span>
+              <span class="dato">{it.detail}</span>
+              <span class="etiqueta testimonial__src">
+                <Icon name="audio" size={16} /> {it.source}
+              </span>
+            </figcaption>
+            {it.audio && (
+              <audio class="testimonial__audio" controls preload="none" src={it.audio} aria-label={`${t.audioLabel}: ${it.name}`} />
+            )}
+          </figure>
+        ))}
+        <CtaBlock label={t.cta} cta="testimonio" />
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .testimonial__item {
+    margin: 0;
+    max-width: 52rem;
+  }
+  .testimonial__quote {
+    margin: 0;
+    padding: var(--space-4) var(--space-4) var(--space-4) var(--space-5);
+    background: var(--fondo);
+    border: 1px solid var(--tinta);
+    border-radius: var(--radius-md);
+    position: relative;
+  }
+  .testimonial__quote::before {
+    content: "";
+    position: absolute;
+    left: var(--space-4);
+    top: var(--space-4);
+    bottom: var(--space-4);
+    width: 2px;
+    background: var(--c-ladrillo);
+  }
+  .testimonial__quote p {
+    font-size: var(--fs-body-lg);
+    line-height: 1.6;
+    padding-left: var(--space-3);
+  }
+  .testimonial__by {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    align-items: baseline;
+    margin-top: var(--space-3);
+  }
+  .testimonial__by .dato {
+    color: var(--tinta-2);
+  }
+  .testimonial__src {
+    display: inline-flex;
+    gap: 0.375rem;
+    align-items: center;
+  }
+  .testimonial__audio {
+    margin-top: var(--space-3);
+    width: 100%;
+    max-width: 24rem;
+  }
+</style>

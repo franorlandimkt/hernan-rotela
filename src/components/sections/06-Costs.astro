@@ -1,0 +1,136 @@
+---
+/**
+ * Lo que pagás (grafito): gastos aparte (solo con plano municipal), forma de pago por etapa, medios y
+ * contrato. Los honorarios por m² NO van acá: el precio se ve en el formulario (es el gancho).
+ */
+import SectionHead from "../ui/SectionHead.astro";
+import CtaBlock from "../ui/CtaBlock.astro";
+import Icon from "../illustrations/Icon.astro";
+import { costs as t } from "../../content/landing";
+import { site } from "../../data/site";
+---
+
+<section class="section s-grafito costs" id="lo-que-pagas" aria-labelledby="costos-title">
+  <div class="container">
+    <SectionHead label={t.label} title={t.h2} sub={t.sub} id="costos-title" />
+    <div class="costs__grid">
+      <div class="costs__card costs__extra reveal">
+        <h3 class="t-h3">{t.extraTitle}</h3>
+        <ul class="checks">
+          {site.extraCosts.map((c) => (
+            <li>
+              <Icon name="receipt" size={18} />
+              <span>{c}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="t-small">{t.extraNote}</p>
+      </div>
+
+      <div class="costs__card reveal">
+        <h3 class="t-h3">{t.plansTitle}</h3>
+        <div class="costs__plans">
+          {t.plans.map((p) => (
+            <div class="costs__plan">
+              <p class="etiqueta">{p.title}</p>
+              <ol class="costs__bar" aria-label={p.title}>
+                {site.paymentPlans[p.key].map((s) => (
+                  <li>
+                    <span class="costs__pct dato">{s.pct} %</span>
+                    <span class="costs__when">{s.when}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="costs__card reveal">
+        <h3 class="t-h3">{t.paymentsTitle}</h3>
+        <ul class="checks">
+          {site.payments.map((m) => (
+            <li>
+              <Icon name="card" size={18} />
+              <span>{m}</span>
+            </li>
+          ))}
+        </ul>
+        <h3 class="t-h3 costs__contract">{t.contractTitle}</h3>
+        <ul class="checks">
+          {t.contract.map((c) => (
+            <li>
+              <Icon name="file" size={18} />
+              <span>{c}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    <CtaBlock label={t.cta} cta="costos" />
+  </div>
+</section>
+
+<style>
+  .costs__grid {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .costs__card {
+    padding: var(--space-4);
+    background: var(--superficie);
+    border: 1px solid var(--linea);
+    border-radius: var(--radius-md);
+  }
+  .costs__card .checks {
+    margin-top: var(--space-3);
+  }
+  .costs__extra {
+    border-color: var(--c-ladrillo);
+  }
+  .costs__extra .t-small {
+    margin-top: var(--space-3);
+    color: var(--tinta-2);
+  }
+  .costs__plans {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-3);
+  }
+  /* Hitos de pago: uno debajo del otro (porcentaje + cuándo), con el primero marcado en ladrillo */
+  .costs__bar {
+    list-style: none;
+    display: grid;
+    gap: 3px;
+    margin-top: var(--space-2);
+  }
+  .costs__bar li {
+    display: grid;
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+    gap: 0.5rem;
+    align-items: baseline;
+    padding: 0.5rem 0.625rem;
+    border-left: 3px solid var(--tinta-2);
+    background: var(--fondo);
+  }
+  .costs__bar li:first-child {
+    border-left-color: var(--c-ladrillo);
+  }
+  .costs__pct {
+    font-weight: 500;
+    color: var(--tinta);
+  }
+  .costs__when {
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    color: var(--tinta-2);
+  }
+  .costs__contract {
+    margin-top: var(--space-4);
+  }
+  @media (min-width: 1024px) {
+    .costs__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

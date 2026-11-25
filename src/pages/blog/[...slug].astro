@@ -1,0 +1,120 @@
+---
+/** Plantilla de artículo con schema Article. Borradores (draft: true): solo en `npm run dev`, con noindex y aviso visible. */
+import { getCollection, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Header from "../../components/sections/00-Header.astro";
+import Footer from "../../components/sections/14-Footer.astro";
+import CtaBlock from "../../components/ui/CtaBlock.astro";
+import { site } from "../../data/site";
+import { blog as t } from "../../content/landing";
+
+export async function getStaticPaths() {
+  const posts = (await getCollection("blog")).filter((p) => !p.data.draft || import.meta.env.DEV);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const path = `/blog/${post.id}`;
+const fmtDate = (d: Date) => d.toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" });
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: post.data.title,
+  description: post.data.description,
+  inLanguage: "es-AR",
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+  keywords: post.data.keywords.join(", "),
+  mainEntityOfPage: `${site.url}${path}`,
+  image: `${site.url}${site.ogImage}`,
+  author: { "@type": "Person", "@id": `${site.url}/#hernan`, name: site.person, jobTitle: site.profession },
+  publisher: { "@type": "Organization", "@id": `${site.url}/#org`, name: site.brandFull, logo: { "@type": "ImageObject", url: `${site.url}/brand/habitar-logo.png` } },
+};
+---
+
+<Base title={`${post.data.title} | ${site.brandFull}`} description={post.data.description} {path} ogType="article" schema={schema} noindex={post.data.draft}>
+  <Header home={false} />
+  <main id="contenido" class="section s-hueso">
+    <article class="container post">
+      {post.data.draft && <p class="post__draft etiqueta">{t.draft}</p>}
+      <p class="etiqueta"><a href="/blog">{t.label}</a></p>
+      <h1 class="t-h1">{post.data.title}</h1>
+      <p class="post__meta dato">
+        {t.by} · <time datetime={post.data.pubDate.toISOString()}>{fmtDate(post.data.pubDate)}</time>
+      </p>
+      <div class="post__body">
+        <Content />
+      </div>
+      <CtaBlock label={t.cta} cta="blog" href="/?cta=blog#cotiza" />
+    </article>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .post {
+    max-width: 46rem;
+  }
+  .post__draft {
+    display: inline-block;
+    margin-bottom: var(--space-3);
+    padding: 0.25rem 0.5rem;
+    border: 1px dashed var(--c-ladrillo);
+    color: var(--ladrillo-texto);
+  }
+  .post .t-h1 {
+    margin-top: var(--space-3);
+  }
+  .post__meta {
+    margin-top: var(--space-3);
+    color: var(--tinta-2);
+  }
+  .post__body {
+    margin-top: var(--space-5);
+  }
+  .post__body :global(h2) {
+    font-size: var(--fs-h2);
+    line-height: var(--lh-h2);
+    margin: var(--space-5) 0 var(--space-3);
+  }
+  .post__body :global(h3) {
+    font-size: var(--fs-h3);
+    margin: var(--space-4) 0 var(--space-2);
+  }
+  .post__body :global(p),
+  .post__body :global(ul),
+  .post__body :global(ol) {
+    margin: 0 0 var(--space-3);
+  }
+  .post__body :global(ul),
+  .post__body :global(ol) {
+    padding-left: 1.25rem;
+  }
+  .post__body :global(li + li) {
+    margin-top: 0.375rem;
+  }
+  .post__body :global(a) {
+    color: var(--ladrillo-texto);
+  }
+  .post__body :global(blockquote) {
+    margin: var(--space-4) 0;
+    padding-left: var(--space-4);
+    border-left: 2px solid var(--c-ladrillo);
+    color: var(--tinta-2);
+  }
+  .post__body :global(table) {
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+    margin-bottom: var(--space-4);
+    font-size: var(--fs-small);
+  }
+  .post__body :global(th),
+  .post__body :global(td) {
+    border: 1px solid var(--linea);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+  }
+</style>

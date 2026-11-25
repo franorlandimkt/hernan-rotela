@@ -1,0 +1,457 @@
+---
+/**
+ * Lightbox: cualquier imagen con data-lightbox="<galería>" (Img.astro con la prop `lightbox`) se abre en
+ * pantalla completa sobre fondo oscuro. Sin librerías.
+ *  - Varias imágenes de la misma galería: deslizar a izquierda/derecha (o flechas en la compu), "2 / 6".
+ *  - Zoom: pellizcar con dos dedos o doble toque; con zoom, un dedo mueve la imagen.
+ *  - Cierra con la X, tocando fuera de la imagen, Escape o "atrás" del celular (pushState al abrir,
+ *    popstate al cerrar: "atrás" no saca a la persona de la web).
+ *  - "Quiero algo así": abre el formulario (evento hr:open-form que escucha 13-Form.astro) con el botón
+ *    de origen "render" (form-steps.ts → CTA_ORIGINS). Debajo de la imagen, su descripción (alt).
+ * Copy en landing.ts → lightbox.
+ */
+import Icon from "../illustrations/Icon.astro";
+import { lightbox as t } from "../../content/landing";
+---
+
+<div class="lb" data-lb hidden role="dialog" aria-modal="true" aria-label={t.open}>
+  <div class="lb-top">
+    <p class="lb-count mono" aria-live="polite" data-lb-count></p>
+    <button type="button" class="lb-close" data-lb-close aria-label={t.close}>
+      <Icon name="x" size={28} />
+    </button>
+  </div>
+  <div class="lb-stage" data-lb-stage>
+    <div class="lb-track" data-lb-track></div>
+    <button type="button" class="lb-nav lb-nav--prev" data-lb-prev aria-label={t.prev}><Icon name="arrow-left" size={22} /></button>
+    <button type="button" class="lb-nav lb-nav--next" data-lb-next aria-label={t.next}><Icon name="arrow-right" size={22} /></button>
+  </div>
+  <div class="lb-foot">
+    <p class="lb-caption" data-lb-caption></p>
+    <a class="btn btn--lg lb-cta" href="#cotiza" data-lb-cta>
+      {t.cta}
+      <Icon name="arrow-right" size={20} class="arrow" />
+    </a>
+    <p class="lb-hint">{t.hint}</p>
+  </div>
+</div>
+
+<style is:global>
+  /* Imagen que se puede ampliar: botón sin estilo con el ícono de "ampliar" en la esquina */
+  .lb-trigger {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .lb-badge {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 0.72);
+    color: var(--c-hueso);
+    pointer-events: none;
+    transition: transform 0.2s var(--ease);
+  }
+  .lb-badge .ico {
+    stroke-width: 2;
+  }
+  .lb-trigger:hover .lb-badge {
+    transform: scale(1.08);
+  }
+  .lb-trigger:focus-visible {
+    outline: 3px solid var(--c-hueso);
+    outline-offset: 2px;
+  }
+  html.lb-open {
+    overflow: hidden;
+  }
+
+  .lb {
+    position: fixed;
+    inset: 0;
+    z-index: 120; /* encima del header, el video y el formulario */
+    display: flex;
+    flex-direction: column;
+    background: #0a0a0a;
+    color: var(--c-hueso);
+    height: 100vh;
+    height: 100dvh;
+  }
+  .lb[hidden] {
+    display: none;
+  }
+  .lb-top {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: max(0.5rem, env(safe-area-inset-top)) 0.5rem 0.25rem 1rem;
+  }
+  .lb-count {
+    font-size: var(--fs-sm);
+    color: #d6d6d6;
+  }
+  .lb-close {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: 2px solid rgb(255 255 255 / 0.85);
+    border-radius: 50%;
+    background: rgb(0 0 0 / 0.5);
+    color: var(--c-hueso);
+    cursor: pointer;
+  }
+  .lb-close .ico {
+    stroke-width: 2.25;
+  }
+  .lb-stage {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    touch-action: none; /* los gestos (deslizar, pellizcar) los maneja el script */
+  }
+  .lb-track {
+    display: flex;
+    height: 100%;
+    will-change: transform;
+  }
+  .lb-track.is-anim {
+    transition: transform 0.3s var(--ease);
+  }
+  .lb-slide {
+    flex: 0 0 100%;
+    display: grid;
+    place-items: center;
+    padding: 0.5rem;
+    overflow: hidden;
+  }
+  .lb-slide img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+    transform-origin: center;
+    will-change: transform;
+  }
+  .lb-slide img.is-anim {
+    transition: transform 0.25s var(--ease);
+  }
+  .lb-nav {
+    position: absolute;
+    top: 50%;
+    display: none;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin-top: -1.5rem;
+    border: 1px solid rgb(255 255 255 / 0.6);
+    border-radius: 50%;
+    background: rgb(0 0 0 / 0.55);
+    color: var(--c-hueso);
+    cursor: pointer;
+  }
+  .lb-nav--prev {
+    left: 1rem;
+  }
+  .lb-nav--next {
+    right: 1rem;
+  }
+  .lb-nav:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  @media (hover: hover) and (min-width: 768px) {
+    .lb-nav {
+      display: grid;
+    }
+  }
+  .lb-foot {
+    flex: none;
+    display: grid;
+    justify-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem max(1rem, env(safe-area-inset-bottom));
+    text-align: center;
+  }
+  .lb-caption {
+    min-height: 1.25em;
+    font-weight: 600;
+  }
+  .lb-cta {
+    width: 100%;
+    max-width: 22rem;
+  }
+  .lb-hint {
+    font-size: var(--fs-xs);
+    color: #b5b5b5;
+  }
+  @media (hover: hover) {
+    .lb-hint {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+
+  const lb = document.querySelector<HTMLElement>("[data-lb]");
+  if (lb) {
+    const html = document.documentElement;
+    const stage = lb.querySelector<HTMLElement>("[data-lb-stage]")!;
+    const track = lb.querySelector<HTMLElement>("[data-lb-track]")!;
+    const count = lb.querySelector<HTMLElement>("[data-lb-count]")!;
+    const caption = lb.querySelector<HTMLElement>("[data-lb-caption]")!;
+    const closeBtn = lb.querySelector<HTMLButtonElement>("[data-lb-close]")!;
+    const prevBtn = lb.querySelector<HTMLButtonElement>("[data-lb-prev]")!;
+    const nextBtn = lb.querySelector<HTMLButtonElement>("[data-lb-next]")!;
+    const cta = lb.querySelector<HTMLAnchorElement>("[data-lb-cta]")!;
+
+    type Item = { src: string; alt: string; lot: string };
+    let items: Item[] = [];
+    let imgs: HTMLImageElement[] = [];
+    let idx = 0;
+    let open = false;
+    let lastFocus: HTMLElement | null = null;
+    let inerted: HTMLElement[] = [];
+
+    // ---- Zoom (solo la imagen actual) ----
+    let scale = 1;
+    let tx = 0;
+    let ty = 0;
+    const cur = () => imgs[idx];
+    function applyZoom(anim = false) {
+      const img = cur();
+      if (!img) return;
+      // la imagen no se sale de su lugar más de lo que creció
+      const mx = ((scale - 1) * img.offsetWidth) / 2;
+      const my = ((scale - 1) * img.offsetHeight) / 2;
+      tx = Math.max(-mx, Math.min(mx, tx));
+      ty = Math.max(-my, Math.min(my, ty));
+      img.classList.toggle("is-anim", anim);
+      img.style.transform = scale === 1 ? "" : `translate(${tx}px, ${ty}px) scale(${scale})`;
+    }
+    function resetZoom(anim = false) {
+      scale = 1;
+      tx = ty = 0;
+      applyZoom(anim);
+    }
+
+    // ---- Galería ----
+    function load(i: number) {
+      const img = imgs[i];
+      if (img && !img.src) img.src = items[i].src;
+    }
+    function go(i: number, anim = true) {
+      if (cur()) resetZoom();
+      idx = Math.max(0, Math.min(items.length - 1, i));
+      track.classList.toggle("is-anim", anim);
+      track.style.transform = `translateX(${-idx * 100}%)`;
+      [idx - 1, idx, idx + 1].forEach(load);
+      count.textContent = items.length > 1 ? `${idx + 1} / ${items.length}` : "";
+      caption.textContent = items[idx].alt;
+      prevBtn.disabled = idx === 0;
+      nextBtn.disabled = idx === items.length - 1;
+    }
+
+    function openAt(trigger: HTMLElement) {
+      const group = trigger.dataset.lightbox!;
+      const els = [...document.querySelectorAll<HTMLElement>("[data-lightbox]")].filter((el) => el.dataset.lightbox === group);
+      items = els.map((el) => ({ src: el.dataset.lbSrc || "", alt: el.dataset.lbAlt || "", lot: el.dataset.lot || "" }));
+      track.replaceChildren();
+      imgs = items.map((it) => {
+        const slide = document.createElement("div");
+        slide.className = "lb-slide";
+        const img = document.createElement("img");
+        img.alt = it.alt;
+        img.decoding = "async";
+        img.draggable = false;
+        slide.append(img);
+        track.append(slide);
+        return img;
+      });
+      lastFocus = document.activeElement as HTMLElement | null;
+      lb.hidden = false;
+      html.classList.add("lb-open");
+      // el resto de la página queda inerte (foco y lectores de pantalla solo en el lightbox)
+      inerted = [];
+      for (let n: HTMLElement = lb; n.parentElement && n !== document.body; n = n.parentElement) {
+        for (const s of n.parentElement.children) if (s !== n && s instanceof HTMLElement && !s.inert && s.tagName !== "SCRIPT") inerted.push(s);
+      }
+      inerted.forEach((n) => (n.inert = true));
+      go(Math.max(0, els.indexOf(trigger)), false);
+      open = true;
+      // "atrás" del celular cierra el lightbox (no sale de la web)
+      history.pushState({ hrLightbox: true }, "", location.href);
+      closeBtn.focus({ preventScroll: true });
+    }
+    /** Cierra sin tocar el historial (lo usan close y "Quiero algo así"). */
+    function hide() {
+      if (!open) return;
+      open = false;
+      resetZoom();
+      lb.hidden = true;
+      html.classList.remove("lb-open");
+      inerted.forEach((n) => (n.inert = false));
+      inerted = [];
+    }
+    function close(fromHistory = false) {
+      if (!open) return;
+      hide();
+      lastFocus?.focus({ preventScroll: true });
+      if (!fromHistory) history.back(); // saca la entrada que agregó openAt
+    }
+
+    document.addEventListener("click", (e) => {
+      const trigger = (e.target as HTMLElement).closest<HTMLElement>(".lb-trigger[data-lightbox]");
+      if (!trigger) return;
+      e.preventDefault();
+      openAt(trigger);
+    });
+    closeBtn.addEventListener("click", () => close());
+    prevBtn.addEventListener("click", () => go(idx - 1));
+    nextBtn.addEventListener("click", () => go(idx + 1));
+    addEventListener("popstate", () => {
+      if (open) close(true);
+    });
+    lb.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") close();
+      else if (e.key === "ArrowLeft") go(idx - 1);
+      else if (e.key === "ArrowRight") go(idx + 1);
+    });
+    // "Quiero algo así": se cierra el lightbox y se abre el formulario en la misma entrada del historial
+    // (así "atrás" cierra el formulario y no vuelve a la imagen)
+    cta.addEventListener("click", (e) => {
+      e.preventDefault();
+      hide();
+      document.dispatchEvent(new CustomEvent("hr:open-form", { detail: { origen: "render", replaceEntry: true } }));
+    });
+
+    // ---- Gestos: deslizar, pellizcar, mover con zoom, doble toque, tocar fuera ----
+    const pts = new Map<number, { x: number; y: number }>();
+    let sx = 0;
+    let sy = 0;
+    let stx = 0;
+    let sty = 0;
+    let moved = false;
+    let pinch: { d: number; s: number; mx: number; my: number; tx: number; ty: number } | null = null;
+    let lastTap = 0;
+    const dist = () => {
+      const [a, b] = [...pts.values()];
+      return Math.hypot(a.x - b.x, a.y - b.y);
+    };
+    const mid = () => {
+      const [a, b] = [...pts.values()];
+      return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    };
+    function startOne(x: number, y: number) {
+      sx = x;
+      sy = y;
+      stx = tx;
+      sty = ty;
+    }
+    stage.addEventListener("pointerdown", (e) => {
+      if ((e.target as HTMLElement).closest(".lb-nav")) return;
+      try {
+        stage.setPointerCapture(e.pointerId);
+      } catch {
+        /* algunos navegadores internos no lo permiten: los gestos siguen andando */
+      }
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 1) {
+        moved = false;
+        startOne(e.clientX, e.clientY);
+      } else if (pts.size === 2) {
+        const m = mid();
+        pinch = { d: dist(), s: scale, mx: m.x, my: m.y, tx, ty };
+        moved = true;
+        track.style.transform = `translateX(${-idx * 100}%)`;
+      }
+    });
+    stage.addEventListener("pointermove", (e) => {
+      if (!pts.has(e.pointerId)) return;
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pinch && pts.size >= 2) {
+        const m = mid();
+        scale = Math.max(1, Math.min(4, (pinch.s * dist()) / pinch.d));
+        tx = pinch.tx + (m.x - pinch.mx);
+        ty = pinch.ty + (m.y - pinch.my);
+        applyZoom();
+        return;
+      }
+      const dx = e.clientX - sx;
+      const dy = e.clientY - sy;
+      if (Math.abs(dx) > 6 || Math.abs(dy) > 6) moved = true;
+      if (!moved) return;
+      if (scale > 1) {
+        tx = stx + dx;
+        ty = sty + dy;
+        applyZoom();
+      } else if (items.length > 1) {
+        track.classList.remove("is-anim");
+        track.style.transform = `translateX(calc(${-idx * 100}% + ${dx}px))`;
+      }
+    });
+    function end(e: PointerEvent) {
+      if (!pts.has(e.pointerId)) return;
+      const p = pts.get(e.pointerId)!;
+      pts.delete(e.pointerId);
+      if (pinch) {
+        if (pts.size < 2) {
+          pinch = null;
+          if (scale < 1.05) resetZoom(true);
+          const rest = [...pts.values()][0];
+          if (rest) startOne(rest.x, rest.y);
+        }
+        return;
+      }
+      if (pts.size) return;
+      const dx = p.x - sx;
+      const dy = p.y - sy;
+      if (moved) {
+        if (scale === 1 && items.length > 1 && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) go(idx + (dx < 0 ? 1 : -1));
+        else if (scale === 1) go(idx);
+        return;
+      }
+      // toque sin mover: doble toque sobre la imagen = zoom; toque fuera de la imagen = cerrar
+      const onImg = (e.target as HTMLElement) === cur() || document.elementFromPoint(p.x, p.y) === cur();
+      const now = Date.now();
+      if (onImg && now - lastTap < 320) {
+        lastTap = 0;
+        if (scale > 1) resetZoom(true);
+        else {
+          const r = cur().getBoundingClientRect();
+          scale = 2.5;
+          tx = (r.left + r.width / 2 - p.x) * 1.5;
+          ty = (r.top + r.height / 2 - p.y) * 1.5;
+          applyZoom(true);
+        }
+        return;
+      }
+      lastTap = onImg ? now : 0;
+      if (!onImg) close();
+    }
+    stage.addEventListener("pointerup", end);
+    stage.addEventListener("pointercancel", (e) => {
+      pts.delete(e.pointerId);
+      pinch = null;
+      if (scale === 1) go(idx);
+    });
+    // Tocar el fondo arriba o abajo (fuera de la imagen, de la X y del botón) también cierra
+    lb.addEventListener("click", (e) => {
+      if (e.target === lb || (e.target as HTMLElement).matches(".lb-top, .lb-foot")) close();
+    });
+  }
+</script>

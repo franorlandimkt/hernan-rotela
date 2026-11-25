@@ -1,0 +1,98 @@
+---
+/** Pie (grafito): logo inverso, título (sin matrícula ni colegio), base, redes con URL, privacidad y copyright. */
+import Logo from "../ui/Logo.astro";
+import Icon from "../illustrations/Icon.astro";
+import { footer as t } from "../../content/landing";
+import { site, socialList } from "../../data/site";
+
+const year = new Date().getFullYear();
+const nets = socialList();
+---
+
+<footer class="ft s-grafito">
+  <div class="container ft__in">
+    <div class="ft__brand">
+      <Logo tone="light" width={180} />
+      <p class="ft__who t-small">{site.person} · {site.credential}</p>
+      <p class="ft__base etiqueta">{t.base}</p>
+    </div>
+    {
+      nets.length > 0 && (
+        <nav class="ft__social" aria-label={t.socialTitle}>
+          <p class="etiqueta">{t.socialTitle}</p>
+          <ul>
+            {nets.map(([key, s]) => (
+              <li>
+                <a href={s.url} target="_blank" rel="noopener" aria-label={`${s.name}${s.followers ? `, ${s.followers} ${t.followers}` : ""}`}>
+                  <Icon name={key} size={18} />
+                  {s.followers && <span class="dato">{s.followers}</span>}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+  </div>
+  <div class="container ft__legal t-small">
+    <a href="/politica-de-privacidad">{t.privacy}</a>
+    <span>© {year} {site.brandFull}. {t.rights}</span>
+  </div>
+</footer>
+
+<style>
+  .ft {
+    background: var(--fondo);
+    color: var(--tinta);
+    padding-block: var(--space-6) calc(var(--space-4) + var(--cookie-h, 0px));
+    border-top: 2px solid var(--c-ladrillo);
+  }
+  .ft__in {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .ft__who {
+    margin-top: var(--space-3);
+  }
+  .ft__base {
+    margin-top: var(--space-2);
+  }
+  .ft__social ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+  .ft__social a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 0.875rem;
+    border: 1px solid var(--linea);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+  }
+  .ft__social a:hover {
+    border-color: var(--tinta);
+  }
+  .ft__legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--linea);
+    color: var(--tinta-2);
+  }
+  .ft__legal a {
+    color: var(--tinta);
+  }
+  @media (min-width: 768px) {
+    .ft__in {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+  }
+</style>

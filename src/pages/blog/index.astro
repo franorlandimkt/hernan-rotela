@@ -1,0 +1,71 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Header from "../../components/sections/00-Header.astro";
+import Footer from "../../components/sections/14-Footer.astro";
+import { blog as t } from "../../content/landing";
+
+const all = (await getCollection("blog")).sort((a, b) => +b.data.pubDate - +a.data.pubDate);
+const posts = all.filter((p) => !p.data.draft);
+const drafts = import.meta.env.DEV ? all.filter((p) => p.data.draft) : [];
+const fmtDate = (d: Date) => d.toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" });
+---
+
+<Base title={t.title} description={t.description} path="/blog" noindex={posts.length === 0}>
+  <Header home={false} />
+  <main id="contenido" class="section s-hueso s-grid">
+    <div class="container blog">
+      <p class="etiqueta">{t.label}</p>
+      <h1 class="t-h1">{t.h1}</h1>
+      {posts.length === 0 && <p class="lead">{t.empty}</p>}
+      <ul class="blog__list">
+        {
+          [...posts, ...drafts].map((p) => (
+            <li>
+              <a href={`/blog/${p.id}`}>
+                <span class="etiqueta">
+                  {fmtDate(p.data.pubDate)}
+                  {p.data.draft && ` · ${t.draft}`}
+                </span>
+                <h2 class="t-h3">{p.data.title}</h2>
+                <p>{p.data.description}</p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .blog .t-h1 {
+    margin-top: var(--space-3);
+  }
+  .blog__list {
+    list-style: none;
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+    max-width: 48rem;
+  }
+  .blog__list a {
+    display: block;
+    padding: var(--space-4);
+    background: var(--superficie);
+    border: 1px solid var(--linea);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+  }
+  .blog__list a:hover {
+    border-color: var(--tinta);
+  }
+  .blog__list h2 {
+    margin-top: var(--space-2);
+  }
+  .blog__list p {
+    margin-top: var(--space-2);
+    color: var(--tinta-2);
+  }
+</style>

@@ -11,8 +11,9 @@ export default defineConfig({
   integrations: [
     sitemap({
       // /llamada-agendada es la página de después de agendar (noindex): fuera del sitemap.
-      // El blog entra (los borradores, draft: true, no se publican: ver src/pages/blog/[...slug].astro).
-      filter: (page) => !["/llamada-agendada"].some((p) => page.includes(p)),
+      // Los artículos publicados del blog entran (los borradores, draft: true, no se generan). El índice /blog
+      // queda afuera mientras no haya ninguno publicado (es noindex): al publicar el primero, sacá "/blog" de acá.
+      filter: (page) => !["/llamada-agendada"].some((p) => page.includes(p)) && !page.replace(/\/$/, "").endsWith("/blog"),
     }),
   ],
   image: { responsiveStyles: false },

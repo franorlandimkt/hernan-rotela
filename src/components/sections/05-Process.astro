@@ -1,0 +1,94 @@
+---
+/** Cómo trabajo: 6 pasos numerados (marcan un orden) + "Qué necesito de vos para arrancar" + CTA. */
+import SectionHead from "../ui/SectionHead.astro";
+import CtaBlock from "../ui/CtaBlock.astro";
+import Icon from "../illustrations/Icon.astro";
+import { process as t } from "../../content/landing";
+---
+
+<section class="section s-hueso s-grid process" id="como-trabajo" aria-labelledby="como-trabajo-title">
+  <div class="container">
+    <SectionHead label={t.label} title={t.h2} id="como-trabajo-title" />
+    <ol class="process__steps">
+      {
+        t.steps.map((s, i) => (
+          <li class="process__step reveal" style={`--delay:${i * 0.05}s`}>
+            <span class="process__num dato" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+            <div>
+              <h3 class="t-h3 process__title">
+                <Icon name={s.icon} size={22} />
+                <span>{s.title}</span>
+              </h3>
+              <p>{s.text}</p>
+              <p class="process__time etiqueta">{s.time}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="process__needs reveal">
+      <h3 class="t-h3">{t.needsTitle}</h3>
+      <ul class="checks">
+        {t.needs.map((n) => (
+          <li>
+            <Icon name="file" size={18} />
+            <span>{n}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <CtaBlock label={t.cta} cta="como-trabajo" />
+  </div>
+</section>
+
+<style>
+  .process__steps {
+    list-style: none;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--tinta);
+  }
+  .process__step {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: var(--space-3);
+    padding-block: var(--space-4);
+    border-bottom: 1px solid var(--linea);
+    background: color-mix(in srgb, var(--fondo) 88%, transparent);
+  }
+  .process__num {
+    font-weight: 500;
+    color: var(--ladrillo-texto);
+    padding-top: 0.125rem;
+  }
+  .process__title {
+    display: flex;
+    gap: 0.625rem;
+    align-items: center;
+  }
+  .process__step p {
+    margin-top: var(--space-2);
+    color: var(--tinta-2);
+    max-width: 40rem;
+  }
+  .process__step .process__time {
+    margin-top: var(--space-2);
+  }
+  .process__needs {
+    margin-top: var(--space-5);
+    padding: var(--space-4);
+    background: var(--superficie);
+    border: 1px solid var(--tinta);
+    border-radius: var(--radius-md);
+    max-width: 44rem;
+  }
+  .process__needs .checks {
+    margin-top: var(--space-3);
+  }
+  @media (min-width: 1024px) {
+    .process__steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-6);
+    }
+  }
+</style>

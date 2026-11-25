@@ -1,0 +1,67 @@
+---
+/** El problema (grafito): lo que nadie te dice antes de construir. 4 tarjetas + cierre + CTA. */
+import SectionHead from "../ui/SectionHead.astro";
+import CtaBlock from "../ui/CtaBlock.astro";
+import Icon from "../illustrations/Icon.astro";
+import { problem as t } from "../../content/landing";
+---
+
+<section class="section s-grafito problem" aria-labelledby="problema-title">
+  <div class="container">
+    <SectionHead label={t.label} title={t.h2} id="problema-title" />
+    <ul class="problem__grid">
+      {
+        t.points.map((p, i) => (
+          <li class="problem__card reveal" style={`--delay:${i * 0.06}s`}>
+            <span class="problem__ico" aria-hidden="true">
+              <Icon name={p.icon} size={26} />
+            </span>
+            <h3 class="t-h3">{p.title}</h3>
+            <p>{p.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="problem__closing t-body-lg reveal">{t.closing}</p>
+    <CtaBlock label={t.cta} cta="problema" />
+  </div>
+</section>
+
+<style>
+  .problem__grid {
+    list-style: none;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .problem__card {
+    padding: var(--space-4);
+    background: var(--superficie);
+    border: 1px solid var(--linea);
+    border-radius: var(--radius-md);
+  }
+  .problem__card p {
+    margin-top: var(--space-2);
+    color: var(--tinta-2);
+  }
+  .problem__ico {
+    display: inline-flex;
+    margin-bottom: var(--space-3);
+    color: var(--tinta);
+  }
+  .problem__closing {
+    margin-top: var(--space-5);
+    max-width: 44rem;
+    padding-left: var(--space-4);
+    border-left: 2px solid var(--c-ladrillo);
+  }
+  @media (min-width: 768px) {
+    .problem__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1200px) {
+    .problem__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

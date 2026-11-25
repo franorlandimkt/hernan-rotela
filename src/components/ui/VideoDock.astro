@@ -1,0 +1,574 @@
+---
+/**
+ * Video flotante de Hernán (VSL, vertical 9:16).
+ *  - Sin video todavía (site.video.src vacío): se ve el póster [PLACEHOLDER] y no intenta reproducir.
+ *  - NO se reproduce solo: hasta la primera interacción se ve quieto, con el póster (primer cuadro).
+ *  - Arranca, desde el principio y con sonido, en la PRIMERA interacción con la página (toque, clic o
+ *    tecla en cualquier parte; el scroll no cuenta como gesto para el navegador). Una sola vez: después
+ *    se quitan los listeners. Si el navegador no deja sonar, queda quieto y arranca en el próximo toque.
+ *  - Botón chico de silenciar/activar sonido (accesibilidad), botón para verlo en grande con controles
+ *    y X para cerrarlo.
+ *  - Se arrastra a cualquier lugar de la pantalla y sigue a la persona mientras hace scroll.
+ *  - Desde tablet la página le deja una columna libre a la derecha para que no tape contenido, pero
+ *    solo lo que hace falta: si el video entra en el margen que sobra al costado del contenido
+ *    (monitores anchos), el contenido no se achica ni se corre.
+ *  - Celular: chico (7.75rem, 124 px). En el hero va en el hueco reservado al lado de los datos
+ *    ([data-vd-slot]) y lo sigue al hacer scroll; cuando el hueco sale de la pantalla, pasa a la esquina.
+ *  - Se ve aunque el JS no corra o tarde (bloqueador, extensión, red lenta): por CSS ya está abajo a la
+ *    derecha y la página ya le deja su columna. El JS después lo acomoda, lo arrastra y le da sonido.
+ *  - La X lo cierra solo en esta vista: al recargar vuelve a aparecer.
+ *  - Mientras el formulario está abierto (pop-up de 13-Form.astro) se pausa y se oculta (eventos hr:form-open / hr:form-close).
+ *  - Nada depende del evento `load` (el Pixel en el <head> lo puede demorar o colgar).
+ * Archivo del video: site.video.src · Textos: landing.ts → videoDock.
+ */
+import { videoDock as t } from "../../content/landing";
+import { site } from "../../data/site";
+
+const hasVideo = !!site.video.src;
+---
+
+<div class:list={["vd", { "vd--pending": !hasVideo }]} data-vd aria-label={hasVideo ? t.label : t.pending} role="region" data-l-sound={t.sound} data-l-mute={t.mute} data-l-expand={t.expand} data-l-shrink={t.shrink}>
+  <div class="vd__backdrop" data-vd-min></div>
+  <div class="vd__frame">
+    <video class="vd__video" muted playsinline loop preload="none" poster={site.video.poster} data-src={site.video.src} width="720" height="1280" aria-label={t.label}></video>
+    <!-- Toque sobre el video: lo abre en grande (los botones de abajo hacen lo mismo con teclado) -->
+    <button type="button" class="vd__tap" data-vd-tap tabindex="-1" aria-hidden="true"></button>
+    <button type="button" class="vd__btn vd__close" data-vd-close aria-label={t.close}>
+      <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path></svg>
+    </button>
+    <button type="button" class="vd__btn vd__expand" data-vd-expand aria-label={t.expand}>
+      <svg class="vd__i-expand" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      <svg class="vd__i-min" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M20 10h-6V4M4 14h6v6M14 10l7-7M10 14l-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </button>
+    <button type="button" class="vd__btn vd__mute" data-vd-mute aria-label={t.sound} aria-pressed="false">
+      <svg class="vd__i-off" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"></path><path d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+      <svg class="vd__i-on" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"></path><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  /* Sin video todavía: solo el póster, sin botón de sonido */
+  .vd--pending .vd__mute {
+    display: none;
+  }
+  .vd {
+    --vd-w: 7.75rem; /* celular: chico, para no tapar el texto mientras se lee */
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 48;
+    width: var(--vd-w);
+    transform: translate3d(var(--vd-x, -999px), var(--vd-y, -999px), 0);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  /* se mueve con una transición corta (no mientras se arrastra). El ancho cambia sin transición:
+     el script lo mide para calcular la posición. */
+  /* Sin JS (o antes de que corra): abajo a la derecha, donde lo deja el JS por defecto */
+  .vd:not(.is-js) {
+    left: auto;
+    top: auto;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    transform: none;
+  }
+  @media (min-width: 1024px) {
+    .vd:not(.is-js) {
+      right: 1.5rem;
+    }
+  }
+  .vd.is-placed:not(.is-dragging):not(.is-full):not(.is-following) {
+    transition: transform 0.35s var(--ease);
+  }
+  .vd[hidden] {
+    display: none;
+  }
+  .vd__frame {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    width: 100%;
+    border: 1.5px solid var(--c-grafito);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--c-grafito);
+    box-shadow: 0 10px 28px rgb(22 22 22 / 0.22);
+    cursor: grab;
+  }
+  /* Navegadores sin aspect-ratio (Safari 14 y anteriores): alto explícito, si no el marco mide 0 */
+  @supports not (aspect-ratio: 1) {
+    .vd__frame {
+      height: calc(var(--vd-w) * 16 / 9);
+    }
+  }
+  .vd.is-dragging .vd__frame {
+    cursor: grabbing;
+    box-shadow: 0 14px 36px rgb(22 22 22 / 0.3);
+  }
+  .vd__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+  .vd__tap {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .vd__btn {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 0.72);
+    color: var(--c-hueso);
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Área táctil más grande que el círculo visible */
+  .vd__btn::before {
+    content: "";
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    bottom: -0.5rem;
+    left: -0.5rem;
+  }
+  .vd__btn:hover {
+    background: var(--c-grafito);
+  }
+  .vd__close {
+    top: 0.375rem;
+    right: 0.375rem;
+  }
+  .vd__expand {
+    top: 0.375rem;
+    left: 0.375rem;
+  }
+  .vd__mute {
+    bottom: 0.375rem;
+    left: 0.375rem;
+  }
+  .vd__i-min,
+  .vd__i-on,
+  .vd.is-sound .vd__i-off,
+  .vd.is-full .vd__i-expand {
+    display: none;
+  }
+  .vd.is-sound .vd__i-on,
+  .vd.is-full .vd__i-min {
+    display: block;
+  }
+  .vd__backdrop {
+    display: none;
+  }
+
+  /* ---- En grande: centrado, con controles nativos del navegador ---- */
+  .vd.is-full {
+    z-index: 90;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    transform: none;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+  }
+  .vd.is-full .vd__backdrop {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgb(0 0 0 / 0.85);
+  }
+  .vd.is-full .vd__frame {
+    width: auto;
+    height: min(88vh, 52rem);
+    height: min(88dvh, 52rem);
+    max-width: 100%;
+    cursor: auto;
+    border-color: var(--c-hueso);
+    box-shadow: none;
+  }
+  .vd.is-full .vd__video {
+    pointer-events: auto;
+  }
+  .vd.is-full .vd__tap,
+  .vd.is-full .vd__mute {
+    display: none;
+  }
+  .vd.is-full .vd__btn {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  .vd.is-full .vd__btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  @media (min-width: 768px) {
+    .vd {
+      --vd-w: 11rem;
+    }
+  }
+  @media (min-width: 1280px) {
+    .vd {
+      --vd-w: 13.25rem;
+    }
+  }
+
+  /* Tablet y desktop: la página le deja una columna libre a la derecha para que el video no tape nada.
+     Solo lo que falta: al ancho del video (+32px de aire) se le descuenta el margen que ya sobra al
+     costado del contenido (en monitores anchos el contenido queda centrado y del mismo ancho).
+     --vd-pad lo usan también los carruseles para no asomar por debajo del video.
+     En el celular no hay lugar: el video flota y se puede arrastrar. */
+  @media (min-width: 768px) {
+    :global(html:not(.vd-off)) {
+      --vd-pad: max(var(--gutter), calc(var(--vd-reserve, 10rem) + 0.5rem - max(0px, (100vw - var(--container)) / 2 - var(--gutter))));
+    }
+    :global(html:not(.vd-off)) :global(main .container),
+    :global(html:not(.vd-off)) :global(footer .container) {
+      padding-right: var(--vd-pad);
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-vd]");
+  if (root) initDock(root);
+
+  function initDock(el: HTMLElement) {
+    const html = document.documentElement;
+    // Desde acá lo maneja el JS: queda oculto hasta show() (así no salta de lugar al acomodarse)
+    el.hidden = true;
+    el.classList.add("is-js");
+    const video = el.querySelector<HTMLVideoElement>("video")!;
+    const tapBtn = el.querySelector<HTMLButtonElement>("[data-vd-tap]")!;
+    const muteBtn = el.querySelector<HTMLButtonElement>("[data-vd-mute]")!;
+    const expandBtn = el.querySelector<HTMLButtonElement>("[data-vd-expand]")!;
+    const closeBtn = el.querySelector<HTMLButtonElement>("[data-vd-close]")!;
+    const frame = el.querySelector<HTMLElement>(".vd__frame")!;
+    const labels = { sound: el.dataset.lSound!, mute: el.dataset.lMute!, expand: el.dataset.lExpand!, min: el.dataset.lShrink! };
+    const KEY_POS = "hr_vd_pos";
+    const M = 12; // margen con los bordes de la pantalla
+
+    const store = {
+      get(k: string) {
+        try {
+          return sessionStorage.getItem(k);
+        } catch {
+          return null;
+        }
+      },
+      set(k: string, v: string) {
+        try {
+          sessionStorage.setItem(k, v);
+        } catch {}
+      },
+    };
+
+    let closed = false; // la persona lo cerró con la X (solo en esta vista)
+    let x = 0;
+    let y = 0;
+    let placed = false; // la persona lo movió a mano
+    let heard = false; // ya sonó alguna vez (el primer sonido arranca el video desde el principio)
+    let full = false;
+
+    // ---------- Posición ----------
+    const size = () => ({ w: el.offsetWidth, h: el.offsetHeight });
+    const px = (v: string) => parseFloat(getComputedStyle(html).getPropertyValue(v)) || 0;
+    const bottomReserve = () => {
+      const cookie = html.classList.contains("has-cookie-banner") ? px("--cookie-h") : 0;
+      return cookie + M;
+    };
+    const topLimit = () => (document.querySelector<HTMLElement>(".hdr")?.offsetHeight ?? 56) + 8;
+    function clamp() {
+      const { w, h } = size();
+      x = Math.min(Math.max(M, x), innerWidth - w - M);
+      y = Math.min(Math.max(topLimit(), y), innerHeight - h - M);
+    }
+    function apply() {
+      el.style.setProperty("--vd-x", `${Math.round(x)}px`);
+      el.style.setProperty("--vd-y", `${Math.round(y)}px`);
+    }
+    // Celular: el hero tiene un hueco reservado para el video al lado de los datos ([data-vd-slot]).
+    // Mientras ese hueco se ve entero, el video va encima y lo sigue al hacer scroll (no tapa texto ni el
+    // botón); cuando el hueco sale de la pantalla, el video pasa a la esquina.
+    const slot = () => (innerWidth < 768 ? document.querySelector<HTMLElement>("[data-vd-slot]") : null);
+    const slotOnScreen = () => {
+      const r = slot()?.getBoundingClientRect();
+      // Mientras el hueco no pasó por debajo del header, el video va ahí: si el hueco está debajo del pliegue
+      // (celulares bajos, banner de cookies), el video también, y aparece al bajar (nunca sube a tapar texto).
+      return !!r && r.width > 0 && r.top >= topLimit();
+    };
+    let inHero = false;
+    function defaultPos() {
+      el.style.removeProperty("--vd-w");
+      inHero = slotOnScreen();
+      if (inHero) {
+        const r = slot()!.getBoundingClientRect();
+        el.style.setProperty("--vd-w", `${Math.round(r.width)}px`);
+        x = r.left;
+        y = r.top;
+        return;
+      }
+      const { w, h } = size();
+      x = innerWidth - w - (innerWidth >= 1024 ? 24 : M);
+      y = innerHeight - h - bottomReserve();
+    }
+    function place() {
+      if (!placed) defaultPos();
+      if (placed || !inHero) clamp();
+      apply();
+      html.style.setProperty("--vd-reserve", `${size().w + 32}px`);
+      requestAnimationFrame(() => el.classList.add("is-placed"));
+    }
+
+    // ---------- Arrastre (mouse y touch) ----------
+    let drag: { id: number; sx: number; sy: number; ox: number; oy: number; moved: boolean } | null = null;
+    frame.addEventListener("pointerdown", (e) => {
+      if (full || (e.target as HTMLElement).closest(".vd__btn")) return;
+      drag = { id: e.pointerId, sx: e.clientX, sy: e.clientY, ox: x, oy: y, moved: false };
+    });
+    frame.addEventListener("pointermove", (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.sx;
+      const dy = e.clientY - drag.sy;
+      if (!drag.moved) {
+        if (Math.hypot(dx, dy) < 6) return;
+        // Captura recién al moverse: así un toque simple sigue llegando a los botones
+        drag.moved = true;
+        frame.setPointerCapture(e.pointerId);
+      }
+      el.classList.add("is-dragging");
+      x = drag.ox + dx;
+      y = drag.oy + dy;
+      clamp();
+      apply();
+    });
+    let suppressClick = false;
+    const endDrag = (e: PointerEvent) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const wasMoved = drag.moved;
+      drag = null;
+      el.classList.remove("is-dragging");
+      if (wasMoved) {
+        placed = true;
+        store.set(KEY_POS, JSON.stringify({ x: x / innerWidth, y: y / innerHeight }));
+        suppressClick = true;
+        setTimeout(() => (suppressClick = false), 0);
+      }
+    };
+    frame.addEventListener("pointerup", endDrag);
+    frame.addEventListener("pointercancel", endDrag);
+
+    // ---------- Sonido y reproducción ----------
+    function setSound(on: boolean) {
+      video.muted = !on;
+      el.classList.toggle("is-sound", on);
+      muteBtn.setAttribute("aria-pressed", String(on));
+      muteBtn.setAttribute("aria-label", on ? labels.mute : labels.sound);
+    }
+    function load() {
+      // Sin archivo de video todavía: queda el póster [PLACEHOLDER]
+      if (!video.src && video.dataset.src) video.src = video.dataset.src;
+    }
+    function play() {
+      load();
+      return video.play().catch(() => {});
+    }
+    /** Reproduce con sonido. Si el navegador no lo permite, queda quieto (nunca suena ni corre mudo). */
+    let trying = false;
+    function listen() {
+      if (trying) return;
+      trying = true;
+      load();
+      const t0 = video.currentTime;
+      if (!heard) video.currentTime = 0; // la primera vez que suena, desde el principio
+      setSound(true);
+      return video
+        .play()
+        .then(() => {
+          heard = true;
+          stopAutoSound();
+        })
+        .catch(() => {
+          // el navegador no dejó: vuelve a donde iba y queda quieto hasta el próximo toque
+          setSound(false);
+          if (!heard) video.currentTime = t0;
+          video.pause();
+        })
+        .finally(() => (trying = false));
+    }
+    // Los controles nativos (en grande) también pueden cambiar el sonido
+    video.addEventListener("volumechange", () => {
+      el.classList.toggle("is-sound", !video.muted);
+      if (!video.muted) {
+        heard = true;
+        stopAutoSound();
+      }
+    });
+
+    // ---------- Audio automático en la primera interacción ----------
+    // pointerdown / touchstart / keydown, como se pidió. Además pointerup, touchend y click: en los
+    // celulares el navegador recién cuenta el toque como gesto al levantar el dedo (touchstart solo no alcanza).
+    // Si todavía no cuenta como gesto, se espera al siguiente evento. Cuando el sonido arranca, se quitan todos.
+    const GESTURES = ["pointerdown", "touchstart", "keydown", "pointerup", "touchend", "click"] as const;
+    let gestured = false; // hubo una interacción antes de que el video estuviera listo
+    function onGesture(e: Event) {
+      if (e.type === "keydown" && ["Escape", "Tab", "Shift", "Control", "Alt", "Meta"].includes((e as KeyboardEvent).key)) return;
+      const target = e.target as HTMLElement | null;
+      if (target?.closest?.("[data-vd]")) return; // tocar el video o sus botones lo maneja el propio video
+      // Con el formulario abierto (o tocando un botón que lo abre) el video no arranca
+      if (formOpen || target?.closest?.('a[href*="#cotiza"]')) return;
+      const ua = (navigator as Navigator & { userActivation?: { isActive: boolean } }).userActivation;
+      if (ua && !ua.isActive) return; // el navegador todavía no lo toma como gesto
+      gestured = true;
+      if (closed || full || el.hidden) return; // se intenta cuando se muestre
+      listen();
+    }
+    function stopAutoSound() {
+      GESTURES.forEach((t) => document.removeEventListener(t, onGesture, true));
+    }
+    GESTURES.forEach((t) => document.addEventListener(t, onGesture, { capture: true, passive: true }));
+
+    // ---------- En grande ----------
+    let lastFocus: HTMLElement | null = null;
+    function openFull() {
+      if (full) return;
+      full = true;
+      lastFocus = document.activeElement as HTMLElement;
+      el.classList.add("is-full");
+      el.setAttribute("role", "dialog");
+      el.setAttribute("aria-modal", "true");
+      expandBtn.setAttribute("aria-label", labels.min);
+      video.controls = true;
+      listen();
+      expandBtn.focus({ preventScroll: true });
+    }
+    function closeFull() {
+      if (!full) return;
+      full = false;
+      el.classList.remove("is-full");
+      el.setAttribute("role", "region");
+      el.removeAttribute("aria-modal");
+      expandBtn.setAttribute("aria-label", labels.expand);
+      video.controls = false;
+      if (video.paused && heard) play();
+      place();
+      lastFocus?.focus({ preventScroll: true });
+    }
+
+    // ---------- Mostrar / ocultar ----------
+    function show() {
+      el.hidden = false;
+      html.classList.remove("vd-off");
+      place();
+      // Si la persona ya interactuó con la página, arranca con sonido; si no, queda quieto con el póster.
+      if (gestured && !heard) listen();
+    }
+    function hide() {
+      if (full) closeFull();
+      video.pause();
+      setSound(false);
+      el.hidden = true;
+      if (closed) html.classList.add("vd-off");
+    }
+
+    // ---------- Formulario en pop-up (13-Form.astro): el video se pausa y no se ve ----------
+    let formOpen = html.classList.contains("lf-open"); // por si el formulario se abrió antes (llegó con #cotiza)
+    document.addEventListener("hr:form-open", () => {
+      formOpen = true;
+      if (el.hidden) return;
+      if (full) closeFull();
+      video.pause();
+      setSound(false);
+      el.hidden = true;
+    });
+    document.addEventListener("hr:form-close", () => {
+      formOpen = false;
+      if (closed || !booted) return;
+      el.hidden = false;
+      place(); // vuelve quieto; arranca con el próximo toque
+    });
+
+    tapBtn.addEventListener("click", () => {
+      if (suppressClick) return;
+      if (video.muted || video.paused) listen();
+      else openFull();
+    });
+    muteBtn.addEventListener("click", () => (video.muted ? listen() : setSound(false)));
+    expandBtn.addEventListener("click", () => (full ? closeFull() : openFull()));
+    el.querySelector("[data-vd-min]")!.addEventListener("click", closeFull);
+    closeBtn.addEventListener("click", () => {
+      if (full) return closeFull(); // en grande, la X vuelve al video chico
+      closed = true;
+      stopAutoSound();
+      hide();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && full) closeFull();
+    });
+
+    addEventListener("resize", () => !full && !el.hidden && place(), { passive: true });
+    // El banner de cookies cambia el espacio libre de abajo
+    new MutationObserver(() => !full && !el.hidden && place()).observe(html, { attributes: true, attributeFilter: ["class"] });
+
+    // ---------- Arranque: después de que cargó la página, para no competir con el hero ----------
+    try {
+      const saved = JSON.parse(store.get(KEY_POS) || "null");
+      if (saved) {
+        placed = true;
+        x = saved.x * innerWidth;
+        y = saved.y * innerHeight;
+      }
+    } catch {}
+    setSound(false);
+    if (closed) stopAutoSound();
+    let booted = false;
+    const boot = () => {
+      booted = true;
+      if (closed || formOpen) return;
+      show();
+    };
+    // No espera al evento load (un script externo colgado lo demoraría para siempre): este script ya
+    // corre con el HTML listo. Se vuelve a acomodar cuando cargan las fuentes y la página, porque
+    // cambian las posiciones del hero.
+    setTimeout(boot, 400);
+    const replace = () => !closed && !full && !el.hidden && place();
+    document.fonts?.ready.then(replace);
+    addEventListener("load", replace, { once: true });
+    // Celular: mientras el hueco del hero se ve, el video lo sigue (sin transición); al salir, va a la esquina
+    let ticking = false;
+    addEventListener(
+      "scroll",
+      () => {
+        if (ticking || placed || innerWidth >= 768) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          ticking = false;
+          const now = slotOnScreen();
+          if (now || now !== inHero) {
+            el.classList.toggle("is-following", now && inHero);
+            replace();
+          }
+        });
+      },
+      { passive: true },
+    );
+  }
+</script>

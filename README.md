@@ -5,6 +5,7 @@ Web estática en **Astro 5** de Hernán Rotela Báez, Maestro Mayor de Obras mat
 Funciones de Netlify: `submit-lead` (Google Sheets + API de conversiones de Meta), `ghl-lead` (Go High Level) y `ghl-booking` (agenda).
 
 - Reglas para futuras sesiones con Claude Code: [`CLAUDE.md`](CLAUDE.md) · Cambios: [`CHANGELOG.md`](CHANGELOG.md) · Qué no puede cambiar del formulario: [`docs/form-inventario.md`](docs/form-inventario.md)
+- Cuentas, IDs y campos que hay que crear (Netlify, Sheets, Meta, GHL) y la prueba completa: [`docs/cuentas-a-crear.md`](docs/cuentas-a-crear.md)
 - Misma arquitectura que la web de Víctor Oropesa (`franorlandimkt/oropesarq`).
 
 ## Arrancar

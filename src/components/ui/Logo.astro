@@ -1,0 +1,22 @@
+---
+/**
+ * Logo HABITAR (SVG del manual de marca, texto en trazos: public/brand/).
+ * variant: "horizontal" (por defecto: header) · "iso" (isotipo) · tone: "dark" sobre fondo claro · "light" sobre grafito.
+ * Mínimo: horizontal 140 px de ancho, isotipo 24 px (manual, sección 3).
+ */
+import { site } from "../../data/site";
+interface Props {
+  variant?: "horizontal" | "iso";
+  tone?: "dark" | "light";
+  class?: string;
+  width?: number;
+}
+const { variant = "horizontal", tone = "dark", class: cls = "", width } = Astro.props;
+const src =
+  variant === "iso" ? (tone === "light" ? site.logo.isoInverse : site.logo.iso) : tone === "light" ? site.logo.horizontalInverse : site.logo.horizontal;
+// proporciones de los SVG del manual: horizontal 476.8 × 96 · isotipo 120 × 96
+const ratio = variant === "iso" ? 96 / 120 : 96 / 476.8;
+const w = width ?? (variant === "iso" ? 40 : 168);
+---
+
+<img class:list={["logo", `logo--${variant}`, cls]} src={src} alt={site.brandFull} width={w} height={Math.round(w * ratio)} decoding="async" />

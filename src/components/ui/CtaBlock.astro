@@ -1,0 +1,39 @@
+---
+/**
+ * CTA intermedio: botón que abre el formulario.
+ * `cta` identifica de qué botón viene la persona (data-cta, form-steps.ts → CTA_ORIGINS): el formulario lo
+ * lee por JS al abrir, sin cambiar la URL ni recargar. Sin JS, "#cotiza" baja al formulario.
+ * `href` aparte para otras páginas (ej. el blog: "/?cta=blog#cotiza").
+ */
+import Icon from "../illustrations/Icon.astro";
+interface Props {
+  label: string;
+  cta: string;
+  center?: boolean;
+  href?: string;
+  ghost?: boolean;
+}
+const { label, cta, center = false, href = "#cotiza", ghost = false } = Astro.props;
+---
+
+<div class:list={["cta-block reveal", { "cta-block--center": center }]}>
+  <a class:list={["btn btn--lg", { "btn--ghost": ghost }]} href={href} data-cta={cta}>
+    {label}
+    <Icon name="arrow-right" size={20} class="arrow" />
+  </a>
+</div>
+
+<style>
+  .cta-block {
+    margin-top: var(--space-5);
+  }
+  .cta-block--center {
+    display: flex;
+    justify-content: center;
+  }
+  @media (max-width: 479px) {
+    .cta-block .btn {
+      width: 100%;
+    }
+  }
+</style>

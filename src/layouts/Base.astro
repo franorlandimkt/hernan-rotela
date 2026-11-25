@@ -1,0 +1,144 @@
+---
+/**
+ * Layout base: <head> completo (SEO, Open Graph, íconos, JSON-LD), fuentes self-hosted y scripts globales.
+ * Todas las páginas lo usan.
+ *
+ * Tracking: solo Meta Pixel (si hay site.metaPixelId) y el External Tracking de Go High Level (si hay
+ * site.ghlTrackingId). Sin Google Analytics ni Clarity. Nada visual depende del evento `load`: el Pixel en
+ * el <head> puede demorarlo (pasó con Víctor: el video flotante no aparecía).
+ */
+import "@fontsource-variable/archivo/wdth.css";
+import "@fontsource/ibm-plex-mono/latin-400.css";
+import "@fontsource/ibm-plex-mono/latin-500.css";
+import "../styles/global.css";
+import archivo from "@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url";
+import { site } from "../data/site";
+import { meta } from "../content/landing";
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+  noindex?: boolean;
+  ogImage?: string;
+  ogType?: "website" | "article";
+  schema?: object | object[];
+}
+const { title, description, path = Astro.url.pathname, noindex = false, ogImage = site.ogImage, ogType = "website", schema } = Astro.props;
+
+const clean = path === "/" ? "/" : path.replace(/\/$/, "").replace(/\.html$/, "");
+const canonical = new URL(clean, site.url).href;
+const ogImg = new URL(ogImage, site.url).href;
+const schemas = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
+
+// Meta Pixel: código base oficial (PageView en todas las páginas). El <script> va en el <head> y el
+// <noscript> al inicio del <body>. Sin ID (todavía no existe el Pixel) no se carga nada.
+// ?modo=prueba: el Pixel no se inicializa (ni PageView ni eventos).
+const pixel = site.metaPixelId;
+const pixelScript = pixel
+  ? `
+(function(){var t=false;try{t=new URLSearchParams(location.search).get('modo')==='prueba'||sessionStorage.getItem('hr_prueba')==='1'}catch(e){}if(t)return;
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+try{if(localStorage.getItem('hr_consent')==='denied')fbq('consent','revoke')}catch(e){}
+fbq('init', '${pixel}');
+fbq('track', 'PageView');
+})();
+`
+  : "";
+const pixelNoscript = pixel
+  ? `<img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=${pixel}&ev=PageView&noscript=1"
+/>`
+  : "";
+
+// Go High Level External Tracking (site.ts → ghlTrackingId). Async y aparte del formulario: si GHL no
+// responde, la página y los envíos siguen igual. No carga si la persona rechazó las cookies.
+const ghlTrackingScript = site.ghlTrackingId
+  ? `
+try { if (localStorage.getItem('hr_consent') === 'denied') throw 0;
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://link.msgsndr.com/js/external-tracking.js';
+  s.setAttribute('data-tracking-id', '${site.ghlTrackingId}');
+  document.head.appendChild(s);
+} catch (e) {}
+`
+  : "";
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content={site.themeColor} />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={site.brandFull} />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImg} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={meta.ogAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImg} />
+
+    <!-- Íconos -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Rendimiento -->
+    <link rel="preload" href={archivo} as="font" type="font/woff2" crossorigin />
+
+    <!-- Mejora progresiva: .js activa animaciones. Failsafe: si el JS no arranca, todo queda visible. -->
+    <script is:inline>
+      document.documentElement.classList.add("js");
+      setTimeout(function () {
+        if (!window.__hrReady) document.documentElement.classList.remove("js");
+      }, 3000);
+    </script>
+
+    {
+      pixelScript && (
+        <>
+          <!-- Meta Pixel Code -->
+          <script is:inline set:html={pixelScript} />
+          <!-- End Meta Pixel Code -->
+        </>
+      )
+    }
+
+    {ghlTrackingScript && <script is:inline set:html={ghlTrackingScript} />}
+
+    {schemas.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+    <slot name="head" />
+  </head>
+  <body>
+    {pixelNoscript && <noscript set:html={pixelNoscript} />}
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <slot />
+    <script>
+      import "../scripts/main.ts";
+    </script>
+  </body>
+</html>

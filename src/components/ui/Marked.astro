@@ -1,0 +1,16 @@
+---
+/**
+ * Texto con acento: lo que va entre *asteriscos* va en ladrillo (.mark; solo en títulos grandes, ≥24 px).
+ * Lo que va entre **dobles asteriscos** va en negrita (<strong>).
+ */
+interface Props {
+  text: string;
+  /** Clase del texto destacado (por defecto .mark, en ladrillo). */
+  cls?: string;
+}
+const { text, cls = "mark" } = Astro.props;
+// split con dos grupos: [texto, **…**, *…*, texto, …]
+const parts = text.split(/\*\*([^*]+)\*\*|\*([^*]+)\*/);
+---
+
+{parts.map((p, i) => (p === undefined ? null : i % 3 === 1 ? <strong>{p}</strong> : i % 3 === 2 ? <span class={cls}>{p}</span> : p))}

@@ -1,0 +1,19 @@
+---
+/**
+ * HOME — el orden de las secciones se controla acá. Para ocultar una sección: comentá su línea.
+ * Cada sección es independiente (src/components/sections/NN-Nombre.astro).
+ */
+import Base from "../layouts/Base.astro";
+import Header from "../components/sections/00-Header.astro";
+import Form from "../components/sections/13-Form.astro";
+import CookieBanner from "../components/ui/CookieBanner.astro";
+import { meta } from "../content/landing";
+---
+
+<Base title={meta.homeTitle} description={meta.homeDescription} path="/">
+  <Header />
+  <main id="contenido">
+    <Form />
+  </main>
+  <CookieBanner />
+</Base>

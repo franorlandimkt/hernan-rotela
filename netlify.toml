@@ -1,0 +1,9 @@
+# Netlify: sitio estático de Astro + funciones (formulario → Google Sheets + Meta CAPI + Go High Level).
+# Variables de entorno: README.md, sección 5.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"

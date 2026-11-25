@@ -1,0 +1,73 @@
+---
+/** Header fijo: logo horizontal + botón "Cotizá tu proyecto" (abre el formulario, data-cta="header").
+ *  En otras páginas (blog, privacidad) el botón lleva a la home con ?cta=header#cotiza. */
+import Logo from "../ui/Logo.astro";
+import { header as t } from "../../content/landing";
+interface Props {
+  home?: boolean;
+}
+const { home = true } = Astro.props;
+---
+
+<header class="hdr">
+  <div class="container hdr-in">
+    <a class="hdr-logo" href="/" aria-label={t.home}>
+      <Logo width={168} />
+    </a>
+    <a class="btn hdr-cta" href={home ? "#cotiza" : "/?cta=header#cotiza"} data-cta="header">
+      <span class="hdr-cta-long">{t.cta}</span><span class="hdr-cta-short" aria-hidden="true">{t.ctaShort}</span>
+    </a>
+  </div>
+</header>
+
+<style>
+  .hdr {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: color-mix(in srgb, var(--c-hueso) 94%, transparent);
+    backdrop-filter: saturate(1.2) blur(6px);
+    -webkit-backdrop-filter: saturate(1.2) blur(6px);
+    border-bottom: 1px solid var(--linea);
+  }
+  .hdr-in {
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .hdr-logo {
+    display: block;
+    flex: none;
+  }
+  .hdr-logo :global(.logo) {
+    width: 140px;
+    height: auto;
+  }
+  .hdr-cta {
+    min-height: 2.75rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9375rem;
+  }
+  .hdr-cta-short {
+    display: none;
+  }
+  @media (max-width: 359px) {
+    .hdr-cta-long {
+      display: none;
+    }
+    .hdr-cta-short {
+      display: inline;
+    }
+  }
+  @media (min-width: 768px) {
+    .hdr-logo :global(.logo) {
+      width: 176px;
+    }
+    .hdr-cta {
+      min-height: var(--tap);
+      padding-inline: 1.25rem;
+    }
+  }
+</style>

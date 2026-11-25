@@ -1,0 +1,28 @@
+{
+  "name": "habitar-rotela-baez-web",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "vitest run",
+    "placeholders": "node scripts/placeholders.mjs",
+    "local": "node scripts/local-server.mjs",
+    "pendientes": "grep -rn \"\\[PLACEHOLDER\\]\\|\\[CONFIRMAR\\]\\|\\[COMPLETAR\\]\" src netlify integrations public --include=*.ts --include=*.astro --include=*.md --include=*.mts --include=*.gs --include=*.txt",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.4",
+    "@fontsource-variable/archivo": "^5.2.6",
+    "@fontsource/ibm-plex-mono": "^5.2.6",
+    "astro": "5.18.2",
+    "libphonenumber-js": "1.13.16",
+    "sharp": "0.35.4"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "vitest": "^3.2.4"
+  }
+}

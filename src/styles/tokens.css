@@ -1,0 +1,96 @@
+/* ==========================================================================
+   HABITAR · Rotela Báez — TOKENS DE DISEÑO
+   Fuente: manual de marca HABITAR (design system en claude.ai, tokens.json).
+   Cambiar un valor acá lo cambia en toda la web. No hardcodear colores en componentes.
+   Proporción de la marca: 60 hueso · 30 grafito · 10 ladrillo.
+   ========================================================================== */
+:root {
+  /* ---- Color de marca (fijos) ---- */
+  --c-hueso: #f2ede6;
+  --c-grafito: #161616;
+  --c-ladrillo: #d63a1f; /* botón principal, cota, un dato por pantalla. En texto solo ≥24px (4.0:1 sobre hueso). */
+  --c-ladrillo-hover: #b02e1a;
+  --c-hormigon: #8c8a85; /* bloques y gráficos, NUNCA texto (3.0:1 sobre hueso) */
+  --c-white: #ffffff;
+
+  /* ---- Tema claro (por defecto) ---- */
+  --fondo: var(--c-hueso);
+  --superficie: #faf8f4;
+  --tinta: #161616;
+  --tinta-2: #4a4744; /* texto secundario: 7.9:1 sobre hueso */
+  --linea: #d9d3ca; /* divisores de 1px, grilla. No para texto */
+  --ladrillo-texto: #b02e1a; /* ladrillo para texto chico: 5.6:1 sobre hueso */
+  --sobre-ladrillo: #ffffff; /* texto sobre botón ladrillo: 4.7:1 */
+  --focus: var(--tinta);
+
+  /* ---- Tipografía ---- */
+  --f-display: "Archivo Variable", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "Archivo Variable", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --stretch-display: 112%;
+
+  /* Escala del manual (mobile → desktop interpolado entre 375 y 1440 px) */
+  --fs-display: clamp(2.5rem, 1.67rem + 3.53vw, 4rem); /* 40 → 64 */
+  --lh-display: 1.03;
+  --fs-h1: clamp(2rem, 1.736rem + 1.127vw, 2.75rem); /* 32 → 44: títulos de sección (h2 en el HTML) */
+  --lh-h1: 1.1;
+  --fs-h2: clamp(1.5rem, 1.324rem + 0.751vw, 2rem); /* 24 → 32 */
+  --lh-h2: 1.14;
+  --fs-h3: clamp(1.1875rem, 1.12rem + 0.28vw, 1.375rem); /* 19 → 22 */
+  --lh-h3: 1.28;
+  --fs-body-lg: clamp(1.0625rem, 1.018rem + 0.188vw, 1.1875rem); /* 17 → 19 */
+  --fs-body: 1.0625rem; /* 17 */
+  --lh-body: 1.6;
+  --fs-small: 0.9375rem; /* 15 */
+  --fs-etiqueta: 0.8125rem; /* 13, mono mayúsculas +2px */
+  --ls-etiqueta: 0.15em;
+  --fs-dato: 0.9375rem; /* 15, mono */
+  --measure: 62ch;
+
+  /* ---- Espaciado (manual: 4 · 8 · 16 · 24 · 40 · 64 · 96) ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2.5rem;
+  --space-6: 4rem;
+  --space-7: 6rem;
+  --section-y: clamp(4rem, 2.6rem + 5.9vw, 6rem); /* 64 → 96 */
+  --head-gap: clamp(2rem, 1.6rem + 1.7vw, 2.5rem);
+  --gutter: clamp(1rem, 0.3rem + 3vw, 3rem); /* 16 → 48 */
+  --container: 72rem; /* 1152 px de contenido */
+  --grid-step: 24px; /* grilla de plano */
+
+  /* ---- Formas (ángulos rectos) ---- */
+  --radius-sm: 2px; /* campos, etiquetas */
+  --radius-md: 4px; /* botones, tarjetas, imágenes */
+  --radius-lg: 8px; /* solo el pop-up del formulario y el video flotante */
+  --stroke: 1.5px;
+
+  /* ---- Movimiento ---- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.5s;
+
+  /* ---- UI ---- */
+  --tap: 3rem; /* 48 px: alto mínimo de botones */
+  --header-h: 3.5rem;
+}
+
+/* Tema oscuro de sección (grafito): se aplica con .s-grafito, no con el modo del sistema.
+   La web es clara; el grafito se usa para cortar secciones y en el pie. */
+.s-grafito,
+.theme-dark {
+  --fondo: #161616;
+  --superficie: #232221;
+  --tinta: #f2ede6;
+  --tinta-2: #b9b4ac;
+  --linea: #3a3836;
+  --ladrillo-texto: #f07a5e;
+  --focus: var(--c-hueso);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-h: 4rem;
+  }
+}

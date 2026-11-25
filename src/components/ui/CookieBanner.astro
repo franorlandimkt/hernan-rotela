@@ -1,0 +1,103 @@
+---
+/** Banner de cookies en franja baja (texto corto + dos botones chicos en el mismo renglón).
+ *  El Pixel carga de entrada (opt-out); "Rechazar" lo revoca, también en las próximas visitas, y la
+ *  función no manda ese lead a Meta (src/scripts/tracking.ts). Textos en landing.ts → cookies. */
+import { cookies } from "../../content/landing";
+---
+
+<div class="ck theme-dark" data-cookies hidden role="region" aria-label="Aviso de cookies">
+  <p class="ck-text">
+    {cookies.text} <a href="/politica-de-privacidad">{cookies.more}</a>
+  </p>
+  <div class="ck-actions">
+    <button type="button" class="ck-btn" data-consent="denied">{cookies.reject}</button>
+    <button type="button" class="ck-btn ck-btn--ok" data-consent="granted">{cookies.accept}</button>
+  </div>
+</div>
+
+<style>
+  .ck {
+    position: fixed;
+    z-index: 45;
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: calc(0.5rem + env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.375rem 0.375rem 0.375rem 0.75rem;
+    background: var(--c-grafito);
+    color: var(--c-hueso);
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+  .ck[hidden] {
+    display: none;
+  }
+  .ck-text {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .ck-text a {
+    color: var(--c-hueso);
+    white-space: nowrap;
+  }
+  .ck-actions {
+    flex: none;
+    display: flex;
+    gap: 0.375rem;
+  }
+  .ck-btn {
+    position: relative;
+    min-height: 2.125rem;
+    padding: 0 0.625rem;
+    border: 1px solid #6b6763;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--c-hueso);
+    font-weight: 600;
+    font-size: 0.75rem;
+  }
+  /* área táctil más alta que el botón visible */
+  .ck-btn::before {
+    content: "";
+    position: absolute;
+    inset: -0.375rem -0.1875rem;
+  }
+  .ck-btn--ok {
+    background: var(--c-hueso);
+    border-color: var(--c-hueso);
+    color: var(--c-grafito);
+  }
+  @media (min-width: 768px) {
+    .ck {
+      left: auto;
+      right: 1rem;
+      bottom: 1rem;
+      max-width: 30rem;
+    }
+  }
+</style>
+
+<script>
+  import { getConsent, setConsent } from "../../scripts/tracking";
+  const el = document.querySelector<HTMLElement>("[data-cookies]");
+  const hide = () => {
+    el!.hidden = true;
+    document.documentElement.classList.remove("has-cookie-banner");
+  };
+  if (el && !getConsent()) {
+    el.hidden = false;
+    document.documentElement.classList.add("has-cookie-banner");
+    const setH = () => document.documentElement.style.setProperty("--cookie-h", `${el.offsetHeight + 8}px`);
+    setH();
+    addEventListener("resize", setH, { passive: true });
+  }
+  el?.querySelectorAll<HTMLButtonElement>("[data-consent]").forEach((b) =>
+    b.addEventListener("click", () => {
+      setConsent(b.dataset.consent as "granted" | "denied");
+      hide();
+    }),
+  );
+</script>

@@ -1,0 +1,20 @@
+---
+/** Rótulo de carátula (cuadro de datos de la esquina de un plano real): borde de 1 px en tinta, texto mono. */
+interface Props {
+  items: [string, string][];
+  class?: string;
+  label?: string;
+}
+const { items, class: cls = "", label } = Astro.props;
+---
+
+<dl class:list={["rotulo", cls]} aria-label={label}>
+  {
+    items.map(([k, v]) => (
+      <div>
+        <dt>{k}</dt>
+        <dd>{v}</dd>
+      </div>
+    ))
+  }
+</dl>

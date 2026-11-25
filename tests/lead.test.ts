@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { nextStep, EXIT, qualifies, isHot, validAnswers, totalSteps, originOf, exitReason, leadType, type FlowAnswers } from "../src/scripts/lead";
+import { cleanAnswers, nextStep, EXIT, qualifies, isHot, validAnswers, totalSteps, originOf, exitReason, leadType, type FlowAnswers } from "../src/scripts/lead";
 import { TIPOS, TERRENOS, PROV_BA, PROV_CABA, OTHER_PARTIDO, ETAPAS } from "../src/content/form-steps";
 
 const etapa = (k: string) => ETAPAS.find((e) => e.key === k)!.value;
@@ -45,7 +45,10 @@ describe("Lead / LeadCaliente / Sin terreno", () => {
     expect(isHot(a)).toBe(false);
   });
   test("multifamiliar = caliente", () => expect(isHot({ ...base, tipo: TIPOS.multi.value })).toBe(true));
-  test("completo fuera del radio = inválido", () => expect(validAnswers({ ...base, provincia: "Córdoba", partido: undefined, direccion: undefined })).toBe(false));
+  test("completo fuera del radio (página vieja) = se guarda igual", () => expect(validAnswers({ ...base, provincia: "Córdoba", partido: undefined, direccion: undefined })).toBe(true));
+  test("cleanAnswers saca el partido fuera de Buenos Aires y la dirección fuera del radio", () =>
+    expect(cleanAnswers({ ...base, provincia: "Córdoba", cuando: "otra cosa" })).toMatchObject({ partido: "", direccion: "", cuando: "" }));
+  test("sin partido en Buenos Aires = inválido", () => expect(validAnswers({ ...base, partido: "" })).toBe(false));
   test("fuera del radio con ejecutivo = válido", () => expect(validAnswers({ ...base, provincia: "Córdoba", partido: undefined, direccion: undefined, etapas: etapa("ejecutivo") })).toBe(true));
   test("regularización nunca es válida", () => expect(validAnswers({ ...base, tipo: TIPOS.regularizacion.value })).toBe(false));
   test("cuándo y quién decide pueden faltar", () => expect(validAnswers({ ...base, cuando: undefined, decide: undefined })).toBe(true));

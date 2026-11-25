@@ -74,23 +74,37 @@ const valid = (list: readonly string[], v?: string) => list.includes(v ?? "");
 const validOrEmpty = (list: readonly string[], v?: string) => !v || list.includes(v);
 
 /**
- * Respuestas válidas: es lo que exige el servidor para guardar el envío, tenga o no lote.
- *  - partido solo con Buenos Aires; dirección solo dentro del radio (opcional: sin JS puede faltar);
- *  - el servicio completo solo dentro del radio; regularización nunca se envía (es descarte);
- *  - cuándo y quién decide pueden faltar (nunca se pierde un lead por una pregunta de intención).
+ * Deja solo las respuestas que corresponden con las demás (lo usan el navegador antes de enviar y las
+ * funciones al recibir, así los dos lados guardan lo mismo): sin partido si no es Buenos Aires, sin dirección
+ * de obra fuera del radio, y las preguntas de intención (dirección, cuándo, quién decide) vacías si vienen
+ * con un valor que no existe. Nunca se pierde un lead por una respuesta que sobra.
+ */
+export function cleanAnswers(a: FlowAnswers): FlowAnswers {
+  const out: FlowAnswers = { ...a };
+  if (out.provincia !== PROV_BA) out.partido = "";
+  if (!inRadius(out) || !validOrEmpty(OPTIONS.direccion, out.direccion)) out.direccion = "";
+  if (!validOrEmpty(OPTIONS.cuando, out.cuando)) out.cuando = "";
+  if (!validOrEmpty(OPTIONS.decide, out.decide)) out.decide = "";
+  return out;
+}
+
+/**
+ * Respuestas válidas: es lo que exige el servidor para guardar el envío, tenga o no lote (mismo criterio que
+ * el navegador). Obligatorias: tipo (nunca "regularización": es descarte), lote, provincia, partido (solo
+ * Buenos Aires), m² y etapas. Dirección, cuándo y quién decide pueden faltar.
+ * Un "completo" fuera del radio (página vieja, lista de partidos que cambió) se guarda igual: el navegador no
+ * lo ofrece, y si llega es mejor tener el lead que perderlo.
  */
 export function validAnswers(a: FlowAnswers): boolean {
-  const etapa = etapaOf(a.etapas);
   return (
     valid(OPTIONS.tipo, a.tipo) &&
     !isDisqualified(a) &&
     valid(OPTIONS.terreno, a.terreno) &&
     valid(OPTIONS.provincia, a.provincia) &&
-    (a.provincia === PROV_BA ? valid(OPTIONS.partido, a.partido) : !a.partido) &&
-    (inRadius(a) ? validOrEmpty(OPTIONS.direccion, a.direccion) : !a.direccion) &&
+    (a.provincia !== PROV_BA || valid(OPTIONS.partido, a.partido)) &&
+    validOrEmpty(OPTIONS.direccion, a.direccion) &&
     valid(OPTIONS.m2, a.m2) &&
-    !!etapa &&
-    (!etapa.radiusOnly || inRadius(a)) &&
+    !!etapaOf(a.etapas) &&
     validOrEmpty(OPTIONS.cuando, a.cuando) &&
     validOrEmpty(OPTIONS.decide, a.decide)
   );

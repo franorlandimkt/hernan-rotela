@@ -1,0 +1,103 @@
+---
+/**
+ * Barras de abajo de la carátula (home).
+ *  - Desktop (≥1024): fila fija con los rótulos del plano (OBRA · UBICACIÓN · SUPERFICIE · ETAPA · ESTADO ·
+ *    PROFESIONAL). Encabeza las filas de datos de los casos (ProjectModule.astro), que caen justo debajo de
+ *    cada rótulo. Es decorativa para lectores de pantalla: cada dato tiene su propia etiqueta.
+ *  - Celular y tablet: barra fija con la celda ladrillo "Calculá el precio de tus planos" (data-cta=
+ *    "barra-movil"). Aparece después del hero, se esconde mientras hay otra celda roja a la vista o el
+ *    formulario está abierto, y queda debajo del aviso de cookies (el aviso sube por --bar-h).
+ * Lógica: src/scripts/frame.ts (también el reloj del riel y la sección activa de la barra superior).
+ */
+import Icon from "../illustrations/Icon.astro";
+import { frame as t } from "../../content/landing";
+---
+
+<div class="bbar" data-bbar aria-hidden="true">
+  <div class="cell bbar__corner"></div>
+  {
+    t.bottom.map((b, i) => (
+      <div class="cell bbar__cell">
+        <span class="bbar__n">{String(i + 1).padStart(2, "0")}</span>
+        <span class="bbar__txt">{b}</span>
+      </div>
+    ))
+  }
+  <div class="cell bbar__corner"></div>
+</div>
+
+<div class="mbar" data-mbar inert>
+  <a class="cell cta-cell mbar__cta" href="#cotiza" data-cta="barra-movil" data-cta-cell="bar">
+    <span class="cta-cell__label">{t.mobileCta}</span>
+    <Icon name="arrow-right" size={22} class="arrow" />
+  </a>
+</div>
+
+<style>
+  .bbar {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .bbar {
+      position: fixed;
+      inset: auto 0 0;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: var(--rail) repeat(6, minmax(0, 1fr)) var(--rail);
+      gap: var(--gap);
+      padding: var(--gap);
+      background: var(--linea);
+    }
+    .bbar > .cell {
+      height: var(--bar-bottom);
+      flex-direction: row;
+      align-items: center;
+      gap: 0.625rem;
+      padding-block: 0;
+    }
+    .bbar__corner {
+      padding: 0;
+      background: var(--superficie);
+    }
+    .bbar__n,
+    .bbar__txt {
+      font-family: var(--f-mono);
+      font-size: var(--fs-rail);
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--tinta-2);
+    }
+    .bbar__txt {
+      color: var(--tinta);
+    }
+  }
+
+  .mbar {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 41;
+    padding: var(--gap) var(--gap) calc(var(--gap) + env(safe-area-inset-bottom));
+    background: var(--linea);
+    transform: translateY(110%);
+    transition: transform 0.22s var(--ease);
+  }
+  .mbar.is-on {
+    transform: none;
+  }
+  .mbar__cta {
+    grid-template-rows: auto;
+    align-items: center;
+    min-height: 3.5rem;
+    padding-block: 0.75rem;
+  }
+  @media (min-width: 1024px) {
+    .mbar {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import "../../scripts/frame";
+</script>

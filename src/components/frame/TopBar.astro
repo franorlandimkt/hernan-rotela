@@ -1,0 +1,138 @@
+---
+/**
+ * Barra superior fija de la carátula (home).
+ *  - Desktop (≥1024): logo horizontal inverso (encima del riel izquierdo + la primera columna) · SERVICIO ·
+ *    PROCESO · CASOS · PREGUNTAS · celda ladrillo "Calculá tu precio" (encima de la sexta columna y el riel
+ *    derecho). Las columnas coinciden con las de la grilla.
+ *  - Celular y tablet: logo + celda ladrillo "Precio".
+ * La celda ladrillo abre el formulario (data-cta="nav") y se apaga mientras haya otra celda roja a la vista
+ * (src/scripts/frame.ts). La sección a la vista se marca en ladrillo-texto.
+ */
+import Logo from "../ui/Logo.astro";
+import Icon from "../illustrations/Icon.astro";
+import { frame as t, header } from "../../content/landing";
+---
+
+<header class="tbar" data-tbar>
+  <a class="cell tbar__logo" href="/" aria-label={header.home}>
+    <Logo tone="light" width={168} />
+  </a>
+  <nav class="tbar__nav" aria-label={t.navLabel}>
+    {
+      t.nav.map((n, i) => (
+        <a class="cell tbar__link" href={n.href} data-nav-link>
+          <span class="tbar__n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+          <span class="etiqueta tbar__txt">{n.label}</span>
+        </a>
+      ))
+    }
+  </nav>
+  <a class="cell cta-cell tbar__cta" href="#cotiza" data-cta="nav" data-cta-cell="frame">
+    <span class="cta-cell__label"><span class="tbar__long">{t.navCta}</span><span class="tbar__short" aria-hidden="true">{t.navCtaShort}</span></span>
+    <Icon name="arrow-right" size={20} class="arrow" />
+  </a>
+</header>
+
+<style>
+  .tbar {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--gap);
+    padding: var(--gap);
+    background: var(--linea);
+  }
+  .tbar > .cell,
+  .tbar__link {
+    height: var(--bar-top);
+    padding-block: 0;
+    justify-content: center;
+  }
+  .tbar__logo {
+    padding-inline: 0.875rem;
+  }
+  .tbar__logo :global(.logo) {
+    width: 140px;
+    height: auto;
+  }
+  .tbar__nav {
+    display: none;
+  }
+  .tbar__cta {
+    grid-template-rows: auto;
+    align-items: center;
+    min-height: 0;
+    padding-inline: 1rem;
+  }
+  .tbar__cta .cta-cell__label {
+    font-size: 1rem;
+  }
+  .tbar__long {
+    display: none;
+  }
+  @media (min-width: 480px) {
+    .tbar__long {
+      display: inline;
+    }
+    .tbar__short {
+      display: none;
+    }
+  }
+  @media (min-width: 1024px) {
+    .tbar {
+      grid-template-columns: var(--rail) repeat(6, minmax(0, 1fr)) var(--rail);
+    }
+    .tbar__logo {
+      grid-column: 1 / 3;
+      padding-inline: var(--cell-pad);
+    }
+    .tbar__logo :global(.logo) {
+      width: 156px;
+    }
+    .tbar__nav {
+      grid-column: 3 / 7;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--gap);
+    }
+    .tbar__link {
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.75rem;
+      padding-inline: var(--cell-pad);
+      text-decoration: none;
+      transition: color var(--dur), background-color var(--dur);
+    }
+    .tbar__link:hover {
+      background: var(--superficie);
+    }
+    .tbar__n {
+      font-family: var(--f-mono);
+      font-size: var(--fs-rail);
+      color: var(--tinta-2);
+    }
+    .tbar__txt {
+      color: var(--tinta);
+    }
+    .tbar__link[aria-current="true"] .tbar__txt,
+    .tbar__link[aria-current="true"] .tbar__n {
+      color: var(--ladrillo-texto);
+    }
+    .tbar__link[aria-current="true"]::after {
+      content: "";
+      position: absolute;
+      left: var(--cell-pad);
+      right: var(--cell-pad);
+      bottom: 0;
+      height: 2px;
+      background: var(--c-ladrillo);
+    }
+    .tbar__cta {
+      grid-column: 7 / 9;
+      padding-inline: var(--cell-pad);
+    }
+  }
+</style>

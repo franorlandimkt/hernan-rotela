@@ -1,0 +1,144 @@
+---
+/**
+ * Rieles de la carátula (solo ≥1024): una columna angosta a cada lado con celdas de texto rotado en mono.
+ *  - Izquierdo (se lee de abajo hacia arriba): HORA LOCAL (reloj en vivo, hora de Argentina, con el punto
+ *    ladrillo que late) · WHATSAPP · TIKTOK · EL JAGÜEL, ESTEBAN ECHEVERRÍA.
+ *  - Derecho (de arriba hacia abajo): credencial · trámite municipal · planos a distancia · © HABITAR.
+ * WhatsApp y TikTok son links solo cuando hay número / URL en site.ts. En el celular este contenido va al pie.
+ */
+import { frame as t } from "../../content/landing";
+import { site, waLink } from "../../data/site";
+interface Props {
+  side: "left" | "right";
+}
+const { side } = Astro.props;
+const wa = waLink("Hola Hernán, vengo de la web.");
+const tiktok = site.social.tiktok.url;
+---
+
+{
+  side === "left" ? (
+    <aside class="rail rail--left" aria-label={t.place}>
+      <div class="cell rail__cell rail__cell--clock">
+        <p class="rail__txt">
+          <span class="rail__dot" aria-hidden="true" />
+          {`${t.clock} `}
+          <time class="rail__time" data-clock>{t.clockZone}</time>
+        </p>
+      </div>
+      <div class="cell rail__cell">
+        {wa ? (
+          <a class="rail__txt rail__link" href={wa} target="_blank" rel="noopener">
+            {t.whatsapp}
+          </a>
+        ) : (
+          <p class="rail__txt">{t.whatsapp}</p>
+        )}
+      </div>
+      <div class="cell rail__cell">
+        {tiktok ? (
+          <a class="rail__txt rail__link" href={tiktok} target="_blank" rel="noopener">
+            {t.tiktok}
+          </a>
+        ) : (
+          <p class="rail__txt">{t.tiktok}</p>
+        )}
+      </div>
+      <div class="cell rail__cell rail__cell--grow">
+        <p class="rail__txt">{t.place}</p>
+      </div>
+    </aside>
+  ) : (
+    <aside class="rail rail--right" aria-label={site.credential}>
+      {t.right.map((r, i) => (
+        <div class:list={["cell rail__cell", { "rail__cell--grow": i === t.right.length - 1 }]}>
+          <p class="rail__txt">{r}</p>
+        </div>
+      ))}
+    </aside>
+  )
+}
+
+<style>
+  .rail {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .rail {
+      position: fixed;
+      z-index: 39;
+      top: calc(var(--bar-top) + var(--gap) * 2);
+      bottom: calc(var(--bar-bottom) + var(--gap) * 2);
+      width: var(--rail);
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap);
+      overflow: hidden;
+    }
+    .rail--left {
+      left: var(--gap);
+    }
+    .rail--right {
+      right: var(--gap);
+    }
+    .rail__cell {
+      flex: 0 1 auto;
+      min-height: 0;
+      align-items: center;
+      padding: 0.875rem 0;
+      overflow: hidden;
+    }
+    .rail__cell--grow {
+      flex-grow: 1;
+    }
+    .rail--left .rail__cell {
+      justify-content: flex-end;
+    }
+    .rail__txt {
+      writing-mode: vertical-rl;
+      max-height: 100%;
+      font-family: var(--f-mono);
+      font-size: var(--fs-rail);
+      font-weight: 500;
+      line-height: 1.3;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--tinta-2);
+      text-decoration: none;
+      white-space: normal;
+    }
+    .rail--left .rail__txt {
+      transform: rotate(180deg);
+    }
+    .rail__link {
+      color: var(--tinta);
+    }
+    .rail__link:hover {
+      color: var(--ladrillo-texto);
+    }
+    .rail__time {
+      color: var(--tinta);
+      font-variant-numeric: tabular-nums;
+    }
+    .rail__dot {
+      display: inline-block;
+      width: 0.4375rem;
+      height: 0.4375rem;
+      margin-bottom: 0.625rem;
+      border-radius: 50%;
+      background: var(--c-ladrillo);
+      vertical-align: middle;
+    }
+  }
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    .rail__dot {
+      animation: rail-pulse 2.4s ease-in-out infinite;
+    }
+  }
+  @keyframes rail-pulse {
+    50% {
+      opacity: 0.3;
+      box-shadow: 0 0 0 4px rgb(214 58 31 / 0.25);
+    }
+  }
+</style>

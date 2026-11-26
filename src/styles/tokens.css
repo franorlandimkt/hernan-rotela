@@ -1,31 +1,35 @@
 /* ==========================================================================
    HABITAR · Rotela Báez — TOKENS DE DISEÑO
-   Fuente: manual de marca HABITAR (design system en claude.ai, tokens.json).
+   Fuente: manual de marca HABITAR (design system en claude.ai, tokens.json), tema OSCURO.
    Cambiar un valor acá lo cambia en toda la web. No hardcodear colores en componentes.
-   Proporción de la marca: 60 hueso · 30 grafito · 10 ladrillo.
+   La página es la carátula de un plano: celdas grafito separadas por un gap que deja ver la línea.
+   El ladrillo marca (la celda CTA, la cota, el dato) y entra en degradé en celdas clave.
    ========================================================================== */
 :root {
   /* ---- Color de marca (fijos) ---- */
   --c-hueso: #f2ede6;
   --c-grafito: #161616;
-  --c-ladrillo: #d63a1f; /* botón principal, cota, un dato por pantalla. En texto solo ≥24px (4.0:1 sobre hueso). */
+  --c-ladrillo: #d63a1f; /* celda CTA, cota, punto. En texto solo ≥24px. */
   --c-ladrillo-hover: #b02e1a;
-  --c-hormigon: #8c8a85; /* bloques y gráficos, NUNCA texto (3.0:1 sobre hueso) */
-  /* Amarillo de obra: un golpe, no un color de base. Solo en la cinta, el marcador de texto y las cifras del
-     hero. Como fondo lleva texto grafito (9:1); como texto, solo sobre grafito (9:1), nunca sobre hueso. */
-  --c-amarillo: #f2b33d;
+  --c-ladrillo-hondo: #7a1f10; /* fondo del degradé de las celdas CTA (blanco encima: 10:1) */
+  --c-hormigon: #8c8a85; /* bloques y gráficos, NUNCA texto */
   --c-white: #ffffff;
 
-  /* ---- Tema claro (por defecto) ---- */
-  --fondo: var(--c-hueso);
-  --superficie: #faf8f4;
-  --tinta: #161616;
-  --tinta-2: #4a4744; /* texto secundario: 7.9:1 sobre hueso */
-  --linea: #d9d3ca; /* divisores de 1px, grilla. No para texto */
-  --ladrillo-texto: #b02e1a; /* ladrillo para texto chico: 5.6:1 sobre hueso */
-  --sobre-ladrillo: #ffffff; /* texto sobre botón ladrillo: 4.7:1 */
-  --ladrillo-tinte: #f5d9cf; /* fondo de resaltado (marcador, pastillas): siempre con texto en tinta encima */
-  --focus: var(--tinta);
+  /* ---- Tema oscuro (por defecto: toda la web) ---- */
+  --fondo: #161616; /* celdas */
+  --superficie: #232221; /* celdas secundarias, vacías, campos */
+  --tinta: #f2ede6; /* texto: 15,9:1 sobre fondo */
+  --tinta-2: #b9b4ac; /* etiquetas y secundario: 8,9:1 sobre fondo, 7,6:1 sobre superficie */
+  --linea: #3a3836; /* el gap entre celdas (las "líneas" de la carátula). No para texto */
+  --ladrillo-texto: #f07a5e; /* ladrillo para texto chico: 6,4:1 sobre fondo */
+  --sobre-ladrillo: #ffffff; /* texto sobre ladrillo: 4,7:1 (sobre el degradé, más) */
+  --ladrillo-tinte: #4a231a; /* fondo de resaltado (marcador): texto en tinta encima (10:1) */
+  --focus: var(--c-hueso);
+
+  /* Degradés ladrillo (negro con el rojo en degradé: la identidad de la web). Nunca rojo plano a sangre
+     en una sección: el rojo lleno es la celda CTA. */
+  --g-cta: linear-gradient(135deg, var(--c-ladrillo) 0%, var(--c-ladrillo-hover) 62%, var(--c-ladrillo-hondo) 100%);
+  --g-cta-hover: linear-gradient(135deg, #e04528 0%, var(--c-ladrillo) 55%, var(--c-ladrillo-hover) 100%);
 
   /* ---- Tipografía ---- */
   --f-display: "Archivo Variable", "Arial Narrow", system-ui, sans-serif;
@@ -34,23 +38,24 @@
   --stretch-display: 112%;
 
   /* Escala del manual (mobile → desktop interpolado entre 375 y 1440 px) */
-  --fs-display: clamp(2.5rem, 1.67rem + 3.53vw, 4rem); /* 40 → 64 */
-  --fs-hero: clamp(1.875rem, 1.17rem + 3vw, 3.5rem); /* 30 → 56: H1 del hero, centrado (entra con el video y el botón) */
-  --fs-num: clamp(1.5rem, 1.06rem + 1.88vw, 2.5rem); /* 24 → 40: cifras grandes (m², años, seguidores) */
-  --lh-display: 1.03;
-  --fs-h1: clamp(2rem, 1.736rem + 1.127vw, 2.75rem); /* 32 → 44: títulos de sección (h2 en el HTML) */
-  --lh-h1: 1.1;
+  --fs-display: clamp(2.25rem, 1.5rem + 3.2vw, 4rem); /* 36 → 64: un titular por pantalla */
+  --fs-num: clamp(1.75rem, 1.3rem + 1.9vw, 2.75rem); /* 28 → 44: cifras (mono) */
+  --lh-display: 1.02;
+  --fs-h1: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem); /* 28 → 44: títulos de sección (h2 en el HTML) */
+  --lh-h1: 1.08;
   --fs-h2: clamp(1.5rem, 1.324rem + 0.751vw, 2rem); /* 24 → 32 */
   --lh-h2: 1.14;
   --fs-h3: clamp(1.1875rem, 1.12rem + 0.28vw, 1.375rem); /* 19 → 22 */
-  --lh-h3: 1.28;
+  --lh-h3: 1.25;
   --fs-body-lg: clamp(1.0625rem, 1.018rem + 0.188vw, 1.1875rem); /* 17 → 19 */
-  --fs-body: 1.0625rem; /* 17 */
+  --fs-body: 1.0625rem; /* 17: mínimo de cuerpo */
   --lh-body: 1.6;
+  --fs-big: clamp(1.25rem, 1rem + 1vw, 1.75rem); /* 20 → 28: texto grande de celda (bio, transparencia) */
   --fs-small: 0.9375rem; /* 15 */
   --fs-etiqueta: 0.8125rem; /* 13, mono mayúsculas +2px */
   --ls-etiqueta: 0.15em;
   --fs-dato: 0.9375rem; /* 15, mono */
+  --fs-rail: 0.6875rem; /* 11, mono de los rieles y barras */
   --measure: 62ch;
 
   /* ---- Espaciado (manual: 4 · 8 · 16 · 24 · 40 · 64 · 96) ---- */
@@ -61,28 +66,37 @@
   --space-5: 2.5rem;
   --space-6: 4rem;
   --space-7: 6rem;
-  --section-y: clamp(4rem, 2.6rem + 5.9vw, 6rem); /* 64 → 96 */
+  --section-y: clamp(4rem, 2.6rem + 5.9vw, 6rem); /* páginas internas (blog, privacidad) */
   --head-gap: clamp(2rem, 1.6rem + 1.7vw, 2.5rem);
-  --gutter: clamp(1rem, 0.3rem + 3vw, 3rem); /* 16 → 48 */
-  --container: 72rem; /* 1152 px de contenido */
+  --gutter: clamp(1rem, 0.3rem + 3vw, 3rem);
+  --container: 72rem;
   --grid-step: 24px; /* grilla de plano */
 
+  /* ---- La carátula (grilla de celdas) ---- */
+  --gap: 1px; /* línea entre celdas: 1 px en el celular, 2 px desde 768 */
+  --cell-pad: clamp(1rem, 0.75rem + 0.8vw, 1.5rem);
+  --rail: 3rem; /* riel lateral (solo ≥1024) */
+  --rail-x: 0px; /* lo que ocupa el riel a cada lado (0 sin rieles): para lo que flota en las esquinas */
+  --bar-top: 3.25rem; /* barra superior */
+  --bar-bottom: 0px; /* barra inferior de rótulos (solo ≥1024) */
+  --cols: 2; /* columnas de la grilla: 2 en el celular, 6 desde 768 */
+
   /* ---- Formas (ángulos rectos) ---- */
-  --radius-sm: 2px; /* campos, etiquetas */
-  --radius-md: 4px; /* botones, tarjetas, imágenes */
-  --radius-lg: 8px; /* solo el pop-up del formulario y el video flotante */
+  --radius-sm: 2px;
+  --radius-md: 4px; /* celdas, botones, imágenes */
+  --radius-lg: 8px; /* solo el pop-up del formulario y el video chico en la esquina */
   --stroke: 1.5px;
 
   /* ---- Movimiento ---- */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --dur: 0.5s;
+  --dur: 0.18s;
 
   /* ---- UI ---- */
-  --tap: 3rem; /* 48 px: alto mínimo de botones */
-  --header-h: 3.5rem;
+  --tap: 3rem; /* 48 px: alto mínimo de lo que se toca */
+  --header-h: var(--bar-top);
 }
 
-/* Tema claro dentro de una sección oscura (tarjetas en hueso sobre grafito) */
+/* Tema claro dentro de la web oscura (no se usa en la home; queda para piezas que lo necesiten) */
 .theme-light {
   --fondo: var(--c-hueso);
   --superficie: #faf8f4;
@@ -94,8 +108,7 @@
   --focus: var(--tinta);
   color: var(--tinta);
 }
-/* Tema oscuro de sección (grafito): se aplica con .s-grafito, no con el modo del sistema.
-   La web es clara; el grafito se usa para cortar secciones y en el pie. */
+/* Compatibilidad: la web ya es oscura; estas clases no cambian nada */
 .s-grafito,
 .theme-dark {
   --fondo: #161616;
@@ -110,6 +123,15 @@
 
 @media (min-width: 768px) {
   :root {
-    --header-h: 4rem;
+    --gap: 2px;
+    --cols: 6;
+    --bar-top: 3.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --bar-top: 3.5rem;
+    --bar-bottom: 2.5rem;
+    --rail-x: calc(var(--rail) + var(--gap) * 2);
   }
 }

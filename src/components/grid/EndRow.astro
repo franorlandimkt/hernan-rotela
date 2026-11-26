@@ -1,0 +1,36 @@
+---
+/**
+ * Cierre de cada sección: una línea en mono (4 columnas) + la celda CTA (2 columnas). La web vende una
+ * cosa, la videollamada con Hernán: cada sección termina en el formulario.
+ */
+import CtaCell from "./CtaCell.astro";
+interface Props {
+  label: string;
+  cta: string;
+  note?: string;
+}
+const { label, cta, note } = Astro.props;
+---
+
+<div class="g end-row">
+  {
+    note && (
+      <div class="cell s-4 st-3 cell--alt end-row__note reveal">
+        <p class="dato">{note}</p>
+      </div>
+    )
+  }
+  <CtaCell label={label} cta={cta} s={note ? 2 : 6} st={note ? 3 : 6} />
+</div>
+
+<style>
+  .end-row__note {
+    justify-content: center;
+    color: var(--tinta-2);
+  }
+  @media (max-width: 767px) {
+    .end-row__note {
+      padding-block: 0.75rem;
+    }
+  }
+</style>

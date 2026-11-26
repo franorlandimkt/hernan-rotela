@@ -4,7 +4,8 @@
  *  - Sin video todavía (site.video.src vacío): se ve el póster [PLACEHOLDER] y el play no hace nada.
  *  - NO se reproduce solo: quieto con el póster hasta que la persona toca el play. Ahí carga el archivo
  *    (antes no baja nada) y arranca con sonido y con los controles del navegador.
- *  - Si sigue bajando mientras suena, el video queda chico abajo a la derecha (sobre el aviso de cookies),
+ *  - Si sigue bajando mientras suena (el del hero salió de pantalla), el MISMO video queda chico abajo a la
+ *    derecha: nunca se ven dos. Va encima de la barra de abajo (--bar-h) y del aviso de cookies (--cookie-h),
  *    con una X para cerrarlo y una flecha para volver al hero. Al volver arriba, vuelve a su lugar.
  *  - Mientras el formulario está abierto (pop-up de 13-Form.astro) se pausa y vuelve a su lugar
  *    (eventos hr:form-open / hr:form-close).
@@ -143,7 +144,7 @@ const has = !!v.src;
   /* En la esquina (la persona siguió bajando con el video sonando) */
   .vsl.is-docked .vsl__frame {
     position: fixed;
-    inset: auto 0.75rem calc(0.75rem + var(--cookie-h, 0px)) auto;
+    inset: auto 0.75rem calc(0.75rem + var(--cookie-h, 0px) + var(--bar-h, 0px)) auto;
     z-index: 48;
     width: min(62vw, 15rem);
     aspect-ratio: 16 / 9;
@@ -153,7 +154,7 @@ const has = !!v.src;
   }
   @media (min-width: 768px) {
     .vsl.is-docked .vsl__frame {
-      inset: auto 1.5rem calc(1.5rem + var(--cookie-h, 0px)) auto;
+      inset: auto calc(var(--rail-x, 0px) + 1.5rem) calc(1rem + var(--cookie-h, 0px) + var(--bar-h, 0px)) auto;
       width: 22rem;
     }
   }

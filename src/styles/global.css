@@ -4,6 +4,7 @@
    Los estilos propios de cada sección viven en su componente (<style> scoped).
    ========================================================================== */
 @import "./tokens.css";
+@import "./grid.css";
 
 /* ---------- Reset mínimo ---------- */
 *,
@@ -276,9 +277,6 @@ button {
 .mark {
   color: var(--c-ladrillo);
 }
-.s-grafito .mark {
-  color: var(--ladrillo-texto);
-}
 
 /* ---------- La cota: línea fina en ladrillo con marcas a 45° en los extremos ----------
    Subrayado de un título, divisor o para "medir" un dato. Máximo una por pantalla.
@@ -515,17 +513,13 @@ button {
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }
-/* Marcador de texto (una frase de un testimonio): amarillo de obra con texto grafito, en claro y en oscuro */
+/* Marcador de texto (una frase de un testimonio): tinte ladrillo con texto en tinta (10:1) */
 .hl {
-  background: var(--c-amarillo);
-  color: var(--c-grafito);
+  background: var(--ladrillo-tinte);
+  color: var(--tinta);
   padding: 0.05em 0.2em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-}
-/* Sombra dura (la tarjeta "levantada", como una lámina sobre otra) */
-.lift {
-  box-shadow: var(--lift, 8px) var(--lift, 8px) 0 var(--lift-color, var(--c-grafito));
 }
 /* Cuadro del ícono (tarjetas) */
 .ico-box {
@@ -582,17 +576,13 @@ button {
 /* ---------- Animaciones de entrada (mejora progresiva) ----------
    Sin JS o con reduced-motion todo se ve de entrada. */
 @media (prefers-reduced-motion: no-preference) {
-  .js .reveal {
-    opacity: 0;
-    transform: translateY(14px);
-    transition:
-      opacity var(--dur) var(--ease),
-      transform var(--dur) var(--ease);
+  /* Fade corto por celda (150–200 ms): se desvanece el contenido, la celda queda (no se ve el gap gris) */
+  .js .reveal > * {
+    transition: opacity var(--dur) linear;
     transition-delay: var(--delay, 0s);
   }
-  .js .reveal.is-in {
-    opacity: 1;
-    transform: none;
+  .js .reveal:not(.is-in) > * {
+    opacity: 0;
   }
 }
 @media (prefers-reduced-motion: reduce) {

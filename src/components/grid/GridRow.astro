@@ -1,0 +1,11 @@
+---
+/** Fila de la grilla de 6 columnas (2 en el celular). Las celdas adentro dicen cuántas columnas ocupan. */
+interface Props {
+  class?: string;
+  as?: string;
+  [key: string]: unknown;
+}
+const { class: cls, as: Tag = "div", ...rest } = Astro.props;
+---
+
+<Tag class:list={["g", cls]} {...rest}><slot /></Tag>

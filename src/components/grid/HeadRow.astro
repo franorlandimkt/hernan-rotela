@@ -1,0 +1,24 @@
+---
+/**
+ * Encabezado de sección en celdas: etiqueta (2 columnas) + título H2 (4 columnas) con bajada opcional.
+ * *texto* del título va en ladrillo (Marked.astro).
+ */
+import Marked from "../ui/Marked.astro";
+interface Props {
+  label: string;
+  title: string;
+  id: string;
+  sub?: string;
+}
+const { label, title, id, sub } = Astro.props;
+---
+
+<div class="g head-row">
+  <div class="cell s-2 st-2 cell--split reveal">
+    <p class="cell__label cell__label--sq etiqueta">{label}</p>
+  </div>
+  <div class="cell s-4 st-4 reveal">
+    <h2 class="t-h1" id={id}><Marked text={title} /></h2>
+    {sub && <p class="lead">{sub}</p>}
+  </div>
+</div>

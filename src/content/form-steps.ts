@@ -268,7 +268,15 @@ export const QUOTE_LOADING_MS = 2500;
  */
 export const CTA_ORIGINS: Record<string, string> = {
   header: "Botón del menú (Agendar videollamada)",
+  nav: "Barra superior (Calculá tu precio)",
+  "barra-movil": "Barra fija del celular",
   hero: "Portada (hero)",
+  necesitas: "Qué necesitás para construir",
+  proceso: "Cómo trabajo (proceso)",
+  "caso-escobar": "Caso: Casa en Escobar (Quiero algo así)",
+  "caso-santa-clara": "Caso: Casa en Santa Clara (Quiero algo así)",
+  "caso-san-sebastian": "Caso: Casa en San Sebastián (Quiero algo así)",
+  "caso-sourdeaux": "Caso: Multifamiliar en Ingeniero Sourdeaux (Quiero algo así)",
   "hero-distancia": "Portada: planos a distancia",
   videollamada: "Qué te llevás de la videollamada",
   problema: "Después de El problema",

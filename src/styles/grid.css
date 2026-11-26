@@ -1,0 +1,256 @@
+/* ==========================================================================
+   LA CARÁTULA — grilla de celdas (home)
+   La página es la carátula de un plano: celdas grafito (--fondo) con radio de 4 px, separadas por un gap
+   (--gap: 1 px en el celular, 2 px desde 768) que deja ver el fondo --linea. Ese gap son las líneas.
+   Grilla: 2 columnas en el celular, 6 desde 768. Rieles a los costados y barras arriba/abajo desde 1024.
+   Sin sombras. El ladrillo: la celda CTA (degradé), la cota, el dato, y degradés en celdas clave.
+   Uso (componentes en src/components/grid/):
+     <div class="g">  → fila de la grilla (GridRow.astro)
+     <div class="cell s-3 st-6 sm-1">  → celda: s-N columnas en desktop (≥1024), st-N en tablet (768–1023),
+                                        sm-1 = media fila en el celular (por defecto ocupa la fila entera)
+   ========================================================================== */
+
+/* ---------- El marco ---------- */
+.frame {
+  background: var(--linea);
+  min-height: 100vh;
+  padding: calc(var(--bar-top) + var(--gap) * 2) var(--gap) var(--gap);
+}
+body:has(.frame) {
+  background: var(--linea);
+}
+@media (min-width: 1024px) {
+  .frame {
+    padding: calc(var(--bar-top) + var(--gap) * 2) calc(var(--rail) + var(--gap) * 2) calc(var(--bar-bottom) + var(--gap) * 2);
+  }
+}
+.sheet {
+  display: grid;
+  gap: var(--gap);
+}
+.sheet > section {
+  display: grid;
+  gap: var(--gap);
+  scroll-margin-top: calc(var(--bar-top) + var(--gap) * 2);
+}
+
+/* ---------- Fila de la grilla ---------- */
+.g {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: var(--gap);
+}
+.g > * {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+/* Pila de celdas (una columna de la grilla con celdas una arriba de otra) */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  min-width: 0;
+}
+@media (max-width: 767px) {
+  .g > .sm-1 {
+    grid-column: span 1;
+  }
+}
+@media (min-width: 768px) {
+  .g > .s-1 { grid-column: span 1; }
+  .g > .s-2 { grid-column: span 2; }
+  .g > .s-3 { grid-column: span 3; }
+  .g > .s-4 { grid-column: span 4; }
+  .g > .s-5 { grid-column: span 5; }
+  .g > .s-6 { grid-column: span 6; }
+  .g > .st-1 { grid-column: span 1; }
+  .g > .st-2 { grid-column: span 2; }
+  .g > .st-3 { grid-column: span 3; }
+  .g > .st-4 { grid-column: span 4; }
+  .g > .st-5 { grid-column: span 5; }
+  .g > .st-6 { grid-column: span 6; }
+}
+@media (min-width: 1024px) {
+  .g > .s-1 { grid-column: span 1; }
+  .g > .s-2 { grid-column: span 2; }
+  .g > .s-3 { grid-column: span 3; }
+  .g > .s-4 { grid-column: span 4; }
+  .g > .s-5 { grid-column: span 5; }
+  .g > .s-6 { grid-column: span 6; }
+}
+
+/* ---------- La celda ---------- */
+.cell {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--cell-pad);
+  background: var(--fondo);
+  border-radius: var(--radius-md);
+  color: var(--tinta);
+  overflow: hidden;
+}
+.cell--alt {
+  background: var(--superficie);
+}
+/* Etiqueta arriba, valor abajo (como la referencia) */
+.cell--split {
+  justify-content: space-between;
+}
+.cell--flush {
+  padding: 0;
+}
+/* Etiqueta de celda: mono gris arriba a la izquierda */
+.cell__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--tinta-2);
+}
+.cell__label--sq::before {
+  content: "";
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--c-ladrillo);
+}
+/* Degradé ladrillo dentro de una celda (negro con el rojo en degradé). Posición: --glow-at; tamaño:
+   --glow-size; intensidad: --glow-a. El texto encima sigue sobre casi-negro: el contraste no cambia. */
+.cell--glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(var(--glow-size, 90% 80%) at var(--glow-at, 0% 100%), rgb(214 58 31 / var(--glow-a, 0.32)), transparent 70%);
+  pointer-events: none;
+}
+/* Grilla de plano de fondo (líneas cada 24 px, tenue) */
+.cell--grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--linea) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--linea) 55%, transparent) 1px, transparent 1px);
+  background-size: var(--grid-step) var(--grid-step);
+  background-position: center center;
+}
+/* Metadato tipo superíndice en mono: "Casa en Escobar ^255,67 m²" */
+.sup {
+  margin-left: 0.4em;
+  font-family: var(--f-mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-stretch: 100%;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  vertical-align: super;
+  color: var(--tinta-2);
+  white-space: nowrap;
+}
+/* Texto grande de celda (bio, transparencia) */
+.t-big {
+  font-size: var(--fs-big);
+  line-height: 1.32;
+  letter-spacing: -0.005em;
+}
+/* Cifra en mono (los datos clave en ladrillo-texto) */
+.num-mono {
+  font-family: var(--f-mono);
+  font-weight: 500;
+  font-size: var(--fs-num);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ladrillo-texto);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---------- La celda CTA: entera en ladrillo (degradé), texto blanco, flecha de trazo ---------- */
+.cta-cell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto 1fr;
+  align-items: end;
+  gap: var(--space-2) var(--space-3);
+  min-height: 4rem;
+  background: var(--g-cta);
+  color: var(--sobre-ladrillo);
+  text-decoration: none;
+  transition:
+    background-color var(--dur),
+    color var(--dur),
+    box-shadow var(--dur);
+  -webkit-tap-highlight-color: transparent;
+}
+.cta-cell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--g-cta-hover);
+  opacity: 0;
+  transition: opacity var(--dur);
+}
+.cta-cell:hover::after {
+  opacity: 1;
+}
+.cta-cell:focus-visible {
+  outline-color: var(--c-hueso);
+  outline-offset: -4px;
+}
+.cta-cell__note {
+  grid-column: 1 / -1;
+  align-self: start;
+  color: rgb(255 255 255 / 0.86);
+}
+.cta-cell__label {
+  font-family: var(--f-body);
+  font-weight: 600;
+  font-size: 1.1875rem;
+  line-height: 1.2;
+}
+.cta-cell .arrow {
+  transition: transform 0.2s var(--ease);
+}
+.cta-cell:hover .arrow {
+  transform: translateX(4px);
+}
+.cta-cell--lg .cta-cell__label {
+  font-family: var(--f-display);
+  font-stretch: var(--stretch-display);
+  font-weight: 700;
+  font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.625rem);
+}
+/* Apagada: la celda de la barra mientras hay otra celda roja a la vista (una sola roja por pantalla) */
+.cta-cell.is-quiet {
+  background: var(--fondo);
+  color: var(--ladrillo-texto);
+  box-shadow: inset 0 0 0 1px var(--c-ladrillo-hover);
+}
+.cta-cell.is-quiet::after {
+  opacity: 0;
+}
+.cta-cell.is-quiet:hover {
+  color: var(--sobre-ladrillo);
+}
+.cta-cell.is-quiet:hover::after {
+  opacity: 1;
+  background: var(--g-cta);
+}
+
+/* ---------- Fila de encabezado de sección: etiqueta + título ---------- */
+.head-row .cell__label {
+  color: var(--tinta);
+}
+.head-row .t-h1 {
+  max-width: 24ch;
+}
+.head-row .lead {
+  margin-top: 0;
+  max-width: 60ch;
+}
+/* Botón secundario dentro de una celda */
+.cell .btn {
+  align-self: flex-start;
+}

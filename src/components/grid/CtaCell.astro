@@ -1,0 +1,34 @@
+---
+/**
+ * La celda CTA: entera en ladrillo (degradé), texto blanco y flecha de trazo. Es un <a> real a #cotiza con
+ * su data-cta (clave de form-steps.ts → CTA_ORIGINS): el formulario la abre en el pop-up como cualquier link
+ * a #cotiza. Una sola celda roja por pantalla: las de las barras se apagan solas mientras hay otra a la vista
+ * (src/scripts/frame.ts, por data-cta-cell="page" / "frame").
+ */
+import Icon from "../illustrations/Icon.astro";
+interface Props {
+  label: string;
+  cta: string;
+  href?: string;
+  note?: string;
+  s?: number;
+  st?: number;
+  sm?: 1 | 2;
+  size?: "md" | "lg";
+  frame?: boolean;
+  reveal?: boolean;
+  class?: string;
+}
+const { label, cta, href = "#cotiza", note, s = 2, st, sm, size = "md", frame = false, reveal = true, class: cls } = Astro.props;
+---
+
+<a
+  class:list={["cell cta-cell", `s-${s}`, st && `st-${st}`, sm === 1 && "sm-1", { "cta-cell--lg": size === "lg", reveal: reveal && !frame }, cls]}
+  href={href}
+  data-cta={cta}
+  data-cta-cell={frame ? "frame" : "page"}
+>
+  {note && <span class="cta-cell__note etiqueta">{note}</span>}
+  <span class="cta-cell__label">{label}</span>
+  <Icon name="arrow-right" size={22} class="arrow" />
+</a>

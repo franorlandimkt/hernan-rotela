@@ -1,0 +1,38 @@
+---
+/**
+ * Celda de la carátula (estilos en src/styles/grid.css).
+ *  s  = columnas en desktop (≥1024, de 6) · st = en tablet (768–1023; si no va, usa s) · sm = 1 para media
+ *  fila en el celular (por defecto, fila entera).
+ *  label = etiqueta mono arriba a la izquierda · split = etiqueta arriba y contenido abajo
+ *  tone "alt" = superficie (celdas secundarias) · glow = posición del degradé ladrillo ("0% 100%")
+ *  grid = grilla de plano de fondo · reveal = fade al entrar (no en el hero)
+ */
+interface Props {
+  s?: number;
+  st?: number;
+  sm?: 1 | 2;
+  as?: string;
+  class?: string;
+  tone?: "base" | "alt";
+  glow?: string;
+  glowA?: number;
+  grid?: boolean;
+  label?: string;
+  sq?: boolean;
+  split?: boolean;
+  reveal?: boolean;
+  style?: string;
+  [key: string]: unknown;
+}
+const { s = 6, st, sm, as: Tag = "div", class: cls, tone = "base", glow, glowA, grid = false, label, sq = false, split = false, reveal = true, style, ...rest } = Astro.props;
+const vars = [glow ? `--glow-at:${glow}` : "", glowA !== undefined ? `--glow-a:${glowA}` : "", style ?? ""].filter(Boolean).join(";");
+---
+
+<Tag
+  class:list={["cell", `s-${s}`, st && `st-${st}`, sm === 1 && "sm-1", { "cell--alt": tone === "alt", "cell--glow": !!glow, "cell--grid": grid, "cell--split": split, reveal }, cls]}
+  style={vars || undefined}
+  {...rest}
+>
+  {label && <p class:list={["cell__label etiqueta", { "cell__label--sq": sq }]}>{label}</p>}
+  <slot />
+</Tag>

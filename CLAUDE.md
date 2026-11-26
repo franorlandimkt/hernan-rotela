@@ -20,8 +20,10 @@ Misma arquitectura y nombres de archivo que la web de Víctor Oropesa (`franorla
 | Pixel, atribución, cookies, modo prueba | `src/scripts/tracking.ts` (Pixel base en `Base.astro`) |
 | WhatsApp en el navegador (libphonenumber) | `src/scripts/phone.ts` |
 | JSON-LD | `src/data/schema.ts` |
-| Tokens / estilos globales | `src/styles/tokens.css` / `global.css` |
-| Secciones (orden en `src/pages/index.astro`) | `src/components/sections/NN-Nombre.astro` |
+| Tokens / estilos globales / grilla de celdas | `src/styles/tokens.css` / `global.css` / `grid.css` |
+| Primitivas de la carátula (celda, fila, celda CTA, encabezado, cierre de sección, módulo de caso) | `src/components/grid/` (`Cell`, `GridRow`, `CtaCell`, `HeadRow`, `EndRow`, `ProjectModule`) |
+| Marco de la home (barra superior, rieles, barra inferior / barra fija del celular) | `src/components/frame/` + `src/scripts/frame.ts` |
+| Secciones (orden en `src/pages/index.astro`) | `src/components/sections/NN-Nombre.astro` (`00-Header` queda para blog y privacidad) |
 | Formulario pop-up + agenda | `src/components/sections/13-Form.astro` |
 | Video del hero (VSL, horizontal 16:9) / lightbox / cookies | `src/components/ui/Vsl.astro` / `Lightbox.astro` / `CookieBanner.astro` |
 | Fotos, renders y planos (se detectan por nombre de archivo, sin tocar código) | `src/assets/img/` (nombres en `LEEME.md`) + `src/lib/images.ts` |
@@ -46,17 +48,21 @@ Misma arquitectura y nombres de archivo que la web de Víctor Oropesa (`franorla
 - **Cambiar copy o datos nunca requiere tocar componentes.** Si algo está hardcodeado en un componente, moverlo a `landing.ts` / `site.ts`.
 - Datos inventados o pendientes se marcan `// [PLACEHOLDER]`, `// [CONFIRMAR]` o `// [COMPLETAR]` al lado del valor. Lista: `npm run pendientes`.
 
-## Reglas de diseño (manual HABITAR)
-- Base **hueso · grafito · ladrillo**. El ladrillo marca: el botón de cada pantalla, la cota, un dato; a sangre va en una sola franja (el cierre).
-- **Las secciones oscuras son negro con el rojo en degradé** (`.s-glow`: grafito + resplandor ladrillo, como el hero). Nunca rojo a sangre ni otro color de fondo. Franco lo eligió así: es la identidad de la web.
-- **Amarillo de obra** (`--c-amarillo`): un golpe, no un color de base. Solo la cinta, las cifras del hero y el marcador de texto (`.hl`). Sin azul ni otros colores de apoyo.
-- Tarjetas destacadas con sombra dura (8 px, sin desenfoque), como una lámina sobre otra.
-- Ladrillo puro (`--c-ladrillo`) en texto solo a 24 px o más; texto chico → `--ladrillo-texto`. `--c-hormigon` nunca es texto.
+## Reglas de diseño (manual HABITAR, tema oscuro · v2.0 "la carátula")
+- **La página es la carátula de un plano: todo son celdas.** Celdas grafito (`--fondo` `#161616`, secundarias `--superficie`) con radio de 4 px, separadas por un gap (`--gap`: 1 px en el celular, 2 px desde 768) que deja ver `--linea`: esas son las líneas. Grilla de 6 columnas (2 en el celular); desde 1024, rieles a los costados y barras fijas arriba y abajo. Sin sombras, sin tarjetas flotando.
+- **Celda = etiqueta mono gris arriba a la izquierda + valor abajo.** Metadatos tipo superíndice en mono (`.sup`: "Casa en Escobar ^255,67 m²"). Las filas de datos de los casos caen debajo de los rótulos de la barra inferior.
+- **El CTA es una celda entera en ladrillo** (`CtaCell`, degradé `--g-cta`, texto blanco, flecha de trazo, 48 px mínimo): un `<a>` real con su `data-cta`. **Una sola celda roja por pantalla**: la de la barra superior se apaga sola cuando hay otra a la vista (`frame.ts`). Cada sección termina en una (`EndRow`).
+- **Mucho rojo, siempre en degradé**: negro con el ladrillo en degradé (`.cell--glow`, con `--glow-at` / `--glow-size` / `--glow-a`) en el hero, las cifras, las etapas, "¿hay que pagar algo más?", la frase de Quién soy y las celdas "Quiero algo así". Rojo lleno solo en las celdas CTA; a sangre (6 columnas), solo el cierre. Franco lo pidió así: que no quede monocromático. Si dos cosas grandes en rojo compiten en una pantalla, sacá una.
+- Datos clave (cifras, número de paso, sección activa) en `--ladrillo-texto` y en mono. Punto ladrillo que late junto a la hora local (quieto con "reducir movimiento").
+- **Sin amarillo ni otros colores de apoyo.** El marcador de texto (`.hl`) es tinte ladrillo con texto en tinta.
+- Ladrillo puro (`--c-ladrillo`) en texto solo a 24 px o más; texto chico → `--ladrillo-texto`. `--c-hormigon` nunca es texto. Cuerpo mínimo 17 px (le habla a una pareja que invierte en su casa, no a diseñadores).
 - Títulos en Archivo ancha (`font-stretch: 112 %`, 700–800); lo técnico (etiquetas, m², medidas, precios) en IBM Plex Mono.
 - Ángulos rectos: radios de 2–4 px (8 px solo el pop-up del formulario y el video cuando queda chico en la esquina). Íconos de trazo 1,5 px, esquinas rectas (`Icon.astro`).
-- La cota (`.cota`): máximo una por pantalla. Grilla de plano (`.s-grid`): siempre tenue.
-- Un solo H1 (hero). H2 por sección, H3 adentro. Contraste AA.
-- El hero va en grafito y centrado: título → video horizontal → botón. El botón tiene que verse en la primera pantalla del celular.
+- La cota (`.cota`): máximo una por pantalla. Grilla de plano (`.cell--grid`, `.s-grid`): siempre tenue.
+- Un solo H1 (hero). H2 por sección (`HeadRow`), H3 adentro. Contraste AA.
+- El hero: celda del titular (con la cota) + celda CTA + línea en mono a la izquierda, el video horizontal a la derecha; en el celular, título → video → botón. El botón entra en la primera pantalla en 1280×720 y en 390×844 (también en 375×667).
+- Celular: grilla de 2 columnas, sin rieles (su contenido va al pie), barra superior logo + "Precio", barra fija "Calculá el precio de tus planos" después del hero (el aviso de cookies va arriba de ella: `--bar-h`), tiras de renders en carrusel con scroll-snap.
+- Animaciones al hacer scroll: solo un fade de 180 ms del contenido de cada celda, nada con "reducir movimiento".
 - La web vende una cosa: la videollamada con Hernán. Cada sección termina en un botón al formulario.
 - Pocos bloques de texto: lo que se pueda mostrar como lista, línea de tiempo, barra o ficha, no va en párrafo.
 - Contadores: el valor final va en el HTML; el JS solo anima. Contenido crítico en HTML estático.

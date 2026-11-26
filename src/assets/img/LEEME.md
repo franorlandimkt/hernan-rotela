@@ -8,16 +8,16 @@ trabajos de terceros. Si hay duda, no se sube.
 
 | Archivo | Dónde aparece | Cómo tiene que ser |
 |---|---|---|
-| `hernan.jpg` | "Quién soy" (foto grande) | Vertical (4:5), él con los planos de fondo, luz natural. Mínimo 1000 px de ancho. |
-| `hernan-llamada.jpg` | Sección de la videollamada (ficha de la llamada) | Horizontal (16:10), de frente, como se lo ve en una videollamada. Mínimo 1000 px de ancho. |
-| `hernan-avatar.jpg` | Franja de redes, debajo del hero | Cuadrada, la cara. Mínimo 300 px. |
+| `hernan.jpg` | "Quién soy" (celda de la foto) | Vertical (4:5), él con los planos de fondo, luz natural. Mínimo 800 px de ancho. |
+| `hernan-llamada.jpg` | (Fuera de la home desde v2.0) | Horizontal (16:10). |
+| `hernan-avatar.jpg` | (Fuera de la home desde v2.0) | Cuadrada, la cara. |
 | `giselle.jpg` | Testimonio (foto de la persona) | Cuadrada. Con su autorización. |
 | `testimonio-giselle.jpg` | Testimonio (captura del chat o del audio de WhatsApp) | Captura tal cual, con el número tapado. |
-| `proyecto-escobar-1.jpg`, `-2.jpg`, … | Ficha del proyecto de Escobar | Renders o planos de ESE proyecto. La `-1` es la principal. |
+| `proyecto-escobar-1.jpg` … `-5.jpg` | Tira del caso de Escobar (5 celdas + "Quiero algo así") | Renders o planos de ESE proyecto, verticales 4:5 (mínimo 800 px de ancho). Sin ninguna, la tira no se muestra. |
 | `proyecto-santa-clara-1.jpg`, … | Ficha de Santa Clara | Ídem. |
 | `proyecto-san-sebastian-1.jpg`, … | Ficha de San Sebastián | Ídem. |
 | `proyecto-sourdeaux-1.jpg`, … | Ficha de Ingeniero Sourdeaux | Ídem. |
-| `aprobado-1.jpg`, `aprobado-2.jpg`, … | "Planos municipales aprobados" (carátulas) | Carátula del plano aprobado, con datos personales del cliente tapados. |
+| `aprobado-1.jpg`, `aprobado-2.jpg`, … | (Fuera de la home desde v2.0) | Carátula del plano aprobado, con datos personales del cliente tapados. |
 
 Para otro testimonio: se agrega en `src/content/landing.ts → testimonial.items` con una `key` (ej. `sergio`) y las
 fotos van como `sergio.jpg` y `testimonio-sergio.jpg`.

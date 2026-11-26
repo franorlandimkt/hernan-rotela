@@ -1,0 +1,26 @@
+---
+/**
+ * Casos: un módulo por proyecto (ProjectModule.astro), solo de Hernán y con su estado real. Las filas de
+ * datos de cada módulo caen debajo de los rótulos de la barra inferior (desktop).
+ * Textos: landing.ts → projects. Renders: src/assets/img/proyecto-<key>-1.jpg … -5.jpg.
+ */
+import HeadRow from "../grid/HeadRow.astro";
+import ProjectModule from "../grid/ProjectModule.astro";
+import { projects as t } from "../../content/landing";
+---
+
+<section class="cases" id="casos" aria-labelledby="casos-title">
+  <HeadRow label={t.label} title={t.h2} sub={t.sub} id="casos-title" />
+  {t.items.map((item, i) => <ProjectModule item={item} index={i} />)}
+</section>
+
+<style>
+  .cases {
+    display: grid;
+    gap: var(--gap);
+  }
+  /* entre un caso y el siguiente, una línea doble: se lee como otra lámina */
+  .cases > :global(.pm + .pm) {
+    margin-top: calc(var(--gap) * 3);
+  }
+</style>

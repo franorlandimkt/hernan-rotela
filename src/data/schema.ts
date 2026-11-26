@@ -89,7 +89,7 @@ export function homeSchema({ title, description }: { title: string; description:
     "@type": "HowTo",
     "@id": u("/#proceso"),
     name: `Cómo trabaja ${site.person} el proyecto de tu casa`,
-    step: process.steps.map((s, i) => ({ "@type": "HowToStep", position: i + 1, name: s.title, text: `${s.text} (${s.time})`, url: u("/#como-trabajo") })),
+    step: process.steps.map((s, i) => ({ "@type": "HowToStep", position: i + 1, name: s.title, text: `${s.text} (${s.time})`, url: u("/#proceso") })),
   };
 
   const website = { "@type": "WebSite", "@id": u("/#website"), url: u("/"), name: site.brandFull, inLanguage: "es-AR", publisher: { "@id": u("/#org") } };

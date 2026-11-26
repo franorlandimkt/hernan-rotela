@@ -1,0 +1,54 @@
+---
+/**
+ * Prueba en números (pegada al hero): una celda con la etiqueta y una línea + 4 celdas con la cifra grande
+ * en mono ladrillo-texto y la etiqueta en mono. Los valores salen de site.ts (landing.ts → numbers).
+ * El valor final va en el HTML: no hay contador.
+ */
+import { numbers as t } from "../../content/landing";
+---
+
+<section class="nums g" aria-label={t.label}>
+  <div class="cell s-2 st-6 cell--split nums__head reveal">
+    <p class="cell__label cell__label--sq etiqueta">{t.label}</p>
+    <p class="t-h3 nums__title">{t.title}</p>
+  </div>
+  {
+    t.items.map((n, i) => (
+      <div class="cell s-1 st-3 sm-1 cell--split cell--glow nums__cell reveal" style={`--glow-at:100% 100%;--glow-size:120% 90%;--glow-a:${0.1 + i * 0.05};--delay:${i * 0.04}s`}>
+        <p class="etiqueta nums__label">{n.label}</p>
+        <p class="num-mono">{n.value}</p>
+      </div>
+    ))
+  }
+</section>
+
+<style>
+  .nums__head {
+    gap: var(--space-4);
+  }
+  .nums__head .cell__label {
+    color: var(--tinta);
+  }
+  .nums__title {
+    font-stretch: var(--stretch-display);
+    max-width: 22ch;
+  }
+  .nums__cell {
+    min-height: 9rem;
+    gap: var(--space-4);
+    container-type: inline-size;
+  }
+  .nums__label {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+  }
+  /* la cifra entra siempre en su celda (9 caracteres como máximo: "~1.200 m²") */
+  .nums .num-mono {
+    font-size: min(2.75rem, 17cqi);
+  }
+  @media (max-width: 767px) {
+    .nums__cell {
+      min-height: 7.5rem;
+    }
+  }
+</style>

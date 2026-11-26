@@ -1,0 +1,72 @@
+---
+/**
+ * Proceso en 5 celdas numeradas + la celda CTA en la sexta columna. Textos: landing.ts → process.grid
+ * (process.steps sigue alimentando el JSON-LD HowTo y llms.txt).
+ */
+import HeadRow from "../grid/HeadRow.astro";
+import CtaCell from "../grid/CtaCell.astro";
+import { process as t } from "../../content/landing";
+---
+
+<section class="process" id="proceso" aria-labelledby="proceso-title">
+  <HeadRow label={t.label} title={t.h2} id="proceso-title" />
+  <ol class="g process__list">
+    {
+      t.grid.map((p, i) => (
+        <li class="cell s-1 st-2 cell--split process__step reveal" style={`--delay:${i * 0.04}s`}>
+          <p class="process__n" aria-hidden="true">
+            {p.n}
+          </p>
+          <div class="process__body">
+            <p class="etiqueta process__tag">{p.tag}</p>
+            <h3 class="t-h3">{p.title}</h3>
+            <p class="process__text">{p.text}</p>
+          </div>
+        </li>
+      ))
+    }
+    <li class="s-1 st-2 process__ctaitem">
+      <CtaCell label={t.cta} cta="proceso" s={6} class="process__cta" />
+    </li>
+  </ol>
+</section>
+
+<style>
+  .process__list {
+    list-style: none;
+  }
+  .process__step {
+    gap: var(--space-5);
+    min-height: 20rem;
+  }
+  .process__n {
+    font-family: var(--f-mono);
+    font-weight: 500;
+    font-size: var(--fs-num);
+    line-height: 1;
+    color: var(--ladrillo-texto);
+  }
+  .process__body {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .process__tag {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+  }
+  .process__text {
+    color: var(--tinta-2);
+  }
+  .process__ctaitem {
+    display: grid;
+  }
+  .process__ctaitem :global(.process__cta) {
+    height: 100%;
+  }
+  @media (max-width: 767px) {
+    .process__step {
+      min-height: 0;
+      gap: var(--space-3);
+    }
+  }
+</style>

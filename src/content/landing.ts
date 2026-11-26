@@ -36,6 +36,40 @@ export const header = {
   home: "Inicio",
 };
 
+/** "31K" (site.ts) → "31.000": la cifra completa en la celda de prueba. */
+const fullCount = (s: string) => {
+  const m = s.match(/^(\d+(?:,\d+)?)K$/i);
+  return m ? fmt(Math.round(parseFloat(m[1].replace(",", ".")) * 1000)) : s;
+};
+
+/**
+ * El marco de la carátula (home): barra superior, rieles y barras de abajo. Los rótulos van en mono
+ * mayúsculas (el CSS los pasa a mayúsculas: acá se escriben normal).
+ */
+export const frame = {
+  navLabel: "Secciones",
+  nav: [
+    { label: "Servicio", href: "#servicio" },
+    { label: "Proceso", href: "#proceso" },
+    { label: "Casos", href: "#casos" },
+    { label: "Preguntas", href: "#preguntas" },
+  ],
+  navCta: "Calculá tu precio",
+  navCtaShort: "Precio",
+  /** Riel izquierdo (en el celular va al pie). */
+  clock: "Hora local",
+  clockZone: "Argentina",
+  whatsapp: "WhatsApp",
+  tiktok: "TikTok",
+  place: `${site.base.locality}, ${site.base.partido}`,
+  /** Riel derecho. */
+  right: [site.credential, `Trámite municipal hasta ${site.radiusKm} km`, "Planos a distancia: todo el país", `© ${site.brand}`],
+  /** Barra inferior (desktop): los rótulos del plano. Encabezan las filas de datos de cada caso. */
+  bottom: ["Obra", "Ubicación", "Superficie", "Etapa", "Estado", "Profesional"],
+  /** Barra fija del celular (aparece después del hero). */
+  mobileCta: "Calculá el precio de tus planos",
+};
+
 export const hero = {
   label: `${site.person} · ${site.credential}`,
   /** Único H1 de la página. *…* = ladrillo. Corto: en el celular tiene que entrar con el video y el botón. */
@@ -50,7 +84,11 @@ export const hero = {
     close: "Cerrar video",
     back: "Volver al video",
   },
-  ctaPrimary: "Agendar mi videollamada",
+  ctaPrimary: "Calculá el precio de tus planos",
+  /** Línea en mono debajo de la celda CTA. */
+  ctaLine: "2 minutos · ves un rango en USD al terminar",
+  /** Etiqueta de la celda del video. */
+  videoTag: "Video · Hernán te cuenta cómo trabaja",
   /** Debajo del botón: baja el riesgo. El tercero solo va si la videollamada es sin costo (site.ts → call.free). */
   ctaNotes: ["2 minutos", "Ves el precio de tus planos en pantalla", ...(site.call.free ? ["Videollamada sin costo"] : [])],
   /** Datos de respaldo (el valor va grande, en Archivo ancha; la etiqueta, en mono). */
@@ -64,10 +102,34 @@ export const hero = {
   remoteLink: "También hago el proyecto a distancia",
 };
 
-/** La cinta de obra (franja amarilla que corre debajo del hero): lo que hace Hernán, en pocas palabras. */
-export const tape = ["Anteproyecto", "Proyecto ejecutivo", "Plano municipal", "Tramitación", "Cartel de obra", "Dirección de obra", "Casas en barrio cerrado"];
+/** Prueba en números (celdas debajo del hero): la cifra en mono ladrillo, la etiqueta en mono gris. */
+export const numbers = {
+  label: "Los números",
+  title: `Desde ${site.stats.projectsSince}, me dedico solo a proyectar.`,
+  items: [
+    { value: `+${site.stats.yearsOnSite}`, label: "años en obra" },
+    { value: `~${fmt(site.stats.m2Approved)} m²`, label: "aprobados en municipios" },
+    { value: `${site.stats.approvedPlans}`, label: "planos municipales aprobados" },
+    { value: fullCount(site.social.tiktok.followers), label: "seguidores en TikTok" },
+  ],
+};
+
+/** "¿Qué necesitás para poder construir?": la pregunta del que está por contratar. */
+export const needs = {
+  label: "Lo que hace falta",
+  h2: "¿Qué necesitás para *poder construir*?",
+  text: "Un proyecto aprobado. En barrio cerrado, primero lo aprueba el barrio con el anteproyecto; después, el municipio da el permiso de obra. Sin eso no te dejan poner un ladrillo.",
+  items: [
+    { n: "01", tag: "Barrio cerrado", title: "Plano aprobado por el barrio", text: "Se presenta el anteproyecto y el barrio lo revisa con su reglamento: retiros, alturas, qué se puede construir." },
+    { n: "02", tag: "Municipio", title: "Permiso municipal", text: `Con el plano municipal firmado, el municipio da el permiso. Tarda ${t.municipio}: eso no depende de mí.` },
+    { n: "03", tag: "Obra", title: "Cartel de obra", text: "Con el permiso se coloca el cartel de obra. Ahí empieza la construcción." },
+  ],
+  note: "Para arrancar necesito la plancheta catastral o la escritura del lote, y tus referencias.",
+  cta: "Calculá el precio de tus planos",
+};
 
 /** Franja de redes (debajo del hero): seguidores por red. Las redes con URL en site.ts son links al perfil. */
+/** [FUERA DE LA HOME desde v2.0: la carátula no tiene esta sección. El copy queda por si vuelve.] */
 export const social = {
   total: site.communityTotal,
   lead: "personas siguen mis videos sobre cómo se proyecta y se construye una casa",
@@ -79,6 +141,7 @@ export const social = {
 };
 
 /** La videollamada: lo que se lleva la persona. Es la oferta de la web. */
+/** [FUERA DE LA HOME desde v2.0: la carátula no tiene esta sección. El copy queda por si vuelve.] */
 export const call = {
   label: "El primer paso",
   h2: `En ${callTime} de videollamada *te llevás esto*.`,
@@ -111,6 +174,7 @@ export const call = {
   ctaNote: "Primero respondés unas preguntas: 2 minutos, y ves el precio de tus planos.",
 };
 
+/** [FUERA DE LA HOME desde v2.0: la carátula no tiene esta sección. El copy queda por si vuelve.] */
 export const problem = {
   label: "Lo que nadie te dice",
   h2: "Lo caro no es el proyecto. Es *construir sin uno bueno*.",
@@ -145,6 +209,12 @@ export const stages = {
       text: "Arrancamos por lo que necesitan (tus referencias de Pinterest, fotos o un croquis) y lo llevo a la planta de tu casa.",
       list: ["Planta de arquitectura", "Aberturas y materialidad", "Entrega en PDF y DWG", `${site.corrections} instancias de correcciones completas`],
       note: "En barrio cerrado, con el anteproyecto se pide la aprobación del barrio.",
+      /** Rótulo de la etapa (celdas etiqueta / dato). */
+      facts: [
+        ["Plazo", "~1 mes"],
+        ["Entrega", "PDF + DWG"],
+        ["Correcciones", `${site.corrections} instancias`],
+      ],
     },
     {
       tag: "Etapa 02",
@@ -152,6 +222,11 @@ export const stages = {
       time: t.ejecutivo,
       text: "Todo lo que la obra necesita para construir lo que se diseñó, sin improvisar.",
       list: ["Replanteo de fundaciones", "Plano de estructura: vigas y losas", "Instalación sanitaria", "Instalación eléctrica", "Plano de escalera"],
+      facts: [
+        ["Plazo", "1 a 2 meses, según los m²"],
+        ["Entrega", "PDF + DWG"], // [CONFIRMAR] formato de entrega del ejecutivo
+        ["Planos", "5 planos técnicos"],
+      ],
     },
     {
       tag: "Etapa 03",
@@ -160,8 +235,22 @@ export const stages = {
       text: "Armo la carpeta, la firmo y la presento. Las correcciones y visados que pida el municipio van sin costo extra.",
       list: ["Carpeta municipal y firmas profesionales", "Presentación en el municipio", "Correcciones y visados, sin costo extra", "Permiso y cartel de obra"],
       note: `Hasta ${site.radiusKm} km de ${site.base.locality}.`,
+      facts: [
+        ["Plazo", `El municipio: ${t.municipio}`],
+        ["Correcciones", "Las del municipio, sin costo extra"],
+        ["Zona", `Hasta ${site.radiusKm} km de ${site.base.locality}`],
+      ],
     },
+  ] as { tag: string; title: string; time: string; text: string; list: string[]; note?: string; facts: [string, string][] }[],
+  includes: "Incluye",
+  /** Fila de opcionales (debajo de las tres etapas). */
+  optionalTag: "Opcional",
+  optional: [
+    { title: "Dirección de obra", text: `Dentro de los ${site.radiusKm} km, sigo la obra para que se construya lo que se aprobó.` },
+    { title: "Construcción", text: "Construyo solo en barrios cerrados o proyectos importantes." },
   ],
+  /** Línea al lado del botón (sin precios por m²: el precio lo da la calculadora). */
+  note: "El precio de tus planos lo ves al terminar el formulario, según tus m² y las etapas que elijas.",
   extra: {
     tag: "Opcional",
     title: "Dirección de obra y construcción",
@@ -176,13 +265,22 @@ export const stages = {
   ],
   /** Título del desplegable con el paso a paso completo (process.steps). */
   stepsTitle: "Ver el paso a paso completo",
-  cta: "Ver el precio de mi proyecto",
+  cta: "Calculá el precio de tus planos",
 };
 
 /** Paso a paso (desplegable dentro de "El servicio"; también alimenta el JSON-LD HowTo y llms.txt). */
 export const process = {
   label: "Cómo trabajo",
   h2: "Te explico cada parte del plano, *en video*.",
+  /** Las 5 celdas numeradas de la home (el paso a paso completo de abajo alimenta el JSON-LD y llms.txt). */
+  grid: [
+    { n: "01", tag: "Para arrancar", title: "Plancheta o escritura", text: "Me mandás la plancheta catastral o la escritura del lote, y tus referencias." },
+    { n: "02", tag: "Antes de dibujar", title: "Tu lote en AutoCAD", text: "Lo dibujo y verifico la nomenclatura y la partida en CartoArba, para que el plano no salga con errores." },
+    { n: "03", tag: "En cada entrega", title: "PDF + video", text: "Te mando el PDF y un video grabando la pantalla, donde te explico cada parte." },
+    { n: "04", tag: `${site.corrections} correcciones incluidas`, title: "Tus audios o marcas", text: "Me devolvés audios o marcas en el PDF y ajustamos. Normalmente son 2 o 3 cambios de fondo." },
+    { n: "05", tag: t.municipio, title: "Barrio, municipio y cartel", text: "Presento en el barrio y después en el municipio, hasta el permiso y el cartel de obra." },
+  ],
+  cta: "Calculá el precio de tus planos",
   steps: [
     { icon: "form", title: "Completás el formulario", text: "Me contás de tu lote y de la casa que querés. Al final ves el precio de tu proyecto.", time: "2 minutos" },
     { icon: "video", title: "Videollamada conmigo", text: "Elegís día y hora. Repasamos tu caso, qué necesitás para construir y qué vas a pagar aparte.", time: callTime },
@@ -201,7 +299,7 @@ export const process = {
 };
 
 export const projects = {
-  label: "Proyectos",
+  label: "Casos",
   h2: "Lo que muestro es *mío*.",
   sub: "Proyectos donde soy el profesional, con el estado real de cada uno. Nada de fotos de casas de otros.",
   /**
@@ -214,38 +312,56 @@ export const projects = {
   items: [
     {
       key: "escobar",
+      name: "Casa en Escobar",
       title: "Casa en dos plantas",
       place: "Escobar",
       m2: "255,67 m²",
-      status: "Proyecto completo, hasta el cartel de obra",
+      stage: "Proyecto completo",
+      status: "Cartel de obra",
       state: "obra",
       note: "Mi primer proyecto completo, de cero hasta el cartel de obra. El que más orgulloso me tiene.",
     },
     {
       key: "santa-clara",
+      name: "Casa en Santa Clara",
       title: "Casa",
       place: "Barrio Santa Clara", // [CONFIRMAR] localidad
       m2: "350 m²",
+      stage: "Anteproyecto", // [CONFIRMAR] etapa contratada
       status: "En aprobación en el barrio",
       state: "tramite",
+      note: "Casa en barrio cerrado. El anteproyecto está en aprobación en el barrio.",
     },
     {
       key: "san-sebastian",
+      name: "Casa en San Sebastián",
       title: "Casa",
       place: "San Sebastián, Pilar",
       m2: "245 m²",
+      stage: "Anteproyecto", // [CONFIRMAR] etapa contratada
       status: "En aprobación en el barrio",
       state: "tramite",
+      note: "Casa en barrio cerrado. El anteproyecto está en aprobación en el barrio.",
     },
     {
       key: "sourdeaux",
+      name: "Vivienda multifamiliar en Ingeniero Sourdeaux",
       title: "Vivienda multifamiliar",
       place: "Ingeniero Sourdeaux",
       m2: "176 m²",
+      stage: "Proyecto completo", // [CONFIRMAR] etapa contratada
       status: "Aprobada, en construcción",
       state: "obra",
+      note: "El cliente pensaba en pileta y quincho para alquilar. Le propuse 3 unidades funcionales para dividirlas.",
     },
-  ] as { key: string; title: string; place: string; m2: string; status: string; state: "obra" | "tramite"; note?: string }[],
+  ] as { key: string; name: string; title: string; place: string; m2: string; stage: string; status: string; state: "obra" | "tramite"; note?: string }[],
+  /** Fila de datos de cada caso: el profesional (columna PROFESIONAL de la barra inferior). */
+  professional: `${site.person} · ${site.professionShort}`,
+  caseTag: "Caso",
+  /** Tira de imágenes: 5 renders + la celda "Quiero algo así" (abre el formulario con data-cta="caso-<key>"). */
+  stripSlots: 5,
+  stripCta: "Quiero algo así",
+  stripCtaNote: "Un proyecto como este",
   /** Texto alternativo de las imágenes de cada ficha ({titulo}, {lugar}, {n}). */
   imageAlt: "{titulo} en {lugar}: imagen {n} del proyecto de Hernán Rotela Báez",
   /** Planos municipales aprobados (carátulas): src/assets/img/aprobado-1.jpg, aprobado-2.jpg… Sin imágenes no se muestra. */
@@ -281,16 +397,21 @@ export const testimonial = {
       source: "Audio de WhatsApp",
       text: "Ahí los estuve mirando, Hernán, enseguida. El proyecto me encanta cómo quedó, la verdad súper contenta con el resultado. Te quería agradecer la atención, súper bien, me tuviste paciencia, respondiste todas mis dudas, súper contenta con el trabajo y quería agradecerte ya que llegamos hasta el final del proyecto.",
       mark: "me tuviste paciencia, respondiste todas mis dudas",
+      /** Fragmento corto para la celda grande (palabras textuales del audio; […] = se saltea una parte). */
+      quote: "El proyecto me encanta cómo quedó […] me tuviste paciencia, respondiste todas mis dudas.",
       /** Audio original (public/audio/…): si existe, se muestra el reproductor. [COMPLETAR] */
       audio: "",
-      publish: true,
+      /** [CONFIRMAR] autorización de Giselle: hasta tenerla no se publica (en `npm run dev` se ve marcado). */
+      publish: false,
     },
     // [PLACEHOLDER] más testimonios reales: con publish: false no se muestran.
-    { key: "pendiente", name: "[PLACEHOLDER]", detail: "", source: "", text: "Testimonio real pendiente.", mark: "", audio: "", publish: false },
+    { key: "pendiente", name: "[PLACEHOLDER]", detail: "", source: "", text: "Testimonio real pendiente.", mark: "", quote: "", audio: "", publish: false },
   ],
+  audioPending: "Audio de WhatsApp [PLACEHOLDER]: subir a public/audio/ y cargarlo en testimonial.items[].audio",
   audioLabel: "Escuchar el audio",
   captureAlt: "Captura del mensaje de {nombre} a Hernán por WhatsApp",
   photoAlt: "{nombre}, clienta de Hernán Rotela Báez",
+  note: "Así terminó el proyecto de Giselle: de cero al cartel de obra.",
   cta: "Quiero empezar mi proyecto",
 };
 
@@ -307,6 +428,14 @@ export const about = {
     { when: `Desde ${site.stats.projectsSince}`, title: "Solo proyectos", text: `Me matriculé como ${site.profession} y dejé la obra para dedicarme a proyectar y construir los proyectos de mis clientes.` },
   ],
   quote: site.motto,
+  /** Versión corta de la historia (celda de 3 columnas, primera persona). */
+  story: [
+    "Llegamos de Paraguay cuando yo tenía 6 años. Vivíamos en una carpa mientras mi papá, albañil toda la vida, levantaba la casita.",
+    "Empecé pasándole ladrillos. Aprendí electricidad, durlock, a ser capataz: volvía de la obra y estudiaba hasta la madrugada.",
+    `Desde ${site.stats.projectsSince} me dedico solo a proyectar, como ${site.credential}. Diseño cada casa sabiendo cómo se construye.`,
+  ],
+  quoteTag: "Lo que me repito",
+  photoPending: "Foto de Hernán [PLACEHOLDER]: src/assets/img/hernan.jpg (vertical 4:5)",
   counters: [
     { value: site.stats.yearsOnSite, prefix: "+", suffix: "", label: "años en obra" },
     { value: site.stats.yearsProjects, prefix: "+", suffix: "", label: "años haciendo proyectos" },
@@ -318,12 +447,18 @@ export const about = {
   photo: "hernan",
   photoAlt: "Hernán Rotela Báez en su oficina, con planos colgados atrás",
   photoTag: `${site.person} · ${site.professionShort}`,
+  note: "En la videollamada hablás conmigo, no con un vendedor.",
   cta: "Quiero hablar con Hernán",
 };
 
 export const costs = {
-  label: "Lo que pagás",
-  h2: "Pongo todo sobre la mesa: *lo que cobro yo y lo que pagás aparte*.",
+  label: "Lo que pagás aparte",
+  h2: "¿Hay que pagar *algo más*?",
+  /** La respuesta, grande: es el miedo nº 1 del cliente, que se vea. */
+  answer: "Sí, si el proyecto lleva plano municipal: los gastos del colegio y los derechos municipales van aparte de mis honorarios.",
+  answerDetail: "Varían según el municipio. Te digo cuáles te tocan y cuánto son antes de arrancar, no después. Con 1 o 2 etapas pagás solo mis honorarios.",
+  extraList: ["Gastos del colegio profesional", "Timbrado del contrato", "Derechos de construcción del municipio"],
+  note: "Lo vemos con tu municipio en la videollamada, antes de firmar.",
   sub: "Mis honorarios se pagan por etapa. Con el proyecto completo (con plano municipal) se suman gastos que no son míos: los cobran el colegio y el municipio.",
   feesTag: "Mis honorarios",
   plansTitle: "Se pagan por etapa, contra entrega",
@@ -333,6 +468,7 @@ export const costs = {
     { title: "Solo anteproyecto", key: "anteproyecto" },
   ] as { title: string; key: keyof typeof site.paymentPlans }[],
   feesNote: "El precio de tus planos lo ves en pantalla al completar el formulario.",
+  feesPlan: "completo" as keyof typeof site.paymentPlans,
   extraTag: "Aparte",
   extraTitle: "Solo con plano municipal",
   extraNote: "El monto y el orden de pago cambian según cada municipio. Te explico cuáles son y cómo se calculan en el tuyo antes de arrancar. Con 1 o 2 etapas pagás solo mis honorarios.",
@@ -347,7 +483,7 @@ export const fit = {
   h2: "Atiendo cada proyecto yo. *Por eso elijo cuáles tomo.*",
   yesTitle: "Te va a servir si…",
   yes: [
-    "Ya tenés el lote (o lo estás por comprar), mejor si es en un barrio cerrado.",
+    "Vas a construir tu casa en un barrio cerrado o en un lote urbano, y el lote es tuyo (o lo estás por comprar).",
     "Lo charlaron en familia y tienen referencias de lo que quieren.",
     "Querés el proyecto completo, con alguien que firme y responda por él.",
     "Sabés que un proyecto bien hecho vale lo que cuesta.",
@@ -359,15 +495,18 @@ export const fit = {
     "Querés exprimir cada m² para vender.",
     "Necesitás regularizar o medir algo ya construido.",
   ],
-  cta: "Es para mí: agendar",
+  note: "Si es para vos, en 2 minutos ves el precio de tus planos.",
+  cta: "Es para mí: ver mi precio",
 };
 
 /** "¿Tu caso es otro?": dos tarjetas (todavía sin lote / lote lejos). */
+/** [FUERA DE LA HOME desde v2.0: la carátula no tiene esta sección. El copy queda por si vuelve.] */
 export const cases = {
   label: "Otros casos",
   h2: "¿Tu caso es otro? *También tiene respuesta.*",
 };
 
+/** [FUERA DE LA HOME desde v2.0: la carátula no tiene esta sección. El copy queda por si vuelve.] */
 export const beforeLot = {
   label: "¿Todavía no tenés el lote?",
   h2: "Elegí el lote *pensando en la casa*.",
@@ -385,6 +524,7 @@ export const beforeLot = {
 
 export const remote = {
   label: "Planos a distancia",
+  tag: "Todo el país y el exterior",
   h2: "¿Construís en otra provincia o fuera del país?",
   text: "Te hago el anteproyecto y el proyecto ejecutivo a distancia: trabajamos por videollamada y WhatsApp, y te entrego el PDF y el DWG para que lo construya y lo presente un profesional de tu zona.",
   proof: "Ya tuve clientes que me contrataron y me pagaron desde el exterior.",
@@ -405,7 +545,8 @@ export const closing = {
   label: "El próximo paso",
   h2: "Antes de poner un ladrillo, *hablemos de tu casa*.",
   items: ["El precio exacto de tu proyecto", "Qué necesitás para construir en tu lote", "Lo que vas a pagar aparte, antes de firmar"],
-  cta: "Agendar mi videollamada",
+  lead: "En la videollamada con Hernán te llevás:",
+  cta: "Calculá el precio de tus planos",
   note: `${site.call.minutes} minutos${site.call.free ? " · sin costo" : ""} · con Hernán`,
 };
 
@@ -414,7 +555,8 @@ const plan = (k: keyof typeof site.paymentPlans) => site.paymentPlans[k].map((p)
 export const faq = {
   label: "Preguntas frecuentes",
   h2: "Lo que me preguntan *antes de contratar*",
-  cta: "Agendar mi videollamada",
+  note: "¿Te quedó otra duda? Me la hacés en la videollamada.",
+  cta: "Calculá el precio de tus planos",
   items: [
     {
       q: "¿Qué necesito para poder construir?",
@@ -664,6 +806,7 @@ export const cookies = {
 };
 
 export const footer = {
+  dataTitle: "Datos",
   socialTitle: "Seguime",
   followers: "seguidores",
   privacy: "Política de privacidad",

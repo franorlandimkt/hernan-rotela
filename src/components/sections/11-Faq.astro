@@ -1,0 +1,135 @@
+---
+/**
+ * Preguntas frecuentes: cada pregunta es una fila de celdas (número + pregunta) que se expande con
+ * <details>/<summary> (abre al primer toque, accesible sin JS). La respuesta cae en las columnas 2 a 6.
+ * El mismo texto alimenta el JSON-LD FAQPage. Textos: landing.ts → faq.
+ */
+import HeadRow from "../grid/HeadRow.astro";
+import EndRow from "../grid/EndRow.astro";
+import { faq as t } from "../../content/landing";
+---
+
+<section class="faq" id="preguntas" aria-labelledby="faq-title">
+  <HeadRow label={t.label} title={t.h2} id="faq-title" />
+  <div class="faq__list">
+    {
+      t.items.map((f, i) => (
+        <details class="faq__item reveal">
+          <summary class="faq__row">
+            <span class="cell faq__n" aria-hidden="true">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <span class="cell faq__q">
+              <h3 class="faq__qt">{f.q}</h3>
+              <span class="faq__icon" aria-hidden="true" />
+            </span>
+          </summary>
+          <div class="faq__row faq__arow">
+            <div class="cell cell--alt faq__a">
+              <p>{f.a}</p>
+            </div>
+          </div>
+        </details>
+      ))
+    }
+  </div>
+  <EndRow label={t.cta} cta="faq" note={t.note} />
+</section>
+
+<style>
+  .faq__list {
+    display: grid;
+    gap: var(--gap);
+  }
+  .faq__row {
+    display: grid;
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+    gap: var(--gap);
+  }
+  .faq__item summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  .faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq__n {
+    justify-content: center;
+    padding-inline: 0;
+    align-items: center;
+    font-family: var(--f-mono);
+    font-size: 0.875rem;
+    color: var(--tinta-2);
+  }
+  .faq__q {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: 3.75rem;
+    padding-block: 1rem;
+    transition: background-color var(--dur);
+  }
+  .faq__item summary:hover .faq__q {
+    background: var(--superficie);
+  }
+  .faq__item summary:focus-visible {
+    outline: none;
+  }
+  .faq__item summary:focus-visible .faq__q {
+    outline: 2px solid var(--focus);
+    outline-offset: -4px;
+  }
+  .faq__qt {
+    font-family: var(--f-body);
+    font-size: var(--fs-body-lg);
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .faq__icon {
+    position: relative;
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+  }
+  .faq__icon::before,
+  .faq__icon::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1.5px;
+    background: var(--ladrillo-texto);
+    transition: transform 0.2s var(--ease);
+  }
+  .faq__icon::after {
+    transform: rotate(90deg);
+  }
+  .faq__item[open] .faq__icon::after {
+    transform: rotate(0deg);
+  }
+  .faq__item[open] .faq__n {
+    color: var(--ladrillo-texto);
+  }
+  .faq__arow {
+    margin-top: var(--gap);
+  }
+  .faq__a {
+    grid-column: 2;
+    max-width: none;
+  }
+  .faq__a p {
+    max-width: 68ch;
+  }
+  /* Desktop y tablet: número en la primera columna de la grilla, pregunta en las otras cinco */
+  @media (min-width: 768px) {
+    .faq__row {
+      grid-template-columns: calc((100% - var(--gap) * 5) / 6) minmax(0, 1fr);
+    }
+    .faq__n {
+      align-items: flex-start;
+      padding-inline: var(--cell-pad);
+    }
+  }
+</style>

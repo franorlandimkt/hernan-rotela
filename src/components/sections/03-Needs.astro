@@ -1,0 +1,58 @@
+---
+/**
+ * "¿Qué necesitás para poder construir?": la pregunta del que está por contratar. Celda ancha con la
+ * respuesta + tres celdas con lo que hace falta (plano aprobado por el barrio, permiso municipal, cartel de
+ * obra) + cierre con la celda CTA. Textos: landing.ts → needs.
+ */
+import HeadRow from "../grid/HeadRow.astro";
+import EndRow from "../grid/EndRow.astro";
+import { needs as t } from "../../content/landing";
+---
+
+<section class="needs" id="que-necesitas" aria-labelledby="needs-title">
+  <HeadRow label={t.label} title={t.h2} id="needs-title" />
+  <div class="g">
+    <div class="cell s-3 st-6 cell--glow needs__text reveal" style="--glow-at:0% 0%;--glow-size:90% 100%;--glow-a:.22">
+      <p class="t-big">{t.text}</p>
+    </div>
+    {
+      t.items.map((it, i) => (
+        <div class="cell s-1 st-2 cell--split needs__item reveal" style={`--delay:${i * 0.05}s`}>
+          <p class="cell__label etiqueta">
+            <span class="needs__n">{it.n}</span> · {it.tag}
+          </p>
+          <div class="needs__body">
+            <h3 class="t-h3">{it.title}</h3>
+            <p class="needs__desc">{it.text}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+  <EndRow label={t.cta} cta="necesitas" note={t.note} />
+</section>
+
+<style>
+  .needs__text {
+    justify-content: flex-end;
+    min-height: 14rem;
+  }
+  .needs__item {
+    gap: var(--space-5);
+  }
+  .needs__n {
+    color: var(--ladrillo-texto);
+  }
+  .needs__body {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .needs__desc {
+    color: var(--tinta-2);
+  }
+  @media (max-width: 767px) {
+    .needs__text {
+      min-height: 0;
+    }
+  }
+</style>

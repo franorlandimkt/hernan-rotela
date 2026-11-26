@@ -1,98 +1,87 @@
 ---
-/** Para quién es: dos columnas (te va a servir / no soy tu opción). Filtra antes del formulario, sin pose:
- *  el título da el motivo (atiende cada proyecto él). */
-import SectionHead from "../ui/SectionHead.astro";
-import CtaBlock from "../ui/CtaBlock.astro";
+/**
+ * Para quién es / para quién no es: dos columnas de celdas (filtra antes del formulario). Abajo, la segunda
+ * línea del negocio: planos a distancia para todo el país y el exterior (id "a-distancia").
+ * Textos: landing.ts → fit y remote.
+ */
+import HeadRow from "../grid/HeadRow.astro";
+import EndRow from "../grid/EndRow.astro";
 import Icon from "../illustrations/Icon.astro";
-import { fit as t } from "../../content/landing";
+import { fit as t, remote } from "../../content/landing";
 ---
 
-<section class="section s-superficie fit" aria-labelledby="para-quien-title">
-  <div class="container">
-    <SectionHead label={t.label} title={t.h2} id="para-quien-title" />
-    <div class="fit__grid">
-      <div class="fit__col fit__col--yes reveal">
+<section class="fit" id="para-quien" aria-labelledby="fit-title">
+  <HeadRow label={t.label} title={t.h2} id="fit-title" />
+  <div class="g">
+    <div class="stack s-3 st-3 fit__col">
+      <div class="cell cell--glow fit__head reveal" style="--glow-at:0% 0%;--glow-size:120% 160%;--glow-a:.35">
         <h3 class="t-h3">{t.yesTitle}</h3>
-        <ul class="fit__list">
-          {t.yes.map((y) => (
-            <li>
-              <span class="fit__ico" aria-hidden="true"><Icon name="check" size={16} /></span>
-              <span>{y}</span>
-            </li>
-          ))}
-        </ul>
       </div>
-      <div class="fit__col fit__col--no reveal" style="--delay:.08s">
-        <h3 class="t-h3">{t.noTitle}</h3>
-        <ul class="fit__list">
-          {t.no.map((n) => (
-            <li>
-              <span class="fit__ico" aria-hidden="true"><Icon name="x" size={16} /></span>
-              <span>{n}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {
+        t.yes.map((y) => (
+          <div class="cell fit__item reveal">
+            <Icon name="check" size={20} class="fit__ico fit__ico--yes" />
+            <p>{y}</p>
+          </div>
+        ))
+      }
     </div>
-    <CtaBlock label={t.cta} cta="para-quien" />
+    <div class="stack s-3 st-3 fit__col">
+      <div class="cell cell--alt fit__head reveal">
+        <h3 class="t-h3">{t.noTitle}</h3>
+      </div>
+      {
+        t.no.map((n) => (
+          <div class="cell cell--alt fit__item reveal">
+            <Icon name="x" size={20} class="fit__ico" />
+            <p>{n}</p>
+          </div>
+        ))
+      }
+    </div>
   </div>
+  <div class="g" id="a-distancia">
+    <div class="cell s-2 st-6 cell--split reveal">
+      <p class="cell__label cell__label--sq etiqueta">{remote.label}</p>
+      <p class="dato fit__tag">{remote.tag}</p>
+    </div>
+    <div class="cell s-4 st-6 reveal">
+      <h3 class="t-h3">{remote.h2}</h3>
+      <p>{remote.text}</p>
+      <p class="fit__muted">{remote.note}</p>
+    </div>
+  </div>
+  <EndRow label={t.cta} cta="para-quien" note={t.note} />
 </section>
 
 <style>
-  .fit__grid {
-    display: grid;
-    gap: var(--space-3);
+  .fit__col > .fit__item {
+    flex-grow: 1;
   }
-  .fit__col {
-    padding: var(--space-4);
-    border-radius: var(--radius-md);
+  .fit__head {
+    padding-block: 1.125rem;
   }
-  .fit__list {
-    list-style: none;
-    display: grid;
-    margin-top: var(--space-3);
+  .fit__item {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.875rem;
   }
-  .fit__list li {
-    display: grid;
-    grid-template-columns: 1.75rem minmax(0, 1fr);
-    gap: 0.75rem;
-    align-items: start;
-    padding-block: 0.75rem;
-    border-top: 1px solid var(--linea);
-  }
-  .fit__ico {
-    display: grid;
-    place-items: center;
-    width: 1.75rem;
-    height: 1.75rem;
-    border-radius: var(--radius-sm);
-  }
-  .fit__col--yes {
-    background: var(--fondo);
-    border: 1.5px solid var(--tinta);
-    box-shadow: 8px 8px 0 var(--c-grafito);
-  }
-  .fit__col--yes .fit__ico {
-    background: var(--c-ladrillo);
-    color: var(--c-white);
-  }
-  .fit__col--no {
-    border: 1px dashed var(--tinta-2);
-  }
-  .fit__col--no .fit__ico {
-    border: 1px solid var(--tinta-2);
+  .fit__item :global(.fit__ico) {
+    margin-top: 0.2em;
     color: var(--tinta-2);
   }
-  .fit__col--no li > span:last-child {
+  .fit__item :global(.fit__ico--yes) {
+    color: var(--ladrillo-texto);
+  }
+  .fit__tag {
+    color: var(--ladrillo-texto);
+  }
+  .fit__muted {
     color: var(--tinta-2);
   }
-  @media (min-width: 768px) {
-    .fit__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-4);
-    }
-    .fit__col {
-      padding: var(--space-5);
+  @media (max-width: 767px) {
+    .fit__col + .fit__col {
+      margin-top: calc(var(--gap) * 3);
     }
   }
 </style>

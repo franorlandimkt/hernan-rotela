@@ -1,60 +1,72 @@
 ---
 /**
- * HOME — el orden de las secciones se controla acá. Para ocultar una sección: comentá su línea.
- * Cada sección es independiente (src/components/sections/NN-Nombre.astro).
- * La web vende una cosa: la videollamada con Hernán (el formulario es el paso para agendarla).
- * Orden: Hero con el video → Redes → La videollamada (qué te llevás) → El problema → El servicio (3 etapas y
- * cómo se trabaja) → Proyectos → Testimonio → Quién soy → Lo que pagás → Para quién es → Otros casos (sin
- * lote / a distancia) → Preguntas → El cierre → Formulario.
- * Color: hueso, grafito y ladrillo. Las secciones oscuras (hero, problema, testimonio, otros casos, cierre)
- * llevan el resplandor ladrillo del hero (.s-glow): negro con el rojo en degradé. El amarillo es un golpe:
- * la cinta, las cifras del hero y el marcador del testimonio. Nada más.
- * Dudas que contesta, en orden: ¿es para mí? → ¿qué me llevo? → ¿cómo funciona? → ¿le creo? → ¿cuánto y qué riesgo?
+ * HOME — la carátula de un plano: toda la página son celdas (src/styles/grid.css) dentro de un marco con
+ * barra superior, rieles a los costados y barra inferior de rótulos (src/components/frame/).
+ * El orden de las secciones se controla acá. Para ocultar una sección: comentá su línea.
+ * Estructura VSL: Hero con el video → Números → Qué necesitás → Servicio (3 etapas) → Proceso → Casos →
+ * Testimonio (solo con autorización) → Quién soy → ¿Hay que pagar algo más? → Para quién es (+ a distancia)
+ * → Preguntas → CTA final → Formulario (pop-up) → Pie.
+ * La web vende una cosa: la videollamada con Hernán. Cada sección termina en una celda ladrillo al
+ * formulario; una sola celda roja por pantalla (la de la barra se apaga sola).
  */
 import Base from "../layouts/Base.astro";
-import Header from "../components/sections/00-Header.astro";
+import TopBar from "../components/frame/TopBar.astro";
+import Rail from "../components/frame/Rail.astro";
+import BottomBar from "../components/frame/BottomBar.astro";
 import Hero from "../components/sections/01-Hero.astro";
-import Social from "../components/sections/02-Social.astro";
-import Problem from "../components/sections/03-Problem.astro";
-import Call from "../components/sections/04-Call.astro";
-import Stages from "../components/sections/05-Stages.astro";
-import Projects from "../components/sections/06-Projects.astro";
+import Numbers from "../components/sections/02-Numbers.astro";
+import Needs from "../components/sections/03-Needs.astro";
+import Stages from "../components/sections/04-Stages.astro";
+import Process from "../components/sections/05-Process.astro";
+import Cases from "../components/sections/06-Cases.astro";
 import Testimonial from "../components/sections/07-Testimonial.astro";
 import About from "../components/sections/08-About.astro";
 import Costs from "../components/sections/09-Costs.astro";
 import Fit from "../components/sections/10-Fit.astro";
-import Cases from "../components/sections/11-Cases.astro";
-import Faq from "../components/sections/12-Faq.astro";
-import Closing from "../components/sections/12b-Closing.astro";
+import Faq from "../components/sections/11-Faq.astro";
+import Closing from "../components/sections/12-Closing.astro";
 import Form from "../components/sections/13-Form.astro";
 import Footer from "../components/sections/14-Footer.astro";
 import CookieBanner from "../components/ui/CookieBanner.astro";
 import Lightbox from "../components/ui/Lightbox.astro";
-import Cinta from "../components/ui/Cinta.astro";
 import { homeSchema } from "../data/schema";
 import { meta } from "../content/landing";
 ---
 
 <Base title={meta.homeTitle} description={meta.homeDescription} path="/" schema={homeSchema({ title: meta.homeTitle, description: meta.homeDescription })}>
-  <Header />
-  <main id="contenido">
-    <Hero />
-    <Cinta />
-    <Social />
-    <Call />
-    <Problem />
-    <Stages />
-    <Projects />
-    <Testimonial />
-    <About />
-    <Costs />
-    <Fit />
-    <Cases />
-    <Faq />
-    <Closing />
-    <Form />
-  </main>
-  <Footer />
+  <TopBar />
+  <Rail side="left" />
+  <Rail side="right" />
+  <div class="frame">
+    <main id="contenido" class="sheet">
+      <Hero />
+      <Numbers />
+      <Needs />
+      <Stages />
+      <Process />
+      <Cases />
+      <Testimonial />
+      <About />
+      <Costs />
+      <Fit />
+      <Faq />
+      <Closing />
+      <Form />
+    </main>
+    <Footer />
+  </div>
+  <BottomBar />
   <Lightbox />
   <CookieBanner />
 </Base>
+
+<style is:global>
+  /* El formulario (sin JS o antes de abrirse) queda como una celda más de la carátula */
+  .sheet > .lf-sec:not(.is-modal) {
+    border-radius: var(--radius-md);
+  }
+  /* Con la barra del celular a la vista, el pie no queda tapado */
+  .frame {
+    padding-bottom: calc(max(var(--bar-bottom), var(--bar-h, 0px)) + var(--gap) * 2);
+  }
+</style>

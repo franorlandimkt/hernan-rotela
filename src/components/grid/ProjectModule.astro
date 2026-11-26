@@ -1,0 +1,211 @@
+---
+/**
+ * Módulo de caso (como los proyectos de la referencia):
+ *  1. celda de título (con la superficie como superíndice en mono) + celda de una línea
+ *  2. tira de 6 celdas iguales: 5 renders (lightbox) + "Quiero algo así" (abre el formulario con
+ *     data-cta="caso-<key>"). En el celular, carrusel horizontal con scroll-snap (se ven 1,5 imágenes).
+ *  3. fila de datos alineada con la barra inferior: OBRA · UBICACIÓN · SUPERFICIE · ETAPA · ESTADO · PROFESIONAL.
+ *     En desktop la etiqueta la pone la barra de abajo (acá queda para lectores de pantalla); en el celular
+ *     cada dato lleva su etiqueta.
+ * Renders: src/assets/img/proyecto-<key>-1.jpg … -5.jpg (solo material propio de Hernán). Sin renders, en
+ * producción la tira no se muestra; en `npm run dev` cada celda dice qué archivo espera.
+ * Nunca "obra terminada".
+ */
+import Img from "../ui/Img.astro";
+import Icon from "../illustrations/Icon.astro";
+import { projects as t, frame } from "../../content/landing";
+import { imgSeries, DEV } from "../../lib/images";
+
+interface Props {
+  item: (typeof t.items)[number];
+  index: number;
+}
+const { item: p, index } = Astro.props;
+const images = imgSeries(`proyecto-${p.key}`).slice(0, t.stripSlots);
+const slots = Array.from({ length: t.stripSlots }, (_, i) => images[i] ?? null);
+const showStrip = images.length > 0 || DEV;
+const alt = (n: number) => t.imageAlt.replace("{titulo}", p.title).replace("{lugar}", p.place).replace("{n}", String(n));
+const id = `caso-${p.key}`;
+const data: [string, string][] = [
+  [frame.bottom[0], p.title],
+  [frame.bottom[1], p.place],
+  [frame.bottom[2], p.m2],
+  [frame.bottom[3], p.stage],
+  [frame.bottom[4], p.status],
+  [frame.bottom[5], t.professional],
+];
+---
+
+<article class="pm" aria-labelledby={`${id}-title`}>
+  <div class="g">
+    <div class="cell s-2 st-6 pm__title reveal">
+      <p class="cell__label etiqueta">{t.caseTag} {String(index + 1).padStart(2, "0")}</p>
+      <h3 class="t-h2 pm__name" id={`${id}-title`}>
+        {p.name}<span class="sup">{p.m2}</span>
+      </h3>
+    </div>
+    <div class="cell s-4 st-6 pm__line reveal">
+      {p.note && <p class="t-big">{p.note}</p>}
+    </div>
+  </div>
+
+  {
+    showStrip && (
+      <div class="g pm__strip" role="list">
+        {slots.map((name, i) => (
+          <div class="cell cell--flush s-1 st-2 pm__slot" role="listitem">
+            {name ? (
+              <Img name={name} alt={alt(i + 1)} lightbox={`caso-${p.key}`} widths={[320, 640]} sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 66vw" aspect="4/5" class="pm__img" />
+            ) : (
+              <p class="slot-dev pm__dev">src/assets/img/proyecto-{p.key}-{i + 1}.jpg [PLACEHOLDER]</p>
+            )}
+          </div>
+        ))}
+        <a class="cell cell--glow s-1 st-2 pm__more" href="#cotiza" data-cta={id} data-cta-cell="soft" role="listitem" style="--glow-at:50% 100%;--glow-size:140% 90%;--glow-a:.55">
+          <span class="etiqueta pm__more-note">{t.stripCtaNote}</span>
+          <span class="pm__more-label">
+            {t.stripCta}
+            <Icon name="arrow-right" size={20} class="arrow" />
+          </span>
+        </a>
+      </div>
+    )
+  }
+
+  <dl class="g pm__data">
+    {
+      data.map(([k, v], i) => (
+        <div class:list={["cell cell--alt s-1 st-2 sm-1 pm__datum reveal", { "pm__datum--state": i === 4 }]}>
+          <dt class="etiqueta pm__dt">{k}</dt>
+          <dd class="dato">
+            {i === 4 && <span class:list={["pm__dot", { "pm__dot--off": p.state === "tramite" }]} aria-hidden="true" />}
+            {v}
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</article>
+
+<style>
+  .pm {
+    display: grid;
+    gap: var(--gap);
+  }
+  .pm__title {
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+  .pm__name {
+    font-stretch: var(--stretch-display);
+  }
+  .pm__line {
+    justify-content: flex-end;
+    color: var(--tinta-2);
+  }
+  .pm__slot {
+    aspect-ratio: 4 / 5;
+    background: var(--superficie);
+  }
+  .pm__slot :global(.lb-trigger),
+  .pm__slot :global(picture),
+  .pm__slot :global(.pm__img) {
+    width: 100%;
+    height: 100%;
+  }
+  .pm__slot :global(.pm__img) {
+    object-fit: cover;
+  }
+  .pm__dev {
+    height: 100%;
+    border-radius: var(--radius-md);
+  }
+  .pm__more {
+    justify-content: space-between;
+    aspect-ratio: 4 / 5;
+    text-decoration: none;
+    color: var(--tinta);
+    transition: background-color var(--dur);
+  }
+  .pm__more:hover {
+    background: var(--superficie);
+  }
+  .pm__more-note {
+    color: var(--tinta-2);
+  }
+  .pm__more-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    font-weight: 600;
+    font-size: 1.125rem;
+    line-height: 1.2;
+    color: var(--sobre-ladrillo);
+  }
+  .pm__more:hover .arrow {
+    transform: translateX(4px);
+  }
+  .pm__more .arrow {
+    transition: transform 0.2s var(--ease);
+  }
+  .pm__data {
+    margin: 0;
+  }
+  .pm__datum {
+    gap: 0.375rem;
+    padding-block: 0.875rem;
+  }
+  .pm__datum dd {
+    margin: 0;
+    color: var(--tinta);
+  }
+  .pm__dt {
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+  }
+  .pm__dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-right: 0.5rem;
+    background: var(--c-ladrillo);
+    vertical-align: 0.05em;
+  }
+  .pm__dot--off {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--tinta);
+  }
+  /* Celular: la tira pasa a carrusel horizontal (1,5 imágenes a la vista) */
+  @media (max-width: 767px) {
+    .pm__strip {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+    }
+    .pm__strip::-webkit-scrollbar {
+      display: none;
+    }
+    .pm__strip > * {
+      flex: 0 0 calc((100% - var(--gap)) / 1.5);
+      scroll-snap-align: start;
+    }
+    .pm__datum--state,
+    .pm__datum:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+  /* Desktop: la etiqueta de cada dato la pone la barra inferior, alineada con esta fila */
+  @media (min-width: 1024px) {
+    .pm__dt {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+  }
+</style>

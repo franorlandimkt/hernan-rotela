@@ -1,0 +1,118 @@
+---
+/**
+ * CTA final: una celda ladrillo de 6 columnas (el degradé más fuerte de la página) con el titular grande, lo
+ * que se lleva la persona de la videollamada y el mismo botón del hero. Toda la celda es el link al
+ * formulario (data-cta="cierre"). Es la única franja roja a sangre de la web.
+ * Textos: landing.ts → closing.
+ */
+import Icon from "../illustrations/Icon.astro";
+import { closing as t } from "../../content/landing";
+---
+
+<section class="closing g" aria-labelledby="cierre-title">
+  <a class="cell cta-cell closing__cell" href="#cotiza" data-cta="cierre" data-cta-cell="page">
+    <p class="etiqueta closing__label">{t.label}</p>
+    <h2 class="closing__title" id="cierre-title">{t.h2.replace(/\*/g, "")}</h2>
+    <div class="closing__side">
+      <p class="closing__lead">{t.lead}</p>
+      <ul class="closing__list">
+        {
+          t.items.map((i) => (
+            <li>
+              <Icon name="check" size={20} />
+              <span>{i}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <span class="closing__btn">
+      <span>{t.cta}</span>
+      <Icon name="arrow-right" size={22} class="arrow" />
+    </span>
+    <p class="etiqueta closing__note">{t.note}</p>
+  </a>
+</section>
+
+<style>
+  .closing__cell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    align-items: start;
+    gap: var(--space-4);
+    padding: clamp(1.5rem, 1rem + 3vw, 4rem) var(--cell-pad);
+  }
+  .closing__label,
+  .closing__note {
+    color: rgb(255 255 255 / 0.88);
+  }
+  .closing__title {
+    max-width: 18ch;
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-stretch: var(--stretch-display);
+    font-size: var(--fs-display);
+    line-height: var(--lh-display);
+    letter-spacing: -0.015em;
+  }
+  .closing__lead {
+    font-weight: 600;
+  }
+  .closing__list {
+    list-style: none;
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .closing__list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    font-size: var(--fs-body-lg);
+  }
+  .closing__list .ico {
+    margin-top: 0.2em;
+  }
+  .closing__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    justify-self: start;
+    min-height: 3.5rem;
+    padding: 0.875rem 1.25rem;
+    border-radius: var(--radius-md);
+    background: var(--c-hueso);
+    color: var(--c-grafito);
+    font-weight: 600;
+    font-size: 1.125rem;
+    line-height: 1.2;
+  }
+  .closing__cell:hover .closing__btn {
+    background: var(--c-white);
+  }
+  @media (max-width: 479px) {
+    .closing__btn {
+      justify-self: stretch;
+    }
+  }
+  @media (min-width: 1024px) {
+    .closing__cell {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 2fr);
+      column-gap: var(--space-6);
+      padding-inline: clamp(2rem, 1rem + 3vw, 4rem);
+    }
+    .closing__label {
+      grid-column: 1 / -1;
+    }
+    .closing__title {
+      grid-row: 2 / 5;
+    }
+    .closing__side,
+    .closing__btn,
+    .closing__note {
+      grid-column: 2;
+    }
+  }
+</style>

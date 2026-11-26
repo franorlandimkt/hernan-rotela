@@ -1,247 +1,154 @@
 ---
 /**
- * Lo que pagás: dos columnas que separan lo que cobra Hernán (honorarios, por etapa: una barra con los hitos
- * de pago de cada plan) de lo que se paga aparte (colegio y municipio, solo con plano municipal). Debajo,
- * medios de pago y contrato. Los honorarios por m² NO van acá: el precio se ve en el formulario (es el gancho).
+ * "¿Hay que pagar algo más?": la celda de transparencia. Es el miedo nº 1 del cliente: la respuesta va grande
+ * y con el degradé ladrillo, no escondida. Al lado, lo que se paga aparte (solo con plano municipal). Abajo,
+ * cómo se pagan los honorarios (barra de hitos del proyecto completo) y los medios de pago.
+ * Los honorarios por m² NO van acá: el precio lo da la calculadora del formulario.
+ * Textos: landing.ts → costs · planes y medios de pago: site.ts.
  */
-import SectionHead from "../ui/SectionHead.astro";
-import CtaBlock from "../ui/CtaBlock.astro";
+import HeadRow from "../grid/HeadRow.astro";
+import EndRow from "../grid/EndRow.astro";
 import Icon from "../illustrations/Icon.astro";
 import { costs as t } from "../../content/landing";
 import { site } from "../../data/site";
+
+const plan = site.paymentPlans[t.feesPlan];
+const planTitle = t.plans.find((p) => p.key === t.feesPlan)?.title ?? "";
 ---
 
-<section class="section s-hueso s-grid costs" id="lo-que-pagas" aria-labelledby="costos-title">
-  <div class="container">
-    <SectionHead label={t.label} title={t.h2} sub={t.sub} id="costos-title" />
-    <div class="costs__grid">
-      <div class="costs__card costs__fees reveal">
-        <p class="pill costs__tag"><span class="pill__dot"></span>{t.feesTag}</p>
-        <h3 class="t-h2">{t.plansTitle}</h3>
-        <div class="costs__plans">
-          {
-            t.plans.map((p) => (
-              <div class="costs__plan">
-                <p class="etiqueta">{p.title}</p>
-                <ol class="costs__bar" aria-label={p.title}>
-                  {site.paymentPlans[p.key].map((s) => (
-                    <li style={`flex:${s.pct}`}>
-                      <span class="costs__pct">{s.pct} %</span>
-                      <span class="costs__when">{s.when}</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            ))
-          }
-        </div>
-        <p class="t-small costs__note">{t.feesNote}</p>
-      </div>
-
-      <div class="costs__card costs__extra reveal" style="--delay:.08s">
-        <p class="pill costs__tag"><span class="pill__dot pill__dot--off"></span>{t.extraTag}</p>
-        <h3 class="t-h2">{t.extraTitle}</h3>
-        <ul class="costs__list">
-          {
-            site.extraCosts.map((c) => (
-              <li>
-                <Icon name="receipt" size={20} />
-                <span>{c}</span>
-              </li>
-            ))
-          }
-        </ul>
-        <p class="t-small costs__note">{t.extraNote}</p>
-      </div>
+<section class="costs" id="lo-que-pagas" aria-labelledby="costos-title">
+  <HeadRow label={t.label} title={t.h2} id="costos-title" />
+  <div class="g">
+    <div class="cell s-4 st-6 cell--glow costs__answer reveal" style="--glow-at:0% 100%;--glow-size:100% 120%;--glow-a:.45">
+      <p class="cell__label cell__label--sq etiqueta">{t.extraTag}</p>
+      <p class="costs__big">{t.answer}</p>
+      <p class="costs__detail">{t.answerDetail}</p>
     </div>
-
-    <div class="costs__foot reveal">
-      <div>
-        <h3 class="etiqueta">{t.paymentsTitle}</h3>
-        <ul class="costs__chips">
-          {site.payments.map((m) => <li>{m}</li>)}
-        </ul>
-      </div>
-      <div>
-        <h3 class="etiqueta">{t.contractTitle}</h3>
-        <ul class="costs__contract">
-          {t.contract.map((c) => (
+    <div class="cell s-2 st-6 costs__extra reveal">
+      <p class="cell__label etiqueta">{t.extraTitle}</p>
+      <ul class="costs__list">
+        {
+          t.extraList.map((c) => (
             <li>
-              <Icon name="file" size={18} />
+              <Icon name="receipt" size={20} />
               <span>{c}</span>
             </li>
-          ))}
-        </ul>
-      </div>
+          ))
+        }
+      </ul>
     </div>
-    <CtaBlock label={t.cta} cta="costos" />
   </div>
+  <div class="g">
+    <div class="cell s-4 st-6 cell--alt costs__fees reveal">
+      <p class="cell__label etiqueta">{t.feesTag} · {planTitle}</p>
+      <h3 class="t-h3">{t.plansTitle}</h3>
+      <ol class="costs__bar" aria-label={`${t.feesTag}: ${planTitle}`}>
+        {
+          plan.map((s) => (
+            <li style={`flex:${s.pct}`}>
+              <span class="costs__pct">{s.pct} %</span>
+              <span class="costs__when">{s.when}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+    <div class="cell s-2 st-6 cell--alt reveal">
+      <p class="cell__label etiqueta">{t.paymentsTitle}</p>
+      <ul class="costs__pay">
+        {site.payments.map((m) => <li class="dato">{m}</li>)}
+      </ul>
+    </div>
+  </div>
+  <EndRow label={t.cta} cta="costos" note={t.note} />
 </section>
 
 <style>
-  .costs__grid {
-    display: grid;
-    gap: var(--space-3);
-  }
-  .costs__card {
-    padding: var(--space-4);
-    border-radius: var(--radius-md);
-  }
-  .costs__fees {
-    background:
-      radial-gradient(70% 60% at 100% 0%, rgb(214 58 31 / 0.36), transparent 72%),
-      var(--c-grafito);
-    color: var(--c-hueso);
-    border: 1px solid var(--c-grafito);
-  }
-  .costs__fees .pill {
-    border-color: var(--c-hueso);
-    color: var(--c-hueso);
-  }
-  .costs__fees .etiqueta {
-    color: #b9b4ac;
-  }
-  .costs__extra {
-    background: var(--superficie);
-    border: 1.5px dashed var(--tinta);
-  }
-  .costs__card .t-h2 {
-    margin-top: var(--space-3);
-  }
-  .costs__plans {
-    display: grid;
+  .costs__answer {
     gap: var(--space-4);
-    margin-top: var(--space-4);
+    min-height: 18rem;
   }
-  /* Barra de pagos: cada tramo mide su porcentaje; el primero (al empezar) va en ladrillo */
-  .costs__bar {
-    list-style: none;
-    display: flex;
-    gap: 3px;
-    margin-top: var(--space-2);
+  .costs__answer .cell__label {
+    color: var(--tinta);
   }
-  .costs__bar li {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    min-width: 0;
-    padding: 0.5rem 0.5rem 0.5625rem;
-    background: rgb(242 237 230 / 0.07);
-    border-top: 3px solid #8c8a85;
+  .costs__big {
+    margin-top: auto;
+    font-family: var(--f-display);
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(1.375rem, 1rem + 1.5vw, 2.25rem);
+    line-height: 1.18;
+    text-wrap: balance;
   }
-  .costs__bar li:first-child {
-    border-top-color: var(--c-ladrillo);
-  }
-  .costs__pct {
-    font-family: var(--f-mono);
-    font-weight: 500;
-    font-size: var(--fs-dato);
-    white-space: nowrap;
-  }
-  .costs__when {
-    font-size: 0.75rem;
-    line-height: 1.3;
-    color: #b9b4ac;
-    overflow-wrap: anywhere;
-  }
-  .costs__note {
-    margin-top: var(--space-4);
-    color: var(--tinta-2);
-  }
-  .costs__fees .costs__note {
-    color: #b9b4ac;
+  .costs__detail {
+    max-width: 52ch;
+    font-size: var(--fs-body-lg);
+    color: var(--tinta);
   }
   .costs__list {
     list-style: none;
     display: grid;
-    margin-top: var(--space-3);
-    border-top: 1px solid var(--tinta);
+    gap: var(--gap);
+    margin: 0 calc(var(--cell-pad) * -1) calc(var(--cell-pad) * -1);
+    background: var(--linea);
+    border-top: var(--gap) solid var(--linea);
   }
   .costs__list li {
-    display: grid;
-    grid-template-columns: 1.25rem minmax(0, 1fr);
-    gap: 0.75rem;
+    display: flex;
     align-items: center;
-    padding-block: 0.75rem;
-    border-bottom: 1px solid var(--linea);
-    font-weight: 600;
+    gap: 0.75rem;
+    padding: 0.875rem var(--cell-pad);
+    background: var(--fondo);
   }
-  .costs__foot {
-    display: grid;
-    gap: var(--space-4);
-    margin-top: var(--space-4);
-    padding: var(--space-4);
-    background: var(--superficie);
-    border: 1px solid var(--linea);
-    border-radius: var(--radius-md);
+  .costs__list .ico {
+    color: var(--ladrillo-texto);
   }
-  .costs__foot .etiqueta {
-    color: var(--tinta);
+  .costs__extra {
+    justify-content: space-between;
   }
-  .costs__chips {
+  .costs__bar {
     list-style: none;
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: var(--space-3);
+    gap: var(--gap);
+    margin-top: var(--space-2);
   }
-  .costs__chips li {
-    padding: 0.375rem 0.625rem;
-    border: 1px solid var(--tinta);
-    border-radius: var(--radius-sm);
-    font-size: var(--fs-small);
-    line-height: 1.3;
+  .costs__bar li {
+    display: grid;
+    gap: 0.375rem;
+    min-width: 0;
+    padding-top: 0.75rem;
+    border-top: 4px solid var(--c-ladrillo);
   }
-  .costs__contract {
+  .costs__bar li:nth-child(2n) {
+    border-top-color: var(--c-ladrillo-hover);
+  }
+  .costs__pct {
+    font-family: var(--f-mono);
+    font-weight: 500;
+    font-size: 1.125rem;
+    color: var(--ladrillo-texto);
+  }
+  .costs__when {
+    font-size: 0.9375rem;
+    line-height: 1.35;
+    color: var(--tinta-2);
+  }
+  .costs__pay {
     list-style: none;
     display: grid;
     gap: 0.5rem;
-    margin-top: var(--space-3);
-    font-size: var(--fs-small);
   }
-  .costs__contract li {
-    display: grid;
-    grid-template-columns: 1.125rem minmax(0, 1fr);
-    gap: 0.5rem;
-    align-items: start;
-    color: var(--tinta-2);
-  }
-  /* Celular: los tramos de la barra, uno debajo del otro (el texto del hito no entra de costado) */
-  @media (max-width: 639px) {
+  @media (max-width: 767px) {
     .costs__bar {
       flex-direction: column;
     }
     .costs__bar li {
-      flex-direction: row;
+      flex: none !important;
+      grid-template-columns: 3.5rem 1fr;
       align-items: baseline;
-      gap: 0.75rem;
       border-top: 0;
-      border-left: 3px solid #8c8a85;
-      padding: 0.5rem 0.625rem;
-    }
-    .costs__bar li:first-child {
-      border-left-color: var(--c-ladrillo);
-    }
-    .costs__pct {
-      flex: none;
-      width: 3rem;
-    }
-    .costs__when {
-      font-size: 0.8125rem;
-    }
-  }
-  @media (min-width: 768px) {
-    .costs__card {
-      padding: var(--space-5);
-    }
-    .costs__foot {
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-      gap: var(--space-5);
-    }
-  }
-  @media (min-width: 1024px) {
-    .costs__grid {
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      border-left: 4px solid var(--c-ladrillo);
+      padding: 0.25rem 0 0.25rem 0.75rem;
     }
   }
 </style>

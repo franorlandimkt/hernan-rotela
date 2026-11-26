@@ -1,0 +1,136 @@
+---
+/**
+ * El servicio: 3 etapas como 3 bloques de 2 columnas, en formato rótulo (celdas etiqueta / dato):
+ * ETAPA 01 · ANTEPROYECTO → plazo → qué incluye → entrega → correcciones. Abajo, la fila de opcionales
+ * (dirección de obra y construcción) y el cierre. Sin precios por m²: el precio lo da la calculadora.
+ * Textos: landing.ts → stages (stages.items también alimenta el JSON-LD y llms.txt).
+ */
+import HeadRow from "../grid/HeadRow.astro";
+import EndRow from "../grid/EndRow.astro";
+import Icon from "../illustrations/Icon.astro";
+import { stages as t } from "../../content/landing";
+---
+
+<section class="stages" id="servicio" aria-labelledby="servicio-title">
+  <HeadRow label={t.label} title={t.h2} sub={t.sub} id="servicio-title" />
+  <div class="g">
+    {
+      t.items.map((s, i) => (
+        <article class="stack s-2 st-6 stage" aria-labelledby={`etapa-${i + 1}`}>
+          <div class="cell cell--glow stage__head reveal" style={`--glow-at:100% 0%;--glow-size:100% 120%;--glow-a:${0.18 + i * 0.08}`}>
+            <p class="cell__label etiqueta">
+              {s.tag} · {s.title}
+            </p>
+            <h3 class="t-h2 stage__title" id={`etapa-${i + 1}`}>
+              <span class="stage__n" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              {s.title}
+            </h3>
+            <p class="stage__text">{s.text}</p>
+          </div>
+          <dl class="stage__facts">
+            {s.facts.slice(0, 1).map(([k, v]) => (
+              <div class="cell cell--alt stage__fact reveal">
+                <dt class="etiqueta">{k}</dt>
+                <dd class="dato">{v}</dd>
+              </div>
+            ))}
+          </dl>
+          <div class="cell stage__incl reveal">
+            <p class="cell__label etiqueta">{t.includes}</p>
+            <ul class="checks">
+              {s.list.map((l) => (
+                <li>
+                  <Icon name="check" size={18} />
+                  <span>{l}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <dl class="stage__facts">
+            {s.facts.slice(1).map(([k, v]) => (
+              <div class="cell cell--alt stage__fact reveal">
+                <dt class="etiqueta">{k}</dt>
+                <dd class="dato">{v}</dd>
+              </div>
+            ))}
+          </dl>
+          {s.note && (
+            <div class="cell cell--alt stage__note reveal">
+              <p>{s.note}</p>
+            </div>
+          )}
+        </article>
+      ))
+    }
+  </div>
+  <div class="g stages__opt">
+    <div class="cell s-2 st-6 cell--split reveal">
+      <p class="cell__label cell__label--sq etiqueta">{t.optionalTag}</p>
+    </div>
+    {
+      t.optional.map((o) => (
+        <div class="cell s-2 st-3 reveal">
+          <h3 class="t-h3">{o.title}</h3>
+          <p class="stage__text">{o.text}</p>
+        </div>
+      ))
+    }
+  </div>
+  <EndRow label={t.cta} cta="etapas" note={t.note} />
+</section>
+
+<style>
+  .stage__head {
+    gap: var(--space-3);
+    min-height: 15rem;
+  }
+  .stage__head .cell__label {
+    color: var(--ladrillo-texto);
+  }
+  .stage__title {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-top: auto;
+    font-stretch: var(--stretch-display);
+  }
+  .stage__n {
+    font-family: var(--f-mono);
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-stretch: 100%;
+    color: var(--tinta-2);
+  }
+  .stage__text {
+    color: var(--tinta-2);
+  }
+  .stage__facts {
+    display: grid;
+    gap: var(--gap);
+    margin: 0;
+  }
+  .stage__fact {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-block: 0.875rem;
+  }
+  .stage__fact dt {
+    flex: none;
+  }
+  .stage__fact dd {
+    margin: 0;
+    text-align: right;
+    color: var(--tinta);
+  }
+  .stage__note {
+    color: var(--tinta-2);
+  }
+  /* "Incluye" se estira: los tres bloques terminan a la misma altura */
+  .stage__incl {
+    flex-grow: 1;
+  }
+</style>
